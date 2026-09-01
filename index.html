@@ -30,7 +30,7 @@
             pointer-events: none;
         }
         .app-container {
-            max-width: 850px;
+            max-width: 900px;
             margin: 20px auto;
             padding: 15px;
             position: relative;
@@ -65,6 +65,11 @@
             color: #9ca3af;
             margin-top: 5px;
             letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .founder-highlight {
+            color: #ef4444;
+            font-weight: bold;
         }
         
         .top-security-banner {
@@ -154,6 +159,38 @@
             border-color: #ef4444;
             box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
         }
+
+        .input-group-prefix {
+            display: flex;
+            align-items: center;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .input-group-prefix:focus-within {
+            border-color: #ef4444;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+        }
+        .input-prefix-tag {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            padding: 10px 14px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            border-right: 1px solid #334155;
+            letter-spacing: 1px;
+        }
+        .input-group-prefix input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
         .btn-primary {
             width: 100%;
             background: #ef4444;
@@ -209,6 +246,51 @@
             margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
+        }
+
+        /* Panel Exclusivo de Fundador para ver registros UX */
+        .founder-admin-panel {
+            background: rgba(15, 23, 42, 0.95);
+            border: 2px dashed #ef4444;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+        }
+        .founder-admin-panel h3 {
+            color: #ef4444;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .registered-nodes-list {
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            max-height: 140px;
+            overflow-y: auto;
+            padding: 8px;
+        }
+        .node-record-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            border-bottom: 1px solid #1e293b;
+            font-size: 0.85rem;
+            font-family: monospace;
+        }
+        .node-record-item:last-child {
+            border-bottom: none;
+        }
+        .node-tag-highlight {
+            color: #38bdf8;
+            font-weight: bold;
+        }
+        .node-time-tag {
+            color: #9ca3af;
+            font-size: 0.75rem;
         }
 
         .neon-red-btn {
@@ -325,7 +407,7 @@
             border-radius: 8px;
             display: flex;
             flex-direction: column;
-            height: 380px;
+            height: 350px;
             overflow: hidden;
             margin-bottom: 15px;
         }
@@ -430,7 +512,7 @@
     <div class="app-container">
         <header>
             <h1>Pleniux</h1>
-            <div class="founder-info">SECURE ANONYMOUS NETWORK &bull; ENCRYPTED GATEWAY</div>
+            <div class="founder-info">FOUNDER: <span class="founder-highlight">Lenox JG</span> &bull; pleniux.com</div>
         </header>
 
         <!-- TOP SECURITY BANNER -->
@@ -448,11 +530,11 @@
             <!-- LOGIN FORM -->
             <div id="form-login-container">
                 <h2>Node Login</h2>
-                <p>Enter your registered node number (UX1 - UX100000) and your numeric passcode.</p>
+                <p>Enter your registered node number (UX0, UX1 - UX100000) and your numeric passcode.</p>
                 
                 <div class="form-group">
                     <label for="login-node-input">User Node:</label>
-                    <input type="text" id="login-node-input" class="form-control" placeholder="E.g. UX45..." autocomplete="off">
+                    <input type="text" id="login-node-input" class="form-control" placeholder="E.g. UX0 or UX45..." autocomplete="off">
                 </div>
 
                 <div class="form-group">
@@ -466,11 +548,14 @@
             <!-- REGISTRATION FORM -->
             <div id="form-register-container" style="display: none;">
                 <h2>Register New Node</h2>
-                <p>Claim your unique node (1 to 100,000) and set a secure numeric passcode so no one else can use it.</p>
+                <p>Claim your unique node (0 to 100,000) and set a secure numeric passcode.</p>
                 
                 <div class="form-group">
-                    <label for="reg-node-input">Choose Node Number (1 - 100,000):</label>
-                    <input type="number" id="reg-node-input" class="form-control" placeholder="E.g. 777..." min="1" max="100000" autocomplete="off">
+                    <label for="reg-node-input">Choose Node Number (0 - 100,000):</label>
+                    <div class="input-group-prefix">
+                        <span class="input-prefix-tag">UX</span>
+                        <input type="number" id="reg-node-input" placeholder="E.g. 0 or 777..." min="0" max="100000" autocomplete="off">
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -486,11 +571,20 @@
         <div id="app-interface" class="app-interface">
 
             <div class="status-panel">
-                <div>Node: <span style="color: #ef4444;" id="display-node">UX1</span></div>
+                <div>Node: <span style="color: #ef4444;" id="display-node">UX0</span></div>
                 <div>Room: <span style="color: #38bdf8;" id="display-room">PUBLIC</span></div>
                 <div>Balance: <span class="credits-badge" id="credit-count">5</span> UX</div>
                 <div>Timer: <span id="timer" style="color: #ef4444;">03:00</span></div>
                 <button class="exit-btn" onclick="handleManualExit()">EXIT</button>
+            </div>
+
+            <!-- FOUNDER PANEL DE REGISTROS (Visible únicamente al entrar como UX0) -->
+            <div id="founder-panel-container" class="founder-admin-panel" style="display: none;">
+                <h3>👑 Founder Live Audit: Registered UX Nodes</h3>
+                <p style="font-size: 0.78rem; color: #9ca3af; margin-bottom: 8px;">Listado en tiempo real de todos los usuarios registrados en la plataforma:</p>
+                <div class="registered-nodes-list" id="founder-nodes-list">
+                    <!-- Se llena dinámicamente -->
+                </div>
             </div>
 
             <!-- ACTION PANEL INSIDE CHAT -->
@@ -505,8 +599,8 @@
                 <h3>Pleniux Security Manual</h3>
                 <ul>
                     <li><b>Chat Rooms:</b> Create or join a private group room using any code between 1 and 100,000.</li>
-                    <li><b>Continuous Cycle:</b> Every 3 minutes deducts 1 credit automatically and rolls over seamlessly into a fresh 3-minute session without freezing.</li>
-                    <li><b>Grace Period:</b> You have 6 seconds to return if you leave the browser tab.</li>
+                    <li><b>Continuous Cycle:</b> Every 3 minutes deducts 1 credit automatically and rolls over seamlessly.</li>
+                    <li><b>Founder Audit:</b> Node <b>UX0</b> possesses visual tracking over all registered node accounts.</li>
                 </ul>
             </div>
 
@@ -526,7 +620,7 @@
         </div>
 
         <footer>
-            PLENIUX SECURE NETWORK &bull; 2026
+            PLENIUX SECURE NETWORK &bull; 2026 &bull; FOUNDER: LENOX JG
         </footer>
     </div>
 
@@ -534,7 +628,7 @@
     <div id="room-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🚪 Create or Join Chat Room</h3>
-            <p>Enter a numerical code between <b>1 and 100,000</b> to create a new private group chat or join an existing one.</p>
+            <p>Enter a numerical code between <b>1 and 100,000</b> to join a private group chat.</p>
             <div class="form-group">
                 <input type="number" id="room-code-input" class="form-control" placeholder="E.g. 7777..." min="1" max="100000" autocomplete="off">
             </div>
@@ -543,7 +637,7 @@
         </div>
     </div>
 
-    <!-- MODAL RECHARGE BALANCE (BTC, ETH, SOL) -->
+    <!-- MODAL RECHARGE BALANCE -->
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🪙 Official Crypto Payment Gateway</h3>
@@ -585,7 +679,6 @@
     </div>
 
     <script>
-        // Matrix Cyber Number Rain Canvas Effect (Red Neon)
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -645,6 +738,17 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             updateCryptoDetails();
+            // Inicializar UX0 por defecto si no existe passcode de fundador configurado
+            if (!localStorage.getItem('pleniux_reg_pass_UX0')) {
+                localStorage.setItem('pleniux_reg_pass_UX0', '0000');
+                localStorage.setItem('pleniux_credits_UX0', '999');
+                
+                let defaultList = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
+                if (!defaultList.some(item => item.node === 'UX0')) {
+                    defaultList.push({ node: 'UX0', time: 'Founder (Pre-registered)' });
+                    localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(defaultList));
+                }
+            }
         });
 
         function switchAuthMode(mode) {
@@ -718,10 +822,10 @@
 
         function handleRegister() {
             let nodeNum = document.getElementById('reg-node-input').value.trim();
-            let passcode = document.getElementById('reg-passcode-input').value.trim();
+            let passcode = document.getElementById('reg-passcode-input'].value.trim();
 
-            if (!nodeNum || isNaN(nodeNum) || parseInt(nodeNum) < 1 || parseInt(nodeNum) > 100000) {
-                alert("❌ Invalid Node Number: Please enter a number between 1 and 100,000.");
+            if (nodeNum === "" || isNaN(nodeNum) || parseInt(nodeNum) < 0 || parseInt(nodeNum) > 100000) {
+                alert("❌ Invalid Node Number: Please enter a number between 0 and 100,000.");
                 return;
             }
 
@@ -735,14 +839,25 @@
             const registryPassKey = 'pleniux_reg_pass_' + fullNodeId;
 
             if (localStorage.getItem(registryPassKey) !== null) {
-                alert(`⚠️ Node ${fullNodeId} is already registered by someone else. Choose another number or log in.`);
+                alert(`⚠️ Node ${fullNodeId} is already registered by someone else.`);
                 return;
             }
 
+            // Guardar registro
             localStorage.setItem(registryPassKey, passcode);
             localStorage.setItem('pleniux_credits_' + fullNodeId, '5');
 
-            alert(`✅ Success! Node ${fullNodeId} has been registered securely with your numeric passcode. You received 5 free UX credits.`);
+            // Registrar en la lista global de auditoría para el Fundador
+            let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
+            if (!allRegistered.some(item => item.node === fullNodeId)) {
+                allRegistered.push({
+                    node: fullNodeId,
+                    time: new Date().toLocaleTimeString() + ' (' + new Date().toLocaleDateString() + ')'
+                });
+                localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(allRegistered));
+            }
+
+            alert(`✅ Success! Node ${fullNodeId} has been registered securely. You received 5 free UX credits.`);
             
             document.getElementById('login-node-input').value = fullNodeId;
             document.getElementById('login-passcode-input').value = "";
@@ -757,14 +872,20 @@
                 nodeInput = 'UX' + nodeInput;
             }
 
-            const standardNodeRegex = /^UX([1-9][0-9]{0,4}|100000)$/;
+            const standardNodeRegex = /^UX([0-9]|[1-9][0-9]{1,4}|100000)$/;
             if (!standardNodeRegex.test(nodeInput)) {
-                alert("Invalid identifier format. Use 'UX' followed by a number between 1 and 100000.");
+                alert("Invalid identifier format. Use 'UX' followed by a number between 0 and 100000.");
                 return;
             }
 
             const registryPassKey = 'pleniux_reg_pass_' + nodeInput;
-            const existingRegisteredPass = localStorage.getItem(registryPassKey);
+            let existingRegisteredPass = localStorage.getItem(registryPassKey);
+
+            // Auto-asignar clave por defecto si es UX0 y no tenía pass
+            if (nodeInput === 'UX0' && !existingRegisteredPass) {
+                existingRegisteredPass = '0000';
+                localStorage.setItem(registryPassKey, '0000');
+            }
 
             if (existingRegisteredPass === null) {
                 alert(`⚠️ Node ${nodeInput} is not registered yet. Please click on 'New Registration' first.`);
@@ -785,10 +906,10 @@
             }
 
             let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + nodeInput));
-            if (isNaN(userCredits)) userCredits = 5;
+            if (isNaN(userCredits)) userCredits = (nodeInput === 'UX0') ? 999 : 5;
 
             if (userCredits <= 0) {
-                alert(`⚠️ Balance at 0 UX. Node suspended. Please recharge via BTC, ETH or SOL.`);
+                alert(`⚠️ Balance at 0 UX. Node suspended. Please recharge.`);
                 return;
             }
 
@@ -798,6 +919,15 @@
             document.getElementById('display-node').innerText = nodeInput;
             document.getElementById('credit-count').innerText = userCredits;
 
+            // CONTROL DEL PANEL DE FUNDADOR (Si entra UX0)
+            const founderPanel = document.getElementById('founder-panel-container');
+            if (nodeInput === 'UX0') {
+                founderPanel.style.display = 'block';
+                loadFounderNodesList();
+            } else {
+                founderPanel.style.display = 'none';
+            }
+
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('app-interface').style.display = 'block';
 
@@ -805,7 +935,28 @@
             startContinuousTimer(180);
         }
 
-        // NUEVO: Temporizador continuo que descuenta y arranca un ciclo nuevo de 3 min automáticamente
+        function loadFounderNodesList() {
+            const listContainer = document.getElementById('founder-nodes-list');
+            let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
+            
+            if (allRegistered.length === 0) {
+                listContainer.innerHTML = '<div style="padding: 8px; font-size: 0.8rem; color: #9ca3af; text-align: center;">No nodes registered yet.</div>';
+                return;
+            }
+
+            let htmlContent = '';
+            // Ordenar para mostrar los más recientes arriba
+            allRegistered.slice().reverse().forEach(item => {
+                htmlContent += `
+                    <div class="node-record-item">
+                        <span>Registered Node: <span class="node-tag-highlight">${item.node}</span></span>
+                        <span class="node-time-tag">${item.time}</span>
+                    </div>
+                `;
+            });
+            listContainer.innerHTML = htmlContent;
+        }
+
         function startContinuousTimer(duration) {
             let timeLeft = duration;
             const timerEl = document.getElementById('timer');
@@ -820,8 +971,13 @@
                 timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 
                 if (timeLeft <= 0) {
-                    // Se acabaron los 3 minutos: descontar crédito y renovar ciclo
                     let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
+
+                    // UX0 fundador tiene créditos ilimitados/inagotables
+                    if (activeNodeId === 'UX0') {
+                        timeLeft = 180;
+                        return;
+                    }
 
                     if (userCredits > 1) {
                         userCredits--;
@@ -831,14 +987,12 @@
                         const msgBox = document.getElementById('message-box');
                         const alertDiv = document.createElement('div');
                         alertDiv.classList.add('message', 'system-alert');
-                        alertDiv.innerText = `[CYCLE CONCLUDED]: 3 minutes elapsed. -1 Credit deducted. Starting new 3-minute session...`;
+                        alertDiv.innerText = `[CYCLE CONCLUDED]: 3 minutes elapsed. -1 Credit deducted. Starting new cycle...`;
                         msgBox.appendChild(alertDiv);
                         msgBox.scrollTop = msgBox.scrollHeight;
 
-                        // Reiniciar conteo a 3 minutos sin congelar ni salir
                         timeLeft = 180;
                     } else if (userCredits === 1) {
-                        // Último crédito consumido, se queda en 0 y suspende
                         userCredits = 0;
                         localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
                         document.getElementById('credit-count').innerText = userCredits;
@@ -847,7 +1001,7 @@
                         clearInterval(countdownInterval);
                         if (activeNodeId) localStorage.removeItem('pleniux_active_node_' + activeNodeId);
 
-                        alert("⚠️ Balance exhausted (0 UX). Session concluded. Please recharge via BTC, ETH or SOL.");
+                        alert("⚠️ Balance exhausted (0 UX). Session concluded.");
                         location.reload();
                         return;
                     }
@@ -856,9 +1010,8 @@
             }, 1000);
         }
 
-        // 6-second grace period for visibility/leaving browser
         document.addEventListener("visibilitychange", function() {
-            if (!sessionActive) return;
+            if (!sessionActive || activeNodeId === 'UX0') return;
 
             if (document.hidden) {
                 const msgBox = document.getElementById('message-box');
@@ -866,12 +1019,12 @@
                 const graceWarning = document.createElement('div');
                 graceWarning.id = 'grace-alert';
                 graceWarning.classList.add('message', 'system-alert');
-                graceWarning.innerText = `⚠️ [WARNING]: You left the web. Session closes in 6 seconds unless you return!`;
+                graceWarning.innerText = `⚠️ [WARNING]: You left the web. Session closes in 6 seconds!`;
                 msgBox.appendChild(graceWarning);
                 msgBox.scrollTop = msgBox.scrollHeight;
 
                 graceTimer = setTimeout(() => {
-                    terminateSessionBySecurity("Grace period expired (6s). Session closed and balance deducted.");
+                    terminateSessionBySecurity("Grace period expired (6s). Session closed.");
                 }, 6000);
 
             } else {
@@ -885,7 +1038,7 @@
                     const msgBox = document.getElementById('message-box');
                     const welcomeBack = document.createElement('div');
                     welcomeBack.classList.add('message', 'system-alert');
-                    welcomeBack.innerText = `✅ [SECURE RESUMED]: Welcome back within the grace window. Session active.`;
+                    welcomeBack.innerText = `✅ [SECURE RESUMED]: Session active.`;
                     msgBox.appendChild(welcomeBack);
                     msgBox.scrollTop = msgBox.scrollHeight;
                 }
@@ -901,7 +1054,7 @@
                 localStorage.removeItem('pleniux_active_node_' + activeNodeId);
             }
 
-            if (activeNodeId) {
+            if (activeNodeId && activeNodeId !== 'UX0') {
                 let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
                 if (userCredits > 0) {
                     userCredits--;
@@ -922,14 +1075,14 @@
                 localStorage.removeItem('pleniux_active_node_' + activeNodeId);
             }
 
-            if (activeNodeId) {
+            if (activeNodeId && activeNodeId !== 'UX0') {
                 let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
                 if (userCredits > 0) {
                     userCredits--;
                     localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
                 }
             }
-            alert("Session terminated and credit deducted. Cache cleared.");
+            alert("Session terminated. Cache cleared.");
             location.reload();
         }
 
@@ -941,8 +1094,8 @@
             if (input.value.trim() === "") return;
 
             let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
-            if (userCredits <= 0) {
-                alert("Balance exhausted (0 UX). Transmission blocked. Please recharge via BTC, ETH or SOL.");
+            if (userCredits <= 0 && activeNodeId !== 'UX0') {
+                alert("Balance exhausted (0 UX). Transmission blocked.");
                 return;
             }
 
