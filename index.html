@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -277,90 +277,90 @@
         </header>
 
         <div class="notice-banner">
-            🛡️ <strong>SEGURIDAD ACTIVA:</strong> Bono de registro único por dispositivo. Los tokens adicionales requieren pagos reales confirmados a través de pasarela.
+            ⏳ <strong>SECURE PROTOCOL:</strong> Every message and chat session is deleted upon reaching 2 minutes and 30 seconds, if the web page is closed, or if you switch applications. 1 credit is deducted per session/closure.
         </div>
 
-        <!-- PANTALLA DE ACCESO Y REGISTRO -->
+        <!-- AUTH SCREEN -->
         <div id="auth-screen" class="auth-card">
             <div class="auth-tabs">
-                <button class="auth-tab active" id="tab-login" onclick="switchAuthMode('login')">Acceso Node</button>
-                <button class="auth-tab" id="tab-register" onclick="switchAuthMode('register')">Nuevo Registro</button>
+                <button class="auth-tab active" id="tab-login" onclick="switchAuthMode('login')">Node Login</button>
+                <button class="auth-tab" id="tab-register" onclick="switchAuthMode('register')">New Registration</button>
             </div>
 
-            <!-- CONTENEDOR LOGIN -->
+            <!-- LOGIN CONTAINER -->
             <div id="form-login-container">
                 <h2>Node Login</h2>
-                <p>Ingresa tu número de nodo y contraseña secreta.</p>
+                <p>Enter your node number and secret passcode.</p>
                 <div class="form-group">
-                    <label>Nodo de Usuario:</label>
-                    <input type="text" id="login-node-input" class="form-control" placeholder="Ej. UX1" autocomplete="off">
+                    <label>User Node:</label>
+                    <input type="text" id="login-node-input" class="form-control" placeholder="E.g. UX1" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label>Contraseña Numérica:</label>
-                    <input type="password" id="login-passcode-input" class="form-control" placeholder="Contraseña..." autocomplete="off">
+                    <label>Numeric Passcode:</label>
+                    <input type="password" id="login-passcode-input" class="form-control" placeholder="Passcode..." autocomplete="off">
                 </div>
-                <button class="btn-primary" onclick="handleLogin()">Acceder al Nodo</button>
+                <button class="btn-primary" onclick="handleLogin()">Access Node</button>
             </div>
 
-            <!-- CONTENEDOR REGISTRO -->
+            <!-- REGISTER CONTAINER -->
             <div id="form-register-container" style="display: none;">
-                <h2>Registrar Nuevo Nodo</h2>
-                <p>Crea tu cuenta oficial. Recibe tu bono de bienvenida único por dispositivo.</p>
+                <h2>Register New Node</h2>
+                <p>Create your official account on the network.</p>
                 <div class="form-group">
-                    <label>Elegir Número de Nodo:</label>
+                    <label>Choose Node Number:</label>
                     <div class="input-group-prefix">
                         <span class="input-prefix-tag">UX</span>
-                        <input type="number" id="reg-node-input" placeholder="Ej. 123..." min="1" max="100000" autocomplete="off">
+                        <input type="number" id="reg-node-input" placeholder="E.g. 123..." min="1" max="100000" autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Crear Contraseña Numérica:</label>
-                    <input type="password" id="reg-passcode-input" class="form-control" placeholder="Solo números..." maxlength="12" autocomplete="off">
+                    <label>Create Numeric Passcode:</label>
+                    <input type="password" id="reg-passcode-input" class="form-control" placeholder="Numbers only..." maxlength="12" autocomplete="off">
                 </div>
-                <button class="btn-primary" style="background: #10b981;" onclick="handleRegister()">Registrar con Bono</button>
+                <button class="btn-primary" style="background: #10b981;" onclick="handleRegister()">Register Node</button>
             </div>
         </div>
 
-        <!-- INTERFAZ PRINCIPAL -->
+        <!-- MAIN INTERFACE -->
         <div id="app-interface" class="app-interface">
             <div class="status-panel">
-                <div>Nodo: <span style="color: #ef4444;" id="display-node">UX1</span></div>
-                <div>Tokens: <span class="credits-badge" id="credit-count">0</span> UX</div>
-                <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0;" onclick="location.reload()">SALIR</button>
+                <div>Node: <span style="color: #ef4444;" id="display-node">UX1</span></div>
+                <div>Credits: <span class="credits-badge" id="credit-count">0</span> UX</div>
+                <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0;" onclick="location.reload()">EXIT</button>
             </div>
 
             <div class="action-panel-inside">
-                <h3>Bóveda de Pagos y Recargas</h3>
-                <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 12px;">Para aumentar tu saldo de forma permanente, adquiere paquetes mediante pago real en la pasarela oficial.</p>
-                <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 Recargar Saldo con Pasarela Real</button>
+                <h3>Credit Vault</h3>
+                <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 12px;">Acquire more credits via real payment gateway to keep your active sessions running.</p>
+                <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 Top Up Balance via Real Gateway</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE RECARGA -->
+    <!-- RECHARGE MODAL -->
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
-            <h3>🪙 Seleccionar Paquete de Tokens</h3>
-            <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 15px;">Al continuar, serás redirigido a la pasarela de pagos oficial. El saldo se acreditará en tu nodo al confirmar el pago real.</p>
+            <h3>🪙 Select Credit Package</h3>
+            <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 15px;">Upon continuing, you will be redirected to the official payment gateway. Balance will be credited upon real payment confirmation.</p>
             
             <div class="price-grid">
                 <div class="price-card selected" onclick="selectPackage(5, '1.99', this)">
-                    <div class="credits-num">5 Tokens</div>
+                    <div class="credits-num">5 Credits</div>
                     <div class="price-usd">$1.99 USD</div>
                 </div>
                 <div class="price-card" onclick="selectPackage(10, '5.00', this)">
-                    <div class="credits-num">10 Tokens</div>
+                    <div class="credits-num">10 Credits</div>
                     <div class="price-usd">$5.00 USD</div>
                 </div>
             </div>
 
-            <button class="btn-primary" style="background: #10b981;" onclick="redirectToRealGateway()">💳 Pagar en Pasarela Externa</button>
-            <button class="close-modal" onclick="closeModal('recharge-modal')">Cancelar</button>
+            <button class="btn-primary" style="background: #10b981;" onclick="redirectToRealGateway()">💳 Pay on External Gateway</button>
+            <button class="close-modal" onclick="closeModal('recharge-modal')">Cancel</button>
         </div>
     </div>
 
     <script>
-        // Fondo Matrix
+        // Matrix Background
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
@@ -419,42 +419,30 @@
             let passcode = document.getElementById('reg-passcode-input').value.trim();
 
             if (nodeNum === "" || isNaN(nodeNum)) {
-                alert("❌ Ingresa un número de nodo válido.");
+                alert("❌ Please enter a valid node number.");
                 return;
             }
             if (!passcode) {
-                alert("❌ Ingresa una contraseña numérica.");
+                alert("❌ Please enter a numeric passcode.");
                 return;
             }
 
             let fullNodeId = 'UX' + parseInt(nodeNum);
             
             if (fullNodeId === 'UX0') {
-                alert("⚠️ El nodo UX0 está reservado para el Fundador.");
+                alert("⚠️ Node UX0 is reserved.");
                 return;
             }
 
             if (localStorage.getItem('pleniux_pass_' + fullNodeId) !== null) {
-                alert(`⚠️ El nodo ${fullNodeId} ya está registrado.`);
+                alert(`⚠️ Node ${fullNodeId} is already registered.`);
                 return;
             }
 
-            // SEGURIDAD ANTI-MULTICUENTA POR DISPOSITIVO
-            let deviceClaimed = localStorage.getItem('pleniux_device_bonus_claimed');
-            let bonusTokens = 0;
-
-            if (!deviceClaimed) {
-                bonusTokens = 10; // Bono único de bienvenida por teléfono/dispositivo
-                localStorage.setItem('pleniux_device_bonus_claimed', 'true');
-            } else {
-                alert("⚠️ Este dispositivo ya reclamó su bono de bienvenida anterior. Tu cuenta se creó con 0 tokens de bono.");
-            }
-
-            // Guardar credenciales y saldo de bono
             localStorage.setItem('pleniux_pass_' + fullNodeId, passcode);
-            localStorage.setItem('pleniux_real_credits_' + fullNodeId, bonusTokens.toString());
+            localStorage.setItem('pleniux_real_credits_' + fullNodeId, '0');
 
-            alert(`✅ ¡Nodo ${fullNodeId} registrado con éxito!\n\n🎁 Bono aplicado en este dispositivo: ${bonusTokens} Tokens.`);
+            alert(`✅ Node ${fullNodeId} successfully registered! Top up balance to operate.`);
             
             document.getElementById('login-node-input').value = fullNodeId;
             switchAuthMode('login');
@@ -467,20 +455,20 @@
             if (/^[0-9]+$/.test(node)) node = 'UX0' === node ? 'UX0' : 'UX' + node;
 
             if (!node || !pass) { 
-                alert("Ingresa nodo y contraseña"); 
+                alert("Please enter node and passcode"); 
                 return; 
             }
 
             let savedPass = localStorage.getItem('pleniux_pass_' + node);
             
-            // CONFIGURACIÓN ESTRICTA DEL FUNDADOR (UX0 = 10,000 tokens)
+            // FOUNDER EXCLUSIVE ACCESS (UX0 = 10,000 credits)
             if (node === 'UX0') {
-                savedPass = '1971'; // Contraseña de fundador (cámbiala si gustas)
+                savedPass = '1971'; // Founder passcode
                 localStorage.setItem('pleniux_real_credits_UX0', '10000');
             }
 
             if (savedPass !== pass) {
-                alert("🚨 Contraseña incorrecta o nodo no registrado.");
+                alert("🚨 Incorrect passcode or unregistered node.");
                 return;
             }
 
@@ -497,11 +485,11 @@
         function redirectToRealGateway() {
             closeModal('recharge-modal');
 
-            // URL DE TU PASARELA REAL:
-            // const gatewayUrl = `https://tu-pasarela.com/checkout?node=${activeNodeId}&amount=${selectedUsd}&credits=${selectedCredits}`;
+            // 100% REAL EXTERNAL PAYMENT GATEWAY:
+            // const gatewayUrl = `https://your-gateway.com/checkout?node=${activeNodeId}&amount=${selectedUsd}&credits=${selectedCredits}`;
             // window.location.href = gatewayUrl;
 
-            alert(`🔗 [PASARELA DE PAGO EXTERNA]:\n\nRedirigiendo para procesar ${selectedUsd} USD al nodo (${activeNodeId}).\n\n⚠️ Los tokens se cargarán de forma real una vez que el servidor confirme el depósito.`);
+            alert(`🔗 [REAL PAYMENT GATEWAY REQUIRED]:\n\nRedirecting to process ${selectedUsd} USD for node (${activeNodeId}).\n\n⚠️ Credits will ONLY be credited once the external server receives and confirms the real transaction on the blockchain.`);
         }
     </script>
 </body>
