@@ -60,20 +60,6 @@
             color: #ef4444;
             font-weight: bold;
         }
-        
-        .top-security-banner {
-            background: rgba(220, 38, 38, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            color: #fca5a5;
-            padding: 10px 15px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 0.82rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
 
         .auth-card {
             background: rgba(15, 23, 42, 0.95);
@@ -477,10 +463,6 @@
             <div class="founder-info">FOUNDER: <span class="founder-highlight">Lenox JG</span> &bull; pleniux.com</div>
         </header>
 
-        <div class="top-security-banner">
-            🛡️ Secure Device Lock Active &bull; Max 1 Node Per Phone/Web
-        </div>
-
         <div id="auth-screen" class="auth-card">
             <div class="auth-tabs">
                 <button class="auth-tab active" id="tab-login" onclick="switchAuthMode('login')">Access Node</button>
@@ -506,7 +488,7 @@
 
             <div id="form-register-container" style="display: none;">
                 <h2>Register New Node</h2>
-                <p>Claim your unique node (0 to 100,000). Limit: 1 registration strictly per phone/device.</p>
+                <p>Claim your unique node (0 to 100,000) with automatic 5 UX starting balance.</p>
                 
                 <div class="form-group">
                     <label for="reg-node-input">Choose Node Number (0 - 100,000):</label>
@@ -536,7 +518,7 @@
 
             <div id="founder-panel-container" class="founder-admin-panel" style="display: none;">
                 <h3>👑 Founder Live Audit: Registered UX Nodes</h3>
-                <p style="font-size: 0.78rem; color: #9ca3af; margin-bottom: 8px;">Listado en tiempo real de todos los usuarios registrados:</p>
+                <p style="font-size: 0.78rem; color: #9ca3af; margin-bottom: 8px;">Private encrypted real-time audit list:</p>
                 <div class="registered-nodes-list" id="founder-nodes-list"></div>
             </div>
 
@@ -547,24 +529,24 @@
             </div>
 
             <div class="manual-box">
-                <h3>Pleniux Security Manual</h3>
+                <h3>Pleniux Ephemeral Security Protocol</h3>
                 <ul>
-                    <li><b>One Device Lock:</b> Solo se permite 1 cuenta registrada por teléfono o navegador para evitar abusos por red o IP.</li>
-                    <li><b>Inactivity Recycle (1-6 Days):</b> Si una cuenta pasa inactiva entre 1 y 6 días, el nodo se borra automáticamente, se libera para otro usuario y recupera sus 5 UX de saldo.</li>
-                    <li><b>Rooms & Timer:</b> Creación de salas privadas de 1 a 100,000 con consumo automático cada 3 minutos.</li>
+                    <li><b>Auto-Delete Messaging:</b> All messages automatically self-destruct every 3 minutes or when closing the session/powering off the device.</li>
+                    <li><b>Inactivity Recycle (1-6 Days):</b> Unused accounts without login for 1 to 6 days are automatically purged, recycling the node and resetting balance to 5 UX.</li>
+                    <li><b>Total Privacy:</b> Secure temporary encrypted sessions without persistent server logs.</li>
                 </ul>
             </div>
 
             <div class="chat-section">
                 <div class="chat-header">
-                    <span id="pipeline-title">SECURE TUNNEL // LIVE ANONYMOUS CHAT</span>
-                    <span style="color: #10b981;" id="peer-status-indicator">● Channel Open</span>
+                    <span id="pipeline-title">SECURE TUNNEL // EPHEMERAL LIVE CHAT (3 MIN DELETE)</span>
+                    <span style="color: #10b981;" id="peer-status-indicator">● Channel Active</span>
                 </div>
                 <div class="chat-messages" id="message-box">
-                    <div class="message incoming">System: Secure channel synchronized. Zero logs stored.</div>
+                    <div class="message incoming">System: Secure ephemeral tunnel synchronized. Zero logs stored. Messages self-destruct in 3 minutes or on session close.</div>
                 </div>
                 <div class="chat-input-area">
-                    <input type="text" id="user-input" class="msg-input" placeholder="Type an encrypted message..." autocomplete="off">
+                    <input type="text" id="user-input" class="msg-input" placeholder="Type an encrypted ephemeral message..." autocomplete="off">
                     <button class="send-btn" onclick="sendMessage()">SEND</button>
                 </div>
             </div>
@@ -630,7 +612,7 @@
     </div>
 
     <script>
-        // === MOTOR DE MATRIX OPTIMIZADO ===
+        // === MATRIX RAIN ENGINE ===
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -689,7 +671,7 @@
             updateCryptoDetails();
             checkInactivityAndRecycleNodes();
             
-            // Configuración segura interna y oculta de la clave 1971 para el nodo UX0
+            // Internal secure hidden configuration of master passcode 1971 for node UX0
             localStorage.setItem('pleniux_reg_pass_UX0', '1971');
             localStorage.setItem('pleniux_credits_UX0', '999');
             
@@ -700,22 +682,26 @@
             }
         });
 
-        // === FUNCIÓN DE RECICLAJE POR INACTIVIDAD (1 A 6 DÍAS) ===
+        // Total session wipe and self-destruction when exiting web or powering off phone
+        window.addEventListener('beforeunload', () => {
+            sessionStorage.clear();
+        });
+
+        // === INACTIVITY RECYCLING PROTOCOL (1 TO 6 DAYS) ===
         function checkInactivityAndRecycleNodes() {
             let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
             const now = Date.now();
-            const maxInactiveTime = 3 * 24 * 60 * 60 * 1000; // Configurado a 3 días exactos (dentro del rango de 1 a 6 días)
+            const maxInactiveTime = 3 * 24 * 60 * 60 * 1000; // 3 exact days (within the 1 to 6 days range)
 
             let updatedList = allRegistered.filter(item => {
-                if (item.node === 'UX0') return true; // El nodo fundador nunca se recicla
+                if (item.node === 'UX0') return true;
                 let lastActive = item.lastActive || now;
                 let inactiveDuration = now - lastActive;
 
                 if (inactiveDuration > maxInactiveTime) {
-                    // ¡Inactivo por más de 3 días! Se elimina la cuenta y se recicla el nodo
                     localStorage.removeItem('pleniux_reg_pass_' + item.node);
                     localStorage.removeItem('pleniux_credits_' + item.node);
-                    return false; // Se remueve de la lista para que quede disponible para otra persona
+                    return false;
                 }
                 return true;
             });
@@ -797,13 +783,6 @@
         }
 
         function handleRegister() {
-            // RESTRICCIÓN DE SEGURIDAD: Solo 1 nodo registrado por dispositivo/teléfono
-            let deviceRegisteredNode = localStorage.getItem('pleniux_device_bound_node');
-            if (deviceRegisteredNode) {
-                alert(`❌ Security Block: This device/phone has already registered node (${deviceRegisteredNode}). Only 1 node per device is allowed.`);
-                return;
-            }
-
             let nodeNum = document.getElementById('reg-node-input').value.trim();
             let passcode = document.getElementById('reg-passcode-input').value.trim();
 
@@ -825,10 +804,8 @@
                 return;
             }
 
-            // Guardar credenciales y asociar al dispositivo actual
             localStorage.setItem(registryPassKey, passcode);
             localStorage.setItem('pleniux_credits_' + fullNodeId, '5');
-            localStorage.setItem('pleniux_device_bound_node', fullNodeId);
 
             let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
             if (!allRegistered.some(item => item.node === fullNodeId)) {
@@ -889,7 +866,6 @@
                 return;
             }
 
-            // Actualizar marca de tiempo de actividad reciente para evitar que expire
             let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
             allRegistered = allRegistered.map(item => {
                 if (item.node === nodeInput) {
@@ -953,25 +929,17 @@
                 timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 
                 if (timeLeft <= 0) {
-                    let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
-
-                    if (activeNodeId === 'UX0') {
-                        timeLeft = 180;
-                        return;
-                    }
-
-                    if (userCredits > 1) {
-                        userCredits--;
-                        localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
-                        document.getElementById('credit-count').innerText = userCredits;
-                        timeLeft = 180;
-                    } else {
+                    // Complete message self-destruction and session closure at exact 3-minute mark
+                    const msgBox = document.getElementById('message-box');
+                    msgBox.innerHTML = '<div class="message system-alert">🔒 3-Minute Ephemeral Limit Reached: Messages auto-deleted & session closed.</div>';
+                    
+                    setTimeout(() => {
                         sessionActive = false;
                         clearInterval(countdownInterval);
-                        alert("⚠️ Balance exhausted (0 UX). Session concluded.");
+                        alert("⚠️ Session concluded and messages self-destructed.");
                         location.reload();
-                        return;
-                    }
+                    }, 1000);
+                    return;
                 }
                 timeLeft--;
             }, 1000);
@@ -981,7 +949,14 @@
             if (!sessionActive) return;
             sessionActive = false;
             if (countdownInterval) clearInterval(countdownInterval);
-            location.reload();
+            
+            // Immediate message wipe on screen upon exit
+            const msgBox = document.getElementById('message-box');
+            msgBox.innerHTML = '<div class="message system-alert">🔒 Session manually terminated. Messages wiped.</div>';
+            
+            setTimeout(() => {
+                location.reload();
+            }, 600);
         }
 
         function sendMessage() {
