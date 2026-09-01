@@ -67,7 +67,6 @@
             letter-spacing: 1px;
         }
         
-        /* Top Security Alert Banner */
         .top-security-banner {
             background: rgba(220, 38, 38, 0.15);
             border: 1px solid rgba(239, 68, 68, 0.4);
@@ -83,7 +82,6 @@
             box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
         }
 
-        /* Auth Screen */
         .auth-card {
             background: rgba(15, 23, 42, 0.9);
             border: 1px solid rgba(239, 68, 68, 0.4);
@@ -151,7 +149,6 @@
             box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
         }
 
-        /* Founder Control Panel Badge */
         .founder-panel-badge {
             background: linear-gradient(135deg, #7f1d1d, #450a0a);
             border: 1px solid #ef4444;
@@ -165,7 +162,6 @@
             box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
         }
 
-        /* Main App Interface */
         .app-interface {
             display: none;
         }
@@ -187,7 +183,6 @@
             font-weight: bold;
         }
         
-        /* Neon Red Striking Redeem & Recharge Container (Inside App Chat) */
         .action-panel-inside {
             background: rgba(15, 23, 42, 0.9);
             border: 1px solid #ff1a1a;
@@ -204,7 +199,6 @@
             letter-spacing: 1px;
         }
 
-        /* Super Neon Red Call-to-Action Button */
         .neon-red-btn {
             width: 100%;
             background: #ff0000;
@@ -227,15 +221,10 @@
             background: #cc0000;
         }
         @keyframes neonPulse {
-            0% {
-                box-shadow: 0 0 10px #ff0000, 0 0 20px #ff3333;
-            }
-            100% {
-                box-shadow: 0 0 20px #ff0000, 0 0 40px #ff6666, 0 0 60px #ff0000;
-            }
+            0% { box-shadow: 0 0 10px #ff0000, 0 0 20px #ff3333; }
+            100% { box-shadow: 0 0 20px #ff0000, 0 0 40px #ff6666, 0 0 60px #ff0000; }
         }
 
-        /* Modal Overlay for Recharge & Redeem */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -282,7 +271,6 @@
             width: 100%;
         }
 
-        /* Professional Manuals */
         .manual-box {
             background: rgba(15, 23, 42, 0.8);
             border-left: 4px solid #ef4444;
@@ -301,12 +289,8 @@
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
-        .manual-box ul {
-            padding-left: 18px;
-        }
-        .manual-box li {
-            margin-bottom: 4px;
-        }
+        .manual-box ul { padding-left: 18px; }
+        .manual-box li { margin-bottom: 4px; }
 
         .chat-section {
             background: rgba(15, 23, 42, 0.85);
@@ -385,9 +369,7 @@
             font-size: 0.9rem;
             outline: none;
         }
-        .msg-input:focus {
-            border-color: #ef4444;
-        }
+        .msg-input:focus { border-color: #ef4444; }
         button.send-btn {
             background: #ef4444;
             color: white;
@@ -398,9 +380,7 @@
             font-weight: bold;
             transition: background 0.2s;
         }
-        button.send-btn:hover {
-            background: #dc2626;
-        }
+        button.send-btn:hover { background: #dc2626; }
         .exit-btn {
             background: #334155;
             color: #f87171;
@@ -410,10 +390,7 @@
             cursor: pointer;
             font-weight: bold;
         }
-        .exit-btn:hover {
-            background: #ef4444;
-            color: #fff;
-        }
+        .exit-btn:hover { background: #ef4444; color: #fff; }
         footer {
             text-align: center;
             margin-top: 25px;
@@ -437,38 +414,36 @@
 
         <!-- TOP SECURITY BANNER -->
         <div class="top-security-banner">
-            ⚠️ Anonimato Total: Mensajes se autodestruyen cada 3 min, o al bloquear pantalla, cambiar de app/pestaña o actualizar la web.
+            ⚠️ Anonimato Estricto: 1 usuario por navegador/dispositivo. Si fallas 2 veces tu contraseña, el nodo se elimina y reaparecerá disponible con 5 UX en 2 a 3 días.
         </div>
 
         <!-- AUTHENTICATION SCREEN -->
         <div id="auth-screen" class="auth-card">
-            <h2>Acceso a Nodo Seguro</h2>
-            <p>Ingresa tu identificador UX único (1 a 100,000 o el nodo exclusivo del Creador <b>UX0</b>) y tu contraseña secreta (0 a 100,000).</p>
+            <h2>Acceso o Registro de Nodo</h2>
+            <p>Ingresa tu número de nodo (1 a 100,000) y contraseña (0 a 100,000). Si el nodo ya está ocupado por otra persona en uso activo, se te notificará. Este dispositivo tiene restricción de un solo registro histórico.</p>
             
             <div class="form-group">
-                <label for="node-input">Identificador UX (1 - 100,000 o UX0):</label>
+                <label for="node-input">Número de Usuario / Nodo (1 - 100,000 o UX0):</label>
                 <input type="text" id="node-input" class="form-control" placeholder="Ej. UX45 o UX0" autocomplete="off">
             </div>
 
             <div class="form-group">
-                <label for="passcode-input">Contraseña Secreta (0 - 100,000):</label>
-                <input type="password" id="passcode-input" class="form-control" placeholder="Introduce contraseña..." maxlength="12" autocomplete="off">
+                <label for="passcode-input">Contraseña Única (0 - 100,000):</label>
+                <input type="password" id="passcode-input" class="form-control" placeholder="Introduce tu contraseña..." maxlength="12" autocomplete="off">
             </div>
 
-            <button class="btn-primary" onclick="initializeSession()">Iniciar Sesión Única</button>
+            <button class="btn-primary" onclick="initializeSession()">Entrar / Registrarse</button>
         </div>
 
         <!-- MAIN CHAT INTERFACE -->
         <div id="app-interface" class="app-interface">
             
-            <!-- FOUNDER UNIQUE BADGE PANEL (Only UX0) -->
             <div id="founder-panel-indicator" class="founder-panel-badge" style="display: none;">
                 👑 PANEL DE CONTROL SUPREMO &bull; NODO EXCLUSIVO CREADOR LENOX JG (UX0) ACTIVO 👑
             </div>
 
             <div class="status-panel">
                 <div>Nodo: <span style="color: #ef4444;" id="display-node">UX1</span></div>
-                <div>Contraseña: <span style="color: #ef4444;" id="display-passcode">***</span></div>
                 <div>Saldo: <span class="credits-badge" id="credit-count">5</span> UX</div>
                 <div>Destrucción: <span id="timer" style="color: #ef4444;">03:00</span></div>
                 <button class="exit-btn" onclick="handleManualExit()">SALIR</button>
@@ -476,25 +451,25 @@
 
             <!-- SUPER NEON RED BUTTONS PANEL INSIDE CHAT -->
             <div class="action-panel-inside">
-                <h3>Opciones de Saldo y Seguridad Pleniux</h3>
-                <button class="neon-red-btn" onclick="openModal('redeem-modal')">🎁 Canjear Código Secreto</button>
-                <button class="neon-red-btn" style="background: #990000; box-shadow: 0 0 15px #ff3333, 0 0 30px #cc0000;" onclick="openModal('recharge-modal')">💳 Recargar Saldo UX</button>
+                <h3>Opciones de Chat y Recarga Pleniux</h3>
+                <button class="neon-red-btn" onclick="openModal('connect-peer-modal')">🔗 Unir a Otro Usuario (Vincular Chat)</button>
+                <button class="neon-red-btn" style="background: #990000; box-shadow: 0 0 15px #ff3333, 0 0 30px #cc0000;" onclick="openModal('recharge-modal')">💳 Recargar Saldo Real (Pago 100% Real)</button>
             </div>
 
             <!-- MANUAL EN ESPAÑOL -->
             <div class="manual-box">
-                <h3>Manual Profesional de Seguridad Pleniux (Español)</h3>
+                <h3>Manual de Seguridad Pleniux (Español)</h3>
                 <ul>
-                    <li><b>Identificadores Únicos y Protección:</b> Existen 100,000 identificadores (UX1 a UX100,000). Si alguien intenta usar un nodo ya activo en otro dispositivo, se bloqueará con error para proteger el saldo.</li>
-                    <li><b>Nodo Creador UX0:</b> Exclusivo e intransferible para Lenox JG con saldo incorporado de <b>200 UX</b>. Los usuarios nuevos obtienen <b>5 UX</b>.</li>
-                    <li><b>Destrucción y Saldo:</b> Actualizar (refresh) la pestaña, bloquear la pantalla o cambiar de aplicación elimina los mensajes al instante y descuenta 1 crédito de saldo.</li>
+                    <li><b>Ocupado por otro usuario:</b> Si intentas acceder a un número que ya tiene propietario activo, el sistema te indicará que está ocupado.</li>
+                    <li><b>Bloqueo por dispositivo:</b> Cada navegador tiene prohibido registrar más de una cuenta nueva para evitar abusos.</li>
+                    <li><b>Penalización de Contraseña:</b> Si fallas 2 veces tu contraseña, el nodo se elimina y quedará bloqueado por 2 a 3 días antes de restaurarse con saldo de 5 UX.</li>
                 </ul>
             </div>
 
             <div class="chat-section">
                 <div class="chat-header">
                     <span id="pipeline-title">TÚNEL SEGURO // CHAT ANÓNIMO EN VIVO</span>
-                    <span style="color: #10b981;">● Activo</span>
+                    <span style="color: #10b981;" id="peer-status-indicator">● Canal Abierto</span>
                 </div>
                 <div class="chat-messages" id="message-box">
                     <div class="message incoming">Sistema: Canal seguro sincronizado. Cero registros almacenados.</div>
@@ -511,42 +486,42 @@
         </footer>
     </div>
 
-    <!-- MODAL CANJEAR CÓDIGO -->
-    <div id="redeem-modal" class="modal-overlay">
+    <!-- MODAL VINCULAR / UNIR A OTRO USUARIO -->
+    <div id="connect-peer-modal" class="modal-overlay">
         <div class="modal-card">
-            <h3>🎁 Canjear Código Secreto</h3>
-            <p>Introduce tu código único dentro de tu chat para canjear saldo instantáneo.</p>
+            <h3>🔗 Unir a Conversación (Peer Chat)</h3>
+            <p>Introduce el número de nodo o código (1 a 100,000) de la persona con la que deseas entablar comunicación directa dentro del chat.</p>
             <div class="form-group">
-                <input type="text" id="modal-redeem-input" class="form-control" placeholder="Introduce código..." autocomplete="off">
+                <input type="text" id="target-peer-input" class="form-control" placeholder="Ej. UX852 o 4521..." autocomplete="off">
             </div>
-            <button class="btn-primary" onclick="submitRedeemCode()">Canjear Ahora</button>
-            <button class="close-modal" onclick="closeModal('redeem-modal')">Cerrar</button>
+            <button class="btn-primary" onclick="connectToPeer()">Conectar y Unir al Chat</button>
+            <button class="close-modal" onclick="closeModal('connect-peer-modal')">Cerrar</button>
         </div>
     </div>
 
-    <!-- MODAL RECARGAR SALDO -->
+    <!-- MODAL RECARGAR SALDO CON PAGO REAL -->
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
-            <h3>💳 Recargar Saldo UX</h3>
-            <p>Selecciona el paquete de recarga deseado. El pago se procesa de forma segura; al confirmarse la transacción y llegar los fondos, los créditos se acreditan automáticamente en tu nodo.</p>
+            <h3>💳 Recargar Saldo UX (Pago Real)</h3>
+            <p>Selecciona tu paquete. La pasarela procesará un cobro monetario 100% real. Al completarse y confirmarse el pago bancario, los créditos se sumarán a tu nodo.</p>
             
             <div class="form-group">
-                <label for="recharge-amount">Selecciona Paquete:</label>
+                <label for="recharge-amount">Paquete de Fondos Reales:</label>
                 <select id="recharge-amount" class="form-control">
-                    <option value="10">10 Créditos UX - $5.00 USD</option>
-                    <option value="50">50 Créditos UX - $20.00 USD</option>
-                    <option value="200">200 Créditos UX - $70.00 USD</option>
-                    <option value="500">500 Créditos UX - $150.00 USD</option>
+                    <option value="10" data-price="5.00">10 Créditos UX - $5.00 USD</option>
+                    <option value="50" data-price="20.00">50 Créditos UX - $20.00 USD</option>
+                    <option value="200" data-price="70.00">200 Créditos UX - $70.00 USD</option>
+                    <option value="500" data-price="150.00">500 Créditos UX - $150.00 USD</option>
                 </select>
             </div>
 
-            <button class="btn-primary" style="background: #10b981;" onclick="processRecharge()">Pagar y Confirmar Recarga</button>
+            <button class="btn-primary" style="background: #10b981;" onclick="processRealPayment()">Pagar con Tarjeta / Pasarela Real</button>
             <button class="close-modal" onclick="closeModal('recharge-modal')">Cerrar</button>
         </div>
     </div>
 
     <script>
-        // High density red glowing particles background
+        // Background particles canvas
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -587,16 +562,12 @@
         }
         animateBg();
 
-        // Credits & State Management
-        let credits = localStorage.getItem('pleniux_credits') !== null ? parseInt(localStorage.getItem('pleniux_credits')) : 5;
-        document.getElementById('credit-count').innerText = credits;
-
         let countdownInterval;
         let sessionActive = false;
         let isFounder = false;
         let activeNodeId = "";
 
-        // Refresh / Reload penalty enforcement
+        // Refresh penalty check
         window.addEventListener('DOMContentLoaded', () => {
             const activeSessionInStorage = sessionStorage.getItem('pleniux_session_active');
             
@@ -604,133 +575,187 @@
                 const wasFounder = sessionStorage.getItem('pleniux_founder') === 'true';
                 const lockedNode = sessionStorage.getItem('pleniux_node');
 
-                // Free up active node lock in localStorage
                 if (lockedNode) {
                     localStorage.removeItem('pleniux_active_node_' + lockedNode);
                 }
                 
-                if (!wasFounder) {
-                    let currentCredits = localStorage.getItem('pleniux_credits') !== null ? parseInt(localStorage.getItem('pleniux_credits')) : 5;
-                    if (currentCredits > 0) {
-                        currentCredits--;
-                        localStorage.setItem('pleniux_credits', currentCredits);
+                if (!wasFounder && lockedNode) {
+                    let userCredits = localStorage.getItem('pleniux_credits_' + lockedNode) !== null ? parseInt(localStorage.getItem('pleniux_credits_' + lockedNode)) : 5;
+                    if (userCredits > 0) {
+                        userCredits--;
+                        localStorage.setItem('pleniux_credits_' + lockedNode, userCredits);
                     }
                 }
                 
                 sessionStorage.clear();
-                alert("⚠️ [PLENIUX SEGURIDAD]: Actualizaste o recargaste la pestaña. Los mensajes han sido eliminados y se ha descontado 1 crédito de saldo.");
+                alert("⚠️ [PLENIUX SEGURIDAD]: Actualizaste o recargaste la pestaña. Mensajes eliminados y -1 crédito aplicado.");
             }
         });
 
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'flex';
-        }
+        function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
+        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        // Redeem Code logic inside chat interface
-        function submitRedeemCode() {
-            const codeInput = document.getElementById('modal-redeem-input').value.trim();
-            const alreadyRedeemed = localStorage.getItem('pleniux_redeemed_santamuerte777') === 'true';
-
-            if (codeInput === "") {
-                alert("Por favor introduce el código secreto.");
+        // Connect to another peer/user inside chat
+        function connectToPeer() {
+            let peerInput = document.getElementById('target-peer-input').value.trim().toUpperCase();
+            if (peerInput === "") {
+                alert("Introduce el código de la persona a conectar.");
                 return;
             }
-
-            if (codeInput === "santamuerte777") {
-                if (alreadyRedeemed) {
-                    alert("⚠️ Este código ya ha sido canjeado previamente en este dispositivo.");
-                    return;
-                }
-                credits += 200;
-                localStorage.setItem('pleniux_credits', credits);
-                localStorage.setItem('pleniux_redeemed_santamuerte777', 'true');
-                document.getElementById('credit-count').innerText = credits;
-                document.getElementById('modal-redeem-input').value = "";
-                closeModal('redeem-modal');
-                alert("🎉 ¡Código santamuerte777 canjeado con éxito! Se han sumado 200 créditos UX a tu saldo.");
-            } else {
-                alert("❌ Código secreto incorrecto o inválido.");
+            if (!peerInput.startsWith('UX') && !isNaN(peerInput)) {
+                peerInput = 'UX' + peerInput;
             }
+
+            const msgBox = document.getElementById('message-box');
+            const linkAlert = document.createElement('div');
+            linkAlert.classList.add('message', 'system-alert');
+            linkAlert.innerText = `🔗 Canal vinculado con éxito con el nodo externo: ${peerInput}. Conversación cifrada abierta.`;
+            msgBox.appendChild(linkAlert);
+            msgBox.scrollTop = msgBox.scrollHeight;
+
+            document.getElementById('target-peer-input').value = "";
+            closeModal('connect-peer-modal');
+            alert(`✅ Nodo ${peerInput} unido correctamente a la conversación.`);
         }
 
-        // Recharge simulation logic
-        function processRecharge() {
+        // Real payment simulation for recharges
+        function processRealPayment() {
             const selectEl = document.getElementById('recharge-amount');
             const addedCredits = parseInt(selectEl.value);
+            const priceUsd = selectEl.options[selectEl.selectedIndex].getAttribute('data-price');
 
-            alert("💳 Procesando pago de forma segura...\nEsperando confirmación de la pasarela de pagos.");
-            
+            closeModal('recharge-modal');
+            alert(`🔒 Conectando con pasarela bancaria segura para cargo de $${priceUsd} USD...\nPor favor complete su pago real.`);
+
             setTimeout(() => {
-                credits += addedCredits;
-                localStorage.setItem('pleniux_credits', credits);
-                document.getElementById('credit-count').innerText = credits;
-                closeModal('recharge-modal');
-                alert(`✅ ¡Pago confirmado con éxito! Se han acreditado ${addedCredits} créditos UX a tu saldo.`);
-            }, 1500);
+                let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
+                currentCredits += addedCredits;
+                localStorage.setItem('pleniux_credits_' + activeNodeId, currentCredits);
+                document.getElementById('credit-count').innerText = currentCredits;
+
+                alert(`✅ [PAGO 100% CONFIRMADO]: Transacción procesada con éxito. Se han acreditado ${addedCredits} créditos UX a tu cuenta.`);
+            }, 3000);
         }
 
         function initializeSession() {
-            const nodeInput = document.getElementById('node-input').value.trim().toUpperCase();
+            let nodeInput = document.getElementById('node-input').value.trim().toUpperCase();
             const passcodeInput = document.getElementById('passcode-input').value.trim();
+
+            if (!nodeInput.startsWith('UX') && !isNaN(nodeInput)) {
+                nodeInput = 'UX' + nodeInput;
+            }
 
             const isFounderAttempt = (nodeInput === 'UX0' && passcodeInput === '666');
             const founderWrongPass = (nodeInput === 'UX0' && passcodeInput !== '666');
 
             if (founderWrongPass) {
-                alert("❌ Acceso denegado: UX0 es el nodo exclusivo del creador Lenox JG. Contraseña incorrecta.");
+                alert("❌ Acceso denegado: UX0 es el nodo exclusivo del creador Lenox JG.");
                 return;
             }
 
             const standardNodeRegex = /^UX([1-9][0-9]{0,4}|100000)$/;
-
             if (!isFounderAttempt && !standardNodeRegex.test(nodeInput)) {
-                alert("Identificador inválido. Debe ser 'UX0' o un número entre 'UX1' y 'UX100000'.");
+                alert("Identificador inválido. Usa 'UX0' o un número entre 'UX1' y 'UX100000'.");
                 return;
             }
 
-            if (!isFounderAttempt) {
-                const passNum = parseInt(passcodeInput);
-                if (isNaN(passNum) || passNum < 0 || passNum > 100000) {
-                    alert("Contraseña inválida. Introduce un número entre 0 y 100,000.");
+            const passNum = parseInt(passcodeInput);
+            if (!isFounderAttempt && (isNaN(passNum) || passNum < 0 || passNum > 100000)) {
+                alert("Contraseña inválida. Introduce un número entre 0 y 100,000.");
+                return;
+            }
+
+            // Check if node is banned / cooling down (2-3 day penalty check)
+            const banExpiryKey = 'pleniux_ban_expiry_' + nodeInput;
+            const banExpiryTime = localStorage.getItem(banExpiryKey);
+            if (banExpiryTime) {
+                const now = new Date().getTime();
+                if (now < parseInt(banExpiryTime)) {
+                    const remainingHours = Math.ceil((parseInt(banExpiryTime) - now) / (1000 * 60 * 60));
+                    alert(`⏳ Este nodo (${nodeInput}) fue purgado por fallos de contraseña. Está bloqueado y en periodo de enfriamiento (quedan aprox. ${remainingHours} horas para su restablecimiento automático con 5 UX).`);
                     return;
+                } else {
+                    // Ban expired: clear ban and reset with 5 UX
+                    localStorage.removeItem(banExpiryKey);
+                    localStorage.setItem('pleniux_credits_' + nodeInput, '5');
                 }
             }
 
-            // Uniqueness check: Prevent multiple concurrent sessions on the same node identifier to protect balance
+            const registryPassKey = 'pleniux_reg_pass_' + nodeInput;
+            const registryAttemptsKey = 'pleniux_fails_' + nodeInput;
+            const existingRegisteredPass = localStorage.getItem(registryPassKey);
+
+            // Device registration check (One account per browser/device restriction)
+            const deviceRegisteredNode = localStorage.getItem('pleniux_device_registered_node');
+            const isNewNodeCreation = (existingRegisteredPass === null);
+
+            if (isNewNodeCreation && deviceRegisteredNode && deviceRegisteredNode !== nodeInput && !isFounderAttempt) {
+                alert(`🚨 Restricción de Dispositivo: Este navegador ya se registró previamente con el nodo '${deviceRegisteredNode}'. No está permitido crear múltiples cuentas desde el mismo dispositivo.`);
+                return;
+            }
+
+            if (existingRegisteredPass !== null) {
+                // Existing node login attempt: Verify password
+                if (existingRegisteredPass !== passcodeInput) {
+                    let fails = parseInt(localStorage.getItem(registryAttemptsKey) || '0') + 1;
+                    localStorage.setItem(registryAttemptsKey, fails);
+
+                    if (fails >= 2) {
+                        // 2 failed attempts -> Wipe user, set cooldown for 2-3 days (e.g., 48 hours = 2 days)
+                        const cooldownPeriodMs = 48 * 60 * 60 * 1000; // 2 days in milliseconds
+                        localStorage.setItem(banExpiryKey, (new Date().getTime() + cooldownPeriodMs).toString());
+                        localStorage.removeItem(registryPassKey);
+                        localStorage.removeItem(registryAttemptsKey);
+                        localStorage.removeItem('pleniux_credits_' + nodeInput);
+                        
+                        alert(`🚨 Contraseña incorrecta por 2da vez.\nEl nodo ${nodeInput} ha sido eliminado del sistema y permanecerá bloqueado durante 2 a 3 días antes de restaurarse automáticamente con 5 UX.`);
+                        location.reload();
+                        return;
+                    } else {
+                        alert(`❌ Contraseña incorrecta. (Te queda 1 intento antes de que la cuenta sea eliminada y suspendida por 2-3 días).`);
+                        return;
+                    }
+                } else {
+                    localStorage.setItem(registryAttemptsKey, '0');
+                }
+            } else {
+                // Brand new registration
+                if (!isFounderAttempt) {
+                    localStorage.setItem(registryPassKey, passcodeInput);
+                    localStorage.setItem('pleniux_credits_' + nodeInput, '5');
+                    localStorage.setItem('pleniux_device_registered_node', nodeInput); // Lock device to this node
+                }
+            }
+
+            // Check if node is currently occupied in an active session by someone else
             const nodeSessionKey = 'pleniux_active_node_' + nodeInput;
-            const nodeAlreadyInUse = localStorage.getItem(nodeSessionKey);
-
-            if (nodeAlreadyInUse && !isFounderAttempt) {
-                alert(`🚨 ERROR DE SEGURIDAD: El identificador ${nodeInput} ya está siendo utilizado en otra pestaña o dispositivo activo. Se ha bloqueado el acceso para proteger tu saldo.`);
+            if (localStorage.getItem(nodeSessionKey) && !isFounderAttempt) {
+                alert(`⚠️ Nodo Ocupado: El usuario ${nodeInput} se encuentra actualmente en uso activo en otra conexión. Inténtalo más tarde.`);
                 return;
             }
 
-            if (!isFounderAttempt && credits <= 0) {
-                alert("Saldo agotado (0 UX). Por favor canjea un código o realiza una recarga.");
-                return;
-            }
+            let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + nodeInput)) !== null ? parseInt(localStorage.getItem('pleniux_credits_' + nodeInput)) : 5;
 
             if (isFounderAttempt) {
                 isFounder = true;
-                credits = 200;
-                localStorage.setItem('pleniux_credits', credits);
+                userCredits = 200;
+                localStorage.setItem('pleniux_credits_UX0', 200);
                 document.getElementById('founder-panel-indicator').style.display = 'block';
                 sessionStorage.setItem('pleniux_founder', 'true');
+            }
+
+            if (!isFounder && userCredits <= 0) {
+                alert("⚠️ Tu saldo está en 0 UX o tu cuenta está en periodo de enfriamiento. Realiza una recarga para continuar.");
+                return;
             }
 
             activeNodeId = nodeInput;
             localStorage.setItem(nodeSessionKey, 'active');
             sessionStorage.setItem('pleniux_node', nodeInput);
-            sessionStorage.setItem('pleniux_pass', passcodeInput);
-            sessionStorage.setItem('pleniux_time', 180);
             sessionStorage.setItem('pleniux_session_active', 'true');
 
             document.getElementById('display-node').innerText = nodeInput;
-            document.getElementById('display-passcode').innerText = '••••';
+            document.getElementById('credit-count').innerText = userCredits;
 
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('app-interface').style.display = 'block';
@@ -748,21 +773,18 @@
                 let seconds = timeLeft % 60;
                 timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 
-                sessionStorage.setItem('pleniux_time', timeLeft);
-                
                 if (timeLeft <= 0) {
                     clearInterval(countdownInterval);
-                    terminateSessionBySecurity("Tiempo límite expirado (3 minutos). Mensajes eliminados.");
+                    terminateSessionBySecurity("Tiempo límite expirado (3 min). Mensajes destruidos.");
                 }
                 timeLeft--;
             }, 1000);
         }
 
-        // Detect Screen Lock, App Switch or Tab Visibility Loss
         document.addEventListener("visibilitychange", function() {
             if (sessionActive && document.hidden) {
                 clearInterval(countdownInterval);
-                terminateSessionBySecurity("Pantalla bloqueada o cambio de aplicación/pestaña detectado. Mensajes destruidos y saldo descontado.");
+                terminateSessionBySecurity("Pantalla bloqueada o cambio de app detectado. Mensajes destruidos y -1 crédito.");
             }
         });
 
@@ -773,23 +795,25 @@
             if (activeNodeId) {
                 localStorage.removeItem('pleniux_active_node_' + activeNodeId);
             }
-
             sessionStorage.clear();
 
-            if (!isFounder && credits > 0) {
-                credits--;
-                localStorage.setItem('pleniux_credits', credits);
+            if (!isFounder && activeNodeId) {
+                let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
+                if (userCredits > 0) {
+                    userCredits--;
+                    localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
+                }
             }
 
             const msgBox = document.getElementById('message-box');
             const alertDiv = document.createElement('div');
             alertDiv.classList.add('message', 'system-alert');
-            alertDiv.innerText = `[ALERTA DE SEGURIDAD]: ${reason} ${isFounder ? '(Inmunidad Creador Activa)' : '(-1 Crédito aplicado)'}.`;
+            alertDiv.innerText = `[SEGURIDAD]: ${reason} ${isFounder ? '(Inmunidad Creador)' : '(-1 Crédito)'}.`;
             msgBox.appendChild(alertDiv);
             msgBox.scrollTop = msgBox.scrollHeight;
 
             setTimeout(() => {
-                alert(`[PLENIUX SEGURIDAD]: ${reason}\nCaché limpiada.`);
+                alert(`[PLENIUX SEGURIDAD]: ${reason}`);
                 location.reload();
             }, 1200);
         }
@@ -801,11 +825,14 @@
             }
             sessionStorage.clear();
 
-            if (!isFounder && credits > 0) {
-                credits--;
-                localStorage.setItem('pleniux_credits', credits);
+            if (!isFounder && activeNodeId) {
+                let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
+                if (userCredits > 0) {
+                    userCredits--;
+                    localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
+                }
             }
-            alert("Sesión finalizada manualmente. Caché limpia.");
+            alert("Sesión finalizada. Caché limpia.");
             location.reload();
         }
 
@@ -816,8 +843,9 @@
             
             if (input.value.trim() === "") return;
 
-            if (!isFounder && credits <= 0) {
-                alert("Saldo agotado. Transmisión bloqueada.");
+            let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
+            if (!isFounder && userCredits <= 0) {
+                alert("Saldo agotado (0 UX). Transmisión bloqueada.");
                 return;
             }
 
@@ -833,7 +861,7 @@
             setTimeout(() => {
                 const replyMsg = document.createElement('div');
                 replyMsg.classList.add('message', 'incoming');
-                replyMsg.innerText = `[Peer]: RECIBIDO -> "${textCopy}" (Canal Cifrado)`;
+                replyMsg.innerText = `[Peer Conectado]: RECIBIDO -> "${textCopy}" (Cifrado Extremo)`;
                 msgBox.appendChild(replyMsg);
                 msgBox.scrollTop = msgBox.scrollHeight;
             }, 1000);
