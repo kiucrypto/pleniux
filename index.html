@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pleniux.com — Secure Ephemeral Messaging Network</title>
     <style>
         * {
@@ -10,6 +10,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         body {
             background-color: #030712;
@@ -19,6 +20,7 @@
             position: relative;
         }
 
+        /* High-Performance Fluid Neon Background Canvas */
         #bg-canvas {
             position: fixed;
             top: 0;
@@ -26,38 +28,39 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: radial-gradient(circle at center, #0f172a 0%, #030712 100%);
+            background: #030712;
+            pointer-events: none;
         }
 
         .app-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
+            max-width: 850px;
+            margin: 20px auto;
+            padding: 15px;
             position: relative;
             z-index: 10;
         }
 
         header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             border-bottom: 1px solid rgba(59, 130, 246, 0.2);
-            padding-bottom: 15px;
+            padding-bottom: 12px;
         }
 
         /* Neon Blinking Effect */
         header h1 {
-            font-size: 3rem;
-            letter-spacing: 3px;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
             text-transform: uppercase;
             color: #38bdf8;
-            text-shadow: 0 0 5px #38bdf8, 0 0 10px #38bdf8, 0 0 20px #2563eb, 0 0 40px #2563eb;
+            text-shadow: 0 0 5px #38bdf8, 0 0 10px #38bdf8, 0 0 20px #2563eb;
             animation: neonBlink 3s infinite alternate;
         }
 
         @keyframes neonBlink {
             0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
                 color: #38bdf8;
-                text-shadow: 0 0 5px #38bdf8, 0 0 10px #38bdf8, 0 0 20px #2563eb, 0 0 40px #2563eb;
+                text-shadow: 0 0 5px #38bdf8, 0 0 10px #38bdf8, 0 0 20px #2563eb;
             }
             20%, 24%, 55% {
                 color: #030712;
@@ -66,32 +69,33 @@
         }
 
         .project-desc {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            padding: 12px 18px;
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 12px 15px;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: #94a3b8;
-            margin-bottom: 25px;
-            line-height: 1.5;
+            margin: 15px 0;
+            line-height: 1.4;
             text-align: center;
         }
 
         .founder-tag {
             color: #38bdf8;
-            font-size: 0.95rem;
-            margin-top: 8px;
+            font-size: 0.9rem;
+            margin-top: 6px;
             font-weight: 600;
         }
 
         .card {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
-            margin-bottom: 25px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+            margin-bottom: 20px;
         }
 
         .auth-box, .dashboard {
@@ -102,13 +106,13 @@
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         label {
             display: block;
-            margin-bottom: 6px;
-            font-size: 0.85rem;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
             color: #93c5fd;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -116,40 +120,38 @@
 
         input, select, textarea {
             width: 100%;
-            padding: 12px;
-            background: rgba(3, 7, 18, 0.9);
+            padding: 11px;
+            background: rgba(3, 7, 18, 0.95);
             border: 1px solid #1e3a8a;
             border-radius: 6px;
             color: #ffffff;
-            font-size: 1rem;
+            font-size: 0.95rem;
             outline: none;
             transition: all 0.3s ease;
         }
 
         input:focus, textarea:focus {
             border-color: #38bdf8;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
         }
 
         button {
             background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 12px;
             border-radius: 6px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             width: 100%;
             font-weight: bold;
             letter-spacing: 1px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
         }
 
-        button:hover {
-            background: linear-gradient(135deg, #1d4ed8, #1e40af);
-            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.6);
-            transform: translateY(-1px);
+        button:active {
+            transform: scale(0.98);
         }
 
         .user-header {
@@ -157,19 +159,20 @@
             justify-content: space-between;
             align-items: center;
             background: rgba(30, 41, 59, 0.7);
-            padding: 15px 20px;
+            padding: 12px 15px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border: 1px solid rgba(56, 189, 248, 0.3);
+            font-size: 0.85rem;
         }
 
         .badge-ux {
             background: #1e3a8a;
             color: #93c5fd;
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             border: 1px solid #38bdf8;
         }
 
@@ -186,21 +189,25 @@
 
         .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 6px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 4px;
         }
 
         .tab-btn {
             background: rgba(30, 41, 59, 0.8);
             border: 1px solid #1e3a8a;
             color: #93c5fd;
-            padding: 10px 15px;
+            padding: 8px 10px;
             border-radius: 6px;
             cursor: pointer;
             flex: 1;
+            min-width: 75px;
             text-align: center;
-            transition: 0.3s;
-            font-size: 0.9rem;
+            transition: 0.2s;
+            font-size: 0.8rem;
+            white-space: nowrap;
         }
 
         .tab-btn.active {
@@ -219,16 +226,16 @@
         .message-item {
             background: rgba(15, 23, 42, 0.9);
             border-left: 4px solid #38bdf8;
-            padding: 15px;
+            padding: 12px;
             border-radius: 6px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             position: relative;
         }
 
         .message-meta {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: #9ca3af;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             display: flex;
             justify-content: space-between;
         }
@@ -241,38 +248,34 @@
         .emoji-picker-bar {
             display: flex;
             gap: 8px;
-            margin-bottom: 10px;
-            font-size: 1.2rem;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
             cursor: pointer;
+            overflow-x: auto;
+            padding-bottom: 4px;
         }
 
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
         }
 
         .price-card {
             background: rgba(3, 7, 18, 0.9);
             border: 1px solid #1e3a8a;
             border-radius: 8px;
-            padding: 15px;
+            padding: 12px;
             text-align: center;
-            transition: 0.3s;
-        }
-
-        .price-card:hover {
-            border-color: #38bdf8;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
         }
 
         .crypto-wallets-box {
-            background: rgba(3, 7, 18, 0.9);
+            background: rgba(3, 7, 18, 0.95);
             border: 1px dashed #38bdf8;
             padding: 15px;
             border-radius: 8px;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .wallet-addr {
@@ -281,28 +284,24 @@
             padding: 6px;
             border-radius: 4px;
             color: #34d399;
-            font-size: 0.8rem;
+            font-size: 0.72rem;
             word-break: break-all;
-            margin-top: 4px;
-            margin-bottom: 10px;
+            margin: 4px 0 10px 0;
         }
 
         .directory-box {
             background: rgba(3, 7, 18, 0.8);
             border: 1px solid #1e3a8a;
-            padding: 15px;
+            padding: 12px;
             border-radius: 8px;
-            margin-top: 15px;
+            margin-top: 12px;
         }
 
         .logout-btn {
             background: #b91c1c;
             width: auto;
-            padding: 6px 12px;
-            font-size: 0.8rem;
-        }
-        .logout-btn:hover {
-            background: #991b1b;
+            padding: 5px 10px;
+            font-size: 0.75rem;
         }
     </style>
 </head>
@@ -314,19 +313,19 @@
         <header>
             <h1>Pleniux.com</h1>
             <div class="project-desc">
-                <strong>Project Overview:</strong> Pleniux.com is a high-security private messaging network designed for confidential communication. It utilizes a unique anonymous node naming system from <strong>ux1 to ux1000</strong>, featuring automated <strong>3-minute message self-destruction</strong>, crypto-based credit packages, and exclusive master nodes.
+                <strong>Project Overview:</strong> Pleniux.com is a high-security encrypted ephemeral messaging platform built for absolute confidentiality. Featuring automated <strong>3-minute message self-destruction</strong>, unique anonymous network nodes from <strong>ux1 to ux1000</strong>, crypto credit recharges, and zero system lag across all mobile and desktop devices.
             </div>
-            <div class="founder-tag">Founder & Creator: JHON Gonzales (Master Node UX0)</div>
+            <div class="founder-tag">Founder: Jhon Gonzales | Artist Name: Lenox JG (Master Node UX0)</div>
         </header>
 
         <!-- AUTH SCREEN -->
         <div id="authCard" class="card auth-box active">
-            <h2 style="margin-bottom: 15px; color: #60a5fa;">Secure Network Authentication</h2>
-            <p style="color: #9ca3af; margin-bottom: 20px; font-size: 0.9rem;">Type your unique identifier (e.g., <strong>ux1</strong> through <strong>ux1000</strong>) or click "Inicia UX" to initialize your session.</p>
+            <h2 style="margin-bottom: 12px; color: #60a5fa; font-size: 1.2rem;">Secure Network Authentication</h2>
+            <p style="color: #9ca3af; margin-bottom: 15px; font-size: 0.85rem;">Enter your unique identifier node (<strong>ux1</strong> to <strong>ux1000</strong>) or click "Initialize UX" to start session.</p>
             
             <div class="form-group">
-                <label for="customUxInput">Target UX Identifier (ux1 to ux1000):</label>
-                <input type="text" id="customUxInput" placeholder="e.g. ux4, ux15, ux7..." value="ux4">
+                <label for="customUxInput">Target UX Identifier:</label>
+                <input type="text" id="customUxInput" placeholder="e.g. ux4, ux15..." value="ux4">
             </div>
 
             <div class="form-group">
@@ -334,7 +333,7 @@
                 <input type="password" id="passCode" placeholder="••••••••" value="pleniux2026">
             </div>
 
-            <button onclick="loginUser()">Inicia UX</button>
+            <button onclick="loginUser()">Initialize UX</button>
         </div>
 
         <!-- DASHBOARD -->
@@ -342,12 +341,11 @@
             <div class="user-header">
                 <div>
                     <span id="currentUxLabel" class="badge-ux">ux4</span>
-                    <span id="founderBadgeText" style="display: none; margin-left: 5px;" class="badge-ux badge-founder">👑 Founder JHON Gonzales</span>
-                    <span style="margin-left: 10px; font-size: 0.9rem; color: #9ca3af;">Pleniux Secure Network</span>
+                    <span id="founderBadgeText" style="display: none; margin-left: 4px;" class="badge-ux badge-founder">👑 Lenox JG / Jhon Gonzales</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
                     <div>Credits: <span id="userCredits" class="credits-counter">5</span> UX</div>
-                    <button class="logout-btn" onclick="logoutUser()">Disconnect</button>
+                    <button class="logout-btn" onclick="logoutUser()">Exit</button>
                 </div>
             </div>
 
@@ -360,21 +358,21 @@
 
             <!-- Inbox Tab -->
             <div id="tab-inbox" class="tab-content active">
-                <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: #93c5fd;">Encrypted Inbox (Active Messages)</h3>
+                <h3 style="margin-bottom: 12px; font-size: 1rem; color: #93c5fd;">Encrypted Inbox</h3>
                 <div id="messageList">
                     <div class="message-item">
                         <div class="message-meta">
-                            <span>From: <b>ux0 (Founder JHON Gonzales)</b> to you</span>
-                            <span class="timer" data-time="180">Self-destruct in: 03:00</span>
+                            <span>From: <b>ux0 (Founder Lenox JG / Jhon Gonzales)</b></span>
+                            <span class="timer" data-time="180">Self-destruct: 03:00</span>
                         </div>
-                        <p style="font-size: 1.05rem;">Welcome to Pleniux.com! 🚀🔒 All messages vanish automatically in 3 minutes.</p>
+                        <p style="font-size: 0.95rem;">Welcome to Pleniux.com! 🚀🔒 Communications are secure and vanish in 3 minutes.</p>
                     </div>
                 </div>
             </div>
 
             <!-- Send Message Tab -->
             <div id="sendTabContent" class="tab-content">
-                <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: #93c5fd;">Transmit Ephemeral Message (Costs 1 UX)</h3>
+                <h3 style="margin-bottom: 12px; font-size: 1rem; color: #93c5fd;">Transmit Ephemeral Message (Costs 1 UX)</h3>
                 
                 <div class="form-group">
                     <label for="recipientUx">Recipient UX (e.g., ux1, ux88):</label>
@@ -393,72 +391,72 @@
                         <span onclick="addEmoji('💬')">💬</span>
                         <span onclick="addEmoji('⚠️')">⚠️</span>
                     </div>
-                    <textarea id="messageText" rows="4" placeholder="Type your private message here... Self-destructs in 3 minutes."></textarea>
+                    <textarea id="messageText" rows="3" placeholder="Type your message... Auto-deletes in 3 minutes."></textarea>
                 </div>
 
                 <button onclick="sendMessage()">Transmit Secure Message</button>
             </div>
 
-            <!-- Recharge Tab with Custom Packages & Crypto Addresses -->
+            <!-- Recharge Tab -->
             <div id="tab-recharge" class="tab-content">
-                <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: #93c5fd;">Recharge Pleniux Credits</h3>
-                <p style="color: #9ca3af; font-size: 0.85rem; margin-bottom: 15px;">Your starting balance is <strong>5 UX</strong>. Choose a package below, send the equivalent crypto to one of the official founder wallets, and submit your transaction hash to instantly load your account credits.</p>
+                <h3 style="margin-bottom: 12px; font-size: 1rem; color: #93c5fd;">Recharge Pleniux Credits</h3>
+                <p style="color: #9ca3af; font-size: 0.8rem; margin-bottom: 12px;">Starting balance: <strong>5 UX</strong>. Select a package, transfer crypto to founder's official wallet, and submit hash to instantly load balance.</p>
                 
                 <div class="pricing-grid">
                     <div class="price-card">
-                        <h4 style="color: #38bdf8;">30 UX</h4>
-                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 8px 0;">$3.99 USD</p>
+                        <h4 style="color: #38bdf8; font-size:0.95rem;">30 UX</h4>
+                        <p style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin: 6px 0;">$3.99 USD</p>
                         <button onclick="selectPackage(30, 3.99)">Select 30 UX</button>
                     </div>
                     <div class="price-card">
-                        <h4 style="color: #38bdf8;">60 UX</h4>
-                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 8px 0;">$4.99 USD</p>
+                        <h4 style="color: #38bdf8; font-size:0.95rem;">60 UX</h4>
+                        <p style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin: 6px 0;">$4.99 USD</p>
                         <button onclick="selectPackage(60, 4.99)">Select 60 UX</button>
                     </div>
                     <div class="price-card">
-                        <h4 style="color: #38bdf8;">100 UX</h4>
-                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 8px 0;">$6.99 USD</p>
+                        <h4 style="color: #38bdf8; font-size:0.95rem;">100 UX</h4>
+                        <p style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin: 6px 0;">$6.99 USD</p>
                         <button onclick="selectPackage(100, 6.99)">Select 100 UX</button>
                     </div>
                     <div class="price-card">
-                        <h4 style="color: #38bdf8;">300 UX</h4>
-                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 8px 0;">$8.99 USD</p>
+                        <h4 style="color: #38bdf8; font-size:0.95rem;">300 UX</h4>
+                        <p style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin: 6px 0;">$8.99 USD</p>
                         <button onclick="selectPackage(300, 8.99)">Select 300 UX</button>
                     </div>
                     <div class="price-card">
-                        <h4 style="color: #38bdf8;">500 UX</h4>
-                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 8px 0;">$14.99 USD</p>
+                        <h4 style="color: #38bdf8; font-size:0.95rem;">500 UX</h4>
+                        <p style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin: 6px 0;">$14.99 USD</p>
                         <button onclick="selectPackage(500, 14.99)">Select 500 UX</button>
                     </div>
                     <div class="price-card">
-                        <h4 style="color: #38bdf8;">1,000 UX</h4>
-                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 8px 0;">$18.99 USD</p>
+                        <h4 style="color: #38bdf8; font-size:0.95rem;">1,000 UX</h4>
+                        <p style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin: 6px 0;">$18.99 USD</p>
                         <button onclick="selectPackage(1000, 18.99)">Select 1,000 UX</button>
                     </div>
                     <div class="price-card" style="grid-column: 1 / -1;">
-                        <h4 style="color: #facc15;">5,000 UX (VIP Elite)</h4>
-                        <p style="font-size: 1.3rem; font-weight: bold; color: #34d399; margin: 8px 0;">$50.99 USD</p>
+                        <h4 style="color: #facc15; font-size:0.95rem;">5,000 UX (VIP Elite)</h4>
+                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 6px 0;">$50.99 USD</p>
                         <button onclick="selectPackage(5000, 50.99)" style="background: linear-gradient(135deg, #d97706, #b45309);">Select 5,000 UX</button>
                     </div>
                 </div>
 
-                <div id="paymentSection" style="display: none; margin-top: 20px;">
+                <div id="paymentSection" style="display: none; margin-top: 15px;">
                     <div class="crypto-wallets-box">
-                        <h4 style="color: #facc15; margin-bottom: 8px;">Complete Payment for <span id="selectedPkgLabel"></span></h4>
-                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 10px;">Transfer the equivalent value to one of Founder JHON Gonzales's official wallets:</p>
+                        <h4 style="color: #facc15; margin-bottom: 6px; font-size:0.9rem;">Payment for <span id="selectedPkgLabel"></span></h4>
+                        <p style="font-size: 0.78rem; color: #cbd5e1; margin-bottom: 8px;">Transfer equivalent crypto to founder Lenox JG / Jhon Gonzales wallets:</p>
                         
-                        <label>Bitcoin (BTC) Wallet:</label>
+                        <label>Bitcoin (BTC):</label>
                         <div class="wallet-addr">3GgLGjuUo3SpnnfjTcvaTBXqssoonAkUxo</div>
 
-                        <label>Ethereum (ETH) Wallet:</label>
+                        <label>Ethereum (ETH):</label>
                         <div class="wallet-addr">0x530A8AA259877915d80049b59CDF030EB736110b</div>
 
-                        <label>Solana (SOL) Wallet:</label>
+                        <label>Solana (SOL):</label>
                         <div class="wallet-addr">EuSPsT2hSNG8DyDNTh1cj7HZY9Ncx7ri8En5hnL1eBPA</div>
 
-                        <div class="form-group" style="margin-top: 15px;">
-                            <label for="txHashInput">Enter Transaction Hash / ID to verify payment:</label>
-                            <input type="text" id="txHashInput" placeholder="Paste your transfer transaction signature/hash here...">
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label for="txHashInput">Transaction Hash / ID:</label>
+                            <input type="text" id="txHashInput" placeholder="Paste transaction signature hash...">
                         </div>
                         <button onclick="verifyAndCredit()" style="background: #059669;">Verify & Load Credits Instantly</button>
                     </div>
@@ -467,24 +465,24 @@
 
             <!-- Find UX Name Directory Tab -->
             <div id="tab-directory" class="tab-content">
-                <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: #93c5fd;">UX Network Node Directory Lookup</h3>
-                <p style="color: #9ca3af; font-size: 0.9rem; margin-bottom: 15px;">Search for any active node name on Pleniux.com (ranging from ux1 to ux1000):</p>
+                <h3 style="margin-bottom: 12px; font-size: 1rem; color: #93c5fd;">UX Network Node Directory</h3>
+                <p style="color: #9ca3af; font-size: 0.85rem; margin-bottom: 12px;">Search active nodes on Pleniux.com (ux1 to ux1000):</p>
                 
                 <div class="form-group">
-                    <label for="searchUxQuery">Search Node Name:</label>
-                    <input type="text" id="searchUxQuery" placeholder="e.g. ux4, ux12, ux7">
+                    <label for="searchUxQuery">Node Name:</label>
+                    <input type="text" id="searchUxQuery" placeholder="e.g. ux4, ux7...">
                 </div>
                 <button onclick="searchUxNode()">Locate Node</button>
 
                 <div id="directoryResult" class="directory-box" style="display: none;">
-                    <p style="font-size: 0.9rem; color: #38bdf8;" id="searchResultText"></p>
+                    <p style="font-size: 0.85rem; color: #38bdf8;" id="searchResultText"></p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Cyber Moving Background Canvas
+        // Optimized Fluid Neon Particle Background (Zero lag on mobile)
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let width = canvas.width = window.innerWidth;
@@ -496,27 +494,29 @@
         });
 
         const particles = [];
-        for (let i = 0; i < 60; i++) {
+        const particleCount = window.innerWidth < 600 ? 25 : 45; // Fewer particles on mobile for ultra performance
+
+        for (let i = 0; i < particleCount; i++) {
             particles.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.8,
-                vy: (Math.random() - 0.5) * 0.8,
-                radius: Math.random() * 2 + 1
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                radius: Math.random() * 1.8 + 0.8
             });
         }
 
         function drawTechBackground() {
             ctx.clearRect(0, 0, width, height);
-            ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
-            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.05)';
+            ctx.lineWidth = 0.8;
 
             for (let i = 0; i < particles.length; i++) {
                 for (let j = i + 1; j < particles.length; j++) {
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 130) {
+                    if (dist < 100) {
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
@@ -525,7 +525,7 @@
                 }
             }
 
-            ctx.fillStyle = 'rgba(56, 189, 248, 0.6)';
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.5)';
             particles.forEach(p => {
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
@@ -545,23 +545,23 @@
         function loginUser() {
             let inputVal = document.getElementById('customUxInput').value.trim().toLowerCase();
 
-            // Strict protection check for ux7
+            // STRICT ERROR RULE FOR UX7
             if (inputVal === 'ux7') {
-                alert("❌ CRITICAL ERROR: Node 'ux7' is locked, restricted, and restricted from public registration. Access denied.");
+                alert("❌ CRITICAL ERROR: Node 'ux7' is locked, restricted, and blocked from public registration. Access denied.");
                 return;
             }
 
             if (inputVal === 'ux0') {
-                const passCheck = prompt("Restricted Master Node UX0. Enter Founder Passcode for JHON Gonzales:");
+                const passCheck = prompt("Restricted Master Node UX0. Enter Founder Passcode for Jhon Gonzales (Lenox JG):");
                 if (passCheck !== "pleniuxfounder0") {
-                    alert("⚠️ ACCESS DENIED: Node UX0 belongs exclusively to founder JHON Gonzales.");
+                    alert("⚠️ ACCESS DENIED: Node UX0 belongs exclusively to founder Jhon Gonzales (Lenox JG).");
                     return;
                 }
                 currentUser.isFounder = true;
                 currentUser.credits = 99999;
             } else {
                 currentUser.isFounder = false;
-                currentUser.credits = 5; // Default starting credit
+                currentUser.credits = 5;
             }
 
             currentUser.id = inputVal || 'ux4';
@@ -622,7 +622,6 @@
                 return;
             }
 
-            // Automatically add credits to user account upon verification input
             currentUser.credits += pendingPackage.amount;
             document.getElementById('userCredits').innerText = currentUser.credits;
             
@@ -644,7 +643,7 @@
                 resText.innerHTML = "⚠️ <b>Error:</b> Node 'ux7' is locked and restricted. Unauthorized access prohibited.";
                 resText.style.color = "#f87171";
             } else if (query === 'ux0') {
-                resText.innerHTML = "👑 <b>Node found:</b> <code>ux0</code> is active and managed exclusively by Founder <b>JHON Gonzales</b>.";
+                resText.innerHTML = "👑 <b>Node found:</b> <code>ux0</code> is active and managed exclusively by Founder <b>Jhon Gonzales (Lenox JG)</b>.";
                 resText.style.color = "#facc15";
             } else if (query.startsWith('ux') && parseInt(query.replace('ux', '')) >= 1 && parseInt(query.replace('ux', '')) <= 1000) {
                 resText.innerHTML = `✅ <b>Node found:</b> <code>${query}</code> is registered and operational within the Pleniux secure network.`;
@@ -681,9 +680,9 @@
             newItem.innerHTML = `
                 <div class="message-meta">
                     <span>Sent to: <b>${recipient}</b></span>
-                    <span class="timer" data-time="180">Self-destruct in: 03:00</span>
+                    <span class="timer" data-time="180">Self-destruct: 03:00</span>
                 </div>
-                <p style="font-size: 1.05rem;">${escapeHtml(text)}</p>
+                <p style="font-size: 0.95rem;">${escapeHtml(text)}</p>
             `;
             list.prepend(newItem);
             document.getElementById('messageText').value = '';
@@ -695,7 +694,7 @@
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
-        // 3-minute self-destruct timer countdown loop (180 seconds)
+        // 3-minute self-destruct countdown loop
         setInterval(() => {
             const timers = document.querySelectorAll('.timer');
             timers.forEach(timer => {
@@ -705,7 +704,7 @@
                     timer.setAttribute('data-time', timeLeft);
                     const mins = Math.floor(timeLeft / 60);
                     const secs = timeLeft % 60;
-                    timer.innerText = `Self-destruct in: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                    timer.innerText = `Self-destruct: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
                 } else {
                     const msgItem = timer.closest('.message-item');
                     if (msgItem) {
