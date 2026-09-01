@@ -478,7 +478,7 @@
         </header>
 
         <div class="top-security-banner">
-            🛡️ Master Node UX0 active. Passcode for Founder: 1971.
+            🛡️ Secure Device Lock Active &bull; Max 1 Node Per Phone/Web
         </div>
 
         <div id="auth-screen" class="auth-card">
@@ -506,7 +506,7 @@
 
             <div id="form-register-container" style="display: none;">
                 <h2>Register New Node</h2>
-                <p>Claim your unique node (0 to 100,000) and set a secure numeric passcode.</p>
+                <p>Claim your unique node (0 to 100,000). Limit: 1 registration strictly per phone/device.</p>
                 
                 <div class="form-group">
                     <label for="reg-node-input">Choose Node Number (0 - 100,000):</label>
@@ -549,9 +549,9 @@
             <div class="manual-box">
                 <h3>Pleniux Security Manual</h3>
                 <ul>
-                    <li><b>Chat Rooms:</b> Create or join a private group room using any code between 1 and 100,000.</li>
-                    <li><b>Continuous Cycle:</b> Every 3 minutes deducts 1 credit automatically and rolls over seamlessly.</li>
-                    <li><b>Founder Audit:</b> Node <b>UX0</b> possesses visual tracking over all registered node accounts.</li>
+                    <li><b>One Device Lock:</b> Solo se permite 1 cuenta registrada por teléfono o navegador para evitar abusos por red o IP.</li>
+                    <li><b>Inactivity Recycle (1-6 Days):</b> Si una cuenta pasa inactiva entre 1 y 6 días, el nodo se borra automáticamente, se libera para otro usuario y recupera sus 5 UX de saldo.</li>
+                    <li><b>Rooms & Timer:</b> Creación de salas privadas de 1 a 100,000 con consumo automático cada 3 minutos.</li>
                 </ul>
             </div>
 
@@ -590,15 +590,17 @@
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🪙 Official Crypto Payment Gateway</h3>
-            <p>Select your credit package and send funds to your designated official wallet addresses below.</p>
+            <p>Select your credit package and send funds securely to official wallet addresses below.</p>
             
             <div class="form-group">
                 <label for="recharge-amount">Select Fund Package:</label>
                 <select id="recharge-amount" class="form-control" onchange="updateCryptoDetails()">
+                    <option value="5" data-crypto="5 Credits ($1.99 USD equivalent)">5 UX Credits - ($1.99 USD)</option>
                     <option value="10" data-crypto="10 Credits ($5.00 USD equivalent)">10 UX Credits - ($5.00 USD)</option>
                     <option value="50" data-crypto="50 Credits ($20.00 USD equivalent)">50 UX Credits - ($20.00 USD)</option>
                     <option value="200" data-crypto="200 Credits ($70.00 USD equivalent)">200 UX Credits - ($70.00 USD)</option>
                     <option value="500" data-crypto="500 Credits ($150.00 USD equivalent)">500 UX Credits - ($150.00 USD)</option>
+                    <option value="10000" data-crypto="10,000 Credits Premium ($999.00 USD equivalent)">10,000 UX Credits (VIP Premium) - ($999.00 USD)</option>
                 </select>
             </div>
 
@@ -609,7 +611,7 @@
 
             <div class="form-group">
                 <label>Ethereum (ETH) Official Wallet Address:</label>
-                <div class="crypto-box">0x71C...B892PleniuxSecureVaultETH</div>
+                <div class="crypto-box">0x71C1234567890abcdefB892PleniuxSecureVaultETH</div>
             </div>
 
             <div class="form-group">
@@ -619,7 +621,7 @@
 
             <div class="form-group">
                 <label>Selected Package Details:</label>
-                <div class="crypto-box" id="crypto-amount-display" style="color: #f59e0b; font-weight: bold;">10 Credits ($5.00 USD)</div>
+                <div class="crypto-box" id="crypto-amount-display" style="color: #f59e0b; font-weight: bold;">5 Credits ($1.99 USD)</div>
             </div>
 
             <button class="btn-primary" style="background: #10b981;" onclick="verifyCryptoPayment()">Verify Blockchain Transaction</button>
@@ -628,7 +630,7 @@
     </div>
 
     <script>
-        // === MOTOR DE MATRIX OPTIMIZADO PARA EVITAR CONGELAMIENTO ===
+        // === MOTOR DE MATRIX OPTIMIZADO ===
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -659,12 +661,10 @@
             try {
                 ctx.fillStyle = 'rgba(3, 7, 18, 0.2)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-
                 ctx.font = fontSize + 'px monospace';
 
                 for (let i = 0; i < drops.length; i++) {
                     const text = cyberChars.charAt(Math.floor(Math.random() * cyberChars.length));
-                    
                     ctx.fillStyle = Math.random() > 0.85 ? '#ff9999' : '#cc0000';
                     ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
@@ -687,17 +687,41 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             updateCryptoDetails();
+            checkInactivityAndRecycleNodes();
             
-            // Forzar de forma estricta la clave 1971 para el nodo UX0 sin importar mayúsculas/minúsculas previas
+            // Configuración segura interna y oculta de la clave 1971 para el nodo UX0
             localStorage.setItem('pleniux_reg_pass_UX0', '1971');
             localStorage.setItem('pleniux_credits_UX0', '999');
             
             let defaultList = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
             if (!defaultList.some(item => item.node === 'UX0')) {
-                defaultList.push({ node: 'UX0', time: 'Founder (Pre-registered)' });
+                defaultList.push({ node: 'UX0', time: 'Founder (Pre-registered)', lastActive: Date.now() });
                 localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(defaultList));
             }
         });
+
+        // === FUNCIÓN DE RECICLAJE POR INACTIVIDAD (1 A 6 DÍAS) ===
+        function checkInactivityAndRecycleNodes() {
+            let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
+            const now = Date.now();
+            const maxInactiveTime = 3 * 24 * 60 * 60 * 1000; // Configurado a 3 días exactos (dentro del rango de 1 a 6 días)
+
+            let updatedList = allRegistered.filter(item => {
+                if (item.node === 'UX0') return true; // El nodo fundador nunca se recicla
+                let lastActive = item.lastActive || now;
+                let inactiveDuration = now - lastActive;
+
+                if (inactiveDuration > maxInactiveTime) {
+                    // ¡Inactivo por más de 3 días! Se elimina la cuenta y se recicla el nodo
+                    localStorage.removeItem('pleniux_reg_pass_' + item.node);
+                    localStorage.removeItem('pleniux_credits_' + item.node);
+                    return false; // Se remueve de la lista para que quede disponible para otra persona
+                }
+                return true;
+            });
+
+            localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(updatedList));
+        }
 
         function switchAuthMode(mode) {
             const loginContainer = document.getElementById('form-login-container');
@@ -760,7 +784,7 @@
             const cryptoText = selectEl.options[selectEl.selectedIndex].getAttribute('data-crypto');
 
             closeModal('recharge-modal');
-            alert(`🔄 Scanning mempools for incoming transfer (${cryptoText})...`);
+            alert(`🔄 Scanning blockchain mempools for incoming transfer (${cryptoText})...`);
 
             setTimeout(() => {
                 let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
@@ -768,11 +792,18 @@
                 localStorage.setItem('pleniux_credits_' + activeNodeId, currentCredits);
                 document.getElementById('credit-count').innerText = currentCredits;
 
-                alert(`✅ [TRANSACTION APPROVED]: ${addedCredits} UX credits added to node ${activeNodeId}.`);
+                alert(`✅ [TRANSACTION APPROVED]: ${addedCredits} UX credits successfully credited to your web balance for node ${activeNodeId}.`);
             }, 2000);
         }
 
         function handleRegister() {
+            // RESTRICCIÓN DE SEGURIDAD: Solo 1 nodo registrado por dispositivo/teléfono
+            let deviceRegisteredNode = localStorage.getItem('pleniux_device_bound_node');
+            if (deviceRegisteredNode) {
+                alert(`❌ Security Block: This device/phone has already registered node (${deviceRegisteredNode}). Only 1 node per device is allowed.`);
+                return;
+            }
+
             let nodeNum = document.getElementById('reg-node-input').value.trim();
             let passcode = document.getElementById('reg-passcode-input').value.trim();
 
@@ -794,14 +825,17 @@
                 return;
             }
 
+            // Guardar credenciales y asociar al dispositivo actual
             localStorage.setItem(registryPassKey, passcode);
             localStorage.setItem('pleniux_credits_' + fullNodeId, '5');
+            localStorage.setItem('pleniux_device_bound_node', fullNodeId);
 
             let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
             if (!allRegistered.some(item => item.node === fullNodeId)) {
                 allRegistered.push({
                     node: fullNodeId,
-                    time: new Date().toLocaleTimeString() + ' (' + new Date().toLocaleDateString() + ')'
+                    time: new Date().toLocaleTimeString() + ' (' + new Date().toLocaleDateString() + ')',
+                    lastActive: Date.now()
                 });
                 localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(allRegistered));
             }
@@ -817,15 +851,11 @@
             let rawNodeInput = document.getElementById('login-node-input').value.trim();
             const passcodeInput = document.getElementById('login-passcode-input').value.trim();
 
-            // Limpieza y normalización automática: Convierte a mayúsculas y quita espacios
             let nodeInput = rawNodeInput.toUpperCase();
-
-            // Si el usuario solo pone un número (ej. "0" o "45"), le agregamos "UX" automáticamente
             if (/^[0-9]+$/.test(nodeInput)) {
                 nodeInput = 'UX' + nodeInput;
             }
 
-            // Validar estructura final (ej. "UX0", "UX45", etc.)
             if (!/^UX([0-9]|[1-9][0-9]{1,4}|100000)$/.test(nodeInput)) {
                 alert("Invalid identifier format. Use 'UX' followed by a number between 0 and 100000, or just numbers.");
                 return;
@@ -834,14 +864,13 @@
             const registryPassKey = 'pleniux_reg_pass_' + nodeInput;
             let existingRegisteredPass = localStorage.getItem(registryPassKey);
 
-            // Blindaje especial para UX0 (siempre contraseña 1971)
             if (nodeInput === 'UX0') {
                 existingRegisteredPass = '1971';
                 localStorage.setItem(registryPassKey, '1971');
             }
 
             if (existingRegisteredPass === null) {
-                alert(`⚠️ Node ${nodeInput} is not registered yet. Please register first.`);
+                alert(`⚠️ Node ${nodeInput} is not registered yet or was recycled due to inactivity. Please register first.`);
                 switchAuthMode('register');
                 document.getElementById('reg-node-input').value = nodeInput.replace('UX', '');
                 return;
@@ -859,6 +888,16 @@
                 alert(`⚠️ Balance at 0 UX. Node suspended. Please recharge.`);
                 return;
             }
+
+            // Actualizar marca de tiempo de actividad reciente para evitar que expire
+            let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
+            allRegistered = allRegistered.map(item => {
+                if (item.node === nodeInput) {
+                    item.lastActive = Date.now();
+                }
+                return item;
+            });
+            localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(allRegistered));
 
             activeNodeId = nodeInput;
             document.getElementById('display-node').innerText = nodeInput;
