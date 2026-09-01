@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pleniux.com — Secure Ephemeral Messaging Network</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: #030712;
+            color: #f3f4f6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #0f172a 0%, #030712 100%);
+        }
+
+        .app-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            padding-bottom: 15px;
+        }
+
+        /* Neon Blinking Effect */
+        header h1 {
+            font-size: 3rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #38bdf8;
+            text-shadow: 0 0 5px #38bdf8, 0 0 10px #38bdf8, 0 0 20px #2563eb, 0 0 40px #2563eb;
+            animation: neonBlink 3s infinite alternate;
+        }
+
+        @keyframes neonBlink {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                color: #38bdf8;
+                text-shadow: 0 0 5px #38bdf8, 0 0 10px #38bdf8, 0 0 20px #2563eb, 0 0 40px #2563eb;
+            }
+            20%, 24%, 55% {
+                color: #030712;
+                text-shadow: none;
+            }
+        }
+
+        .project-desc {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .founder-tag {
+            color: #38bdf8;
+            font-size: 0.95rem;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+            margin-bottom: 25px;
+        }
+
+        .auth-box, .dashboard {
+            display: none;
+        }
+        .auth-box.active, .dashboard.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: #93c5fd;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(3, 7, 18, 0.9);
+            border: 1px solid #1e3a8a;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+        }
+
+        button {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(30, 41, 59, 0.7);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .badge-ux {
+            background: #1e3a8a;
+            color: #93c5fd;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border: 1px solid #38bdf8;
+        }
+
+        .badge-founder {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            color: #fef08a;
+            border: 1px solid #facc15;
+        }
+
+        .credits-counter {
+            color: #34d399;
+            font-weight: bold;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid #1e3a8a;
+            color: #93c5fd;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .tab-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #38bdf8;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        .message-item {
+            background: rgba(15, 23, 42, 0.9);
+            border-left: 4px solid #38bdf8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .message-meta {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .timer {
+            color: #f87171;
+            font-weight: bold;
+        }
+
+        .emoji-picker-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .price-card {
+            background: rgba(3, 7, 18, 0.9);
+            border: 1px solid #1e3a8a;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .price-card:hover {
+            border-color: #38bdf8;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+        }
+
+        .crypto-wallets-box {
+            background: rgba(3, 7, 18, 0.9);
+            border: 1px dashed #38bdf8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .wallet-addr {
+            font-family: monospace;
+            background: #0f172a;
+            padding: 6px;
+            border-radius: 4px;
+            color: #34d399;
+            font-size: 0.8rem;
+            word-break: break-all;
+            margin-top: 4px;
+            margin-bottom: 10px;
+        }
+
+        .directory-box {
+            background: rgba(3, 7, 18, 0.8);
+            border: 1px solid #1e3a8a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .logout-btn {
+            background: #b91c1c;
+            width: auto;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        .logout-btn:hover {
+            background: #991b1b;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="app-container">
+        <header>
+            <h1>Pleniux.com</h1>
+            <div class="project-desc">
+                <strong>Project Overview:</strong> Pleniux.com is a high-security private messaging network designed for confidential communication. It utilizes a unique anonymous node naming system from <strong>ux1 to ux1000</strong>, featuring automated <strong>3-minute message self-destruction</strong>, crypto-based credit packages, and exclusive master nodes.
+            </div>
+            <div class="founder-tag">Founder & Creator: JHON Gonzales (Master Node UX0)</div>
+        </header>
+
+        <!-- AUTH SCREEN -->
+        <div id="authCard" class="card auth-box active">
+            <h2 style="margin-bottom: 15px; color: #60a5fa;">Secure Network Authentication</h2>
+            <p style="color: #9ca3af; margin-bottom: 20px; font-size: 0.9rem;">Type your unique identifier (e.g., <strong>ux1</strong> through <strong>ux1000</strong>) or click "Inicia UX" to initialize your session.</p>
+            
+            <div class="form-group">
+                <label for="customUxInput">Target UX Identifier (ux1 to ux1000):</label>
+                <input type="text" id="customUxInput" placeholder="e.g. ux4, ux15, ux7..." value="ux4">
+            </div>
+
+            <div class="form-group">
+                <label for="passCode">Network Passcode:</label>
+                <input type="password" id="passCode" placeholder="••••••••" value="pleniux2026">
+            </div>
+
+            <button onclick="loginUser()">Inicia UX</button>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="dashCard" class="card dashboard">
+            <div class="user-header">
+                <div>
+                    <span id="currentUxLabel" class="badge-ux">ux4</span>
+                    <span id="founderBadgeText" style="display: none; margin-left: 5px;" class="badge-ux badge-founder">👑 Founder JHON Gonzales</span>
+                    <span style="margin-left: 10px; font-size: 0.9rem; color: #9ca3af;">Pleniux Secure Network</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div>Credits: <span id="userCredits" class="credits-counter">5</span> UX</div>
+                    <button class="logout-btn" onclick="logoutUser()">Disconnect</button>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab-btn active" onclick="switchTab('inbox')">Inbox</div>
+                <div class="tab-btn" onclick="switchTab('send')">Send ✉️</div>
+                <div class="tab-btn" onclick="switchTab('recharge')">Recharge 🪙</div>
+                <div class="tab-btn" onclick="switchTab('directory')">Find UX 🔍</div>
+            </div>
+
+            <!-- Inbox Tab -->
+            <div id="tab-inbox" class="tab-content active">
+                <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: #93c5fd;">Encrypted Inbox (Active Messages)</h3>
+                <div id="messageList">
+                    <div class="message-item">
+                        <div class="message-meta">
+                            <span>From: <b>ux0 (Founder JHON Gonzales)</b> to you</span>
+                            <span class="timer" data-time="180">Self-destruct in: 03:00</span>
+                        </div>
+                        <p style="font-size: 1.05rem;">Welcome to Pleniux.com! 🚀🔒 All messages vanish automatically in 3 minutes.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Send Message Tab -->
+            <div id="sendTabContent" class="tab-content">
+                <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: #93c5fd;">Transmit Ephemeral Message (Costs 1 UX)</h3>
+                
+                <div class="form-group">
+                    <label for="recipientUx">Recipient UX (e.g., ux1, ux88):</label>
+                    <input type="text" id="recipientUx" placeholder="ux1" value="ux1">
+                </div>
+
+                <div class="form-group">
+                    <label for="messageText">Encrypted Content:</label>
+                    <div class="emoji-picker-bar">
+                        <span onclick="addEmoji('🔒')">🔒</span>
+                        <span onclick="addEmoji('🚀')">🚀</span>
+                        <span onclick="addEmoji('⚡')">⚡</span>
+                        <span onclick="addEmoji('💎')">💎</span>
+                        <span onclick="addEmoji('🔥')">🔥</span>
+                        <span onclick="addEmoji('🕶️')">🕶️</span>
+                        <span onclick="addEmoji('💬')">💬</span>
+                        <span onclick="addEmoji('⚠️')">⚠️</span>
+                    </div>
+                    <textarea id="messageText" rows="4" placeholder="Type your private message here... Self-destructs in 3 minutes."></textarea>
+                </div>
+
+                <button onclick="sendMessage()">Transmit Secure Message</button>
+            </div>
+
+            <!-- Recharge Tab with Custom Packages & Crypto Addresses -->
+            <div id="tab-recharge" class="tab-content">
+                <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: #93c5fd;">Recharge Pleniux Credits</h3>
+                <p style="color: #9ca3af; font-size: 0.85rem; margin-bottom: 15px;">Your starting balance is <strong>5 UX</strong>. Choose a package below, send the equivalent crypto to one of the official founder wallets, and submit your transaction hash to instantly load your account credits.</p>
+                
+                <div class="pricing-grid">
+                    <div class="price-card">
+                        <h4 style="color: #38bdf8;">30 UX</h4>
+                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 8px 0;">$3.99 USD</p>
+                        <button onclick="selectPackage(30, 3.99)">Select 30 UX</button>
+                    </div>
+                    <div class="price-card">
+                        <h4 style="color: #38bdf8;">60 UX</h4>
+                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 8px 0;">$4.99 USD</p>
+                        <button onclick="selectPackage(60, 4.99)">Select 60 UX</button>
+                    </div>
+                    <div class="price-card">
+                        <h4 style="color: #38bdf8;">100 UX</h4>
+                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 8px 0;">$6.99 USD</p>
+                        <button onclick="selectPackage(100, 6.99)">Select 100 UX</button>
+                    </div>
+                    <div class="price-card">
+                        <h4 style="color: #38bdf8;">300 UX</h4>
+                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 8px 0;">$8.99 USD</p>
+                        <button onclick="selectPackage(300, 8.99)">Select 300 UX</button>
+                    </div>
+                    <div class="price-card">
+                        <h4 style="color: #38bdf8;">500 UX</h4>
+                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 8px 0;">$14.99 USD</p>
+                        <button onclick="selectPackage(500, 14.99)">Select 500 UX</button>
+                    </div>
+                    <div class="price-card">
+                        <h4 style="color: #38bdf8;">1,000 UX</h4>
+                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 8px 0;">$18.99 USD</p>
+                        <button onclick="selectPackage(1000, 18.99)">Select 1,000 UX</button>
+                    </div>
+                    <div class="price-card" style="grid-column: 1 / -1;">
+                        <h4 style="color: #facc15;">5,000 UX (VIP Elite)</h4>
+                        <p style="font-size: 1.3rem; font-weight: bold; color: #34d399; margin: 8px 0;">$50.99 USD</p>
+                        <button onclick="selectPackage(5000, 50.99)" style="background: linear-gradient(135deg, #d97706, #b45309);">Select 5,000 UX</button>
+                    </div>
+                </div>
+
+                <div id="paymentSection" style="display: none; margin-top: 20px;">
+                    <div class="crypto-wallets-box">
+                        <h4 style="color: #facc15; margin-bottom: 8px;">Complete Payment for <span id="selectedPkgLabel"></span></h4>
+                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 10px;">Transfer the equivalent value to one of Founder JHON Gonzales's official wallets:</p>
+                        
+                        <label>Bitcoin (BTC) Wallet:</label>
+                        <div class="wallet-addr">3GgLGjuUo3SpnnfjTcvaTBXqssoonAkUxo</div>
+
+                        <label>Ethereum (ETH) Wallet:</label>
+                        <div class="wallet-addr">0x530A8AA259877915d80049b59CDF030EB736110b</div>
+
+                        <label>Solana (SOL) Wallet:</label>
+                        <div class="wallet-addr">EuSPsT2hSNG8DyDNTh1cj7HZY9Ncx7ri8En5hnL1eBPA</div>
+
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label for="txHashInput">Enter Transaction Hash / ID to verify payment:</label>
+                            <input type="text" id="txHashInput" placeholder="Paste your transfer transaction signature/hash here...">
+                        </div>
+                        <button onclick="verifyAndCredit()" style="background: #059669;">Verify & Load Credits Instantly</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Find UX Name Directory Tab -->
+            <div id="tab-directory" class="tab-content">
+                <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: #93c5fd;">UX Network Node Directory Lookup</h3>
+                <p style="color: #9ca3af; font-size: 0.9rem; margin-bottom: 15px;">Search for any active node name on Pleniux.com (ranging from ux1 to ux1000):</p>
+                
+                <div class="form-group">
+                    <label for="searchUxQuery">Search Node Name:</label>
+                    <input type="text" id="searchUxQuery" placeholder="e.g. ux4, ux12, ux7">
+                </div>
+                <button onclick="searchUxNode()">Locate Node</button>
+
+                <div id="directoryResult" class="directory-box" style="display: none;">
+                    <p style="font-size: 0.9rem; color: #38bdf8;" id="searchResultText"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cyber Moving Background Canvas
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        const particles = [];
+        for (let i = 0; i < 60; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.8,
+                vy: (Math.random() - 0.5) * 0.8,
+                radius: Math.random() * 2 + 1
+            });
+        }
+
+        function drawTechBackground() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+            ctx.lineWidth = 1;
+
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 130) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.6)';
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+            });
+            requestAnimationFrame(drawTechBackground);
+        }
+        drawTechBackground();
+
+        let currentUser = { id: 'ux4', credits: 5, isFounder: false };
+        let pendingPackage = { amount: 0, price: 0 };
+
+        function loginUser() {
+            let inputVal = document.getElementById('customUxInput').value.trim().toLowerCase();
+
+            // Strict protection check for ux7
+            if (inputVal === 'ux7') {
+                alert("❌ CRITICAL ERROR: Node 'ux7' is locked, restricted, and restricted from public registration. Access denied.");
+                return;
+            }
+
+            if (inputVal === 'ux0') {
+                const passCheck = prompt("Restricted Master Node UX0. Enter Founder Passcode for JHON Gonzales:");
+                if (passCheck !== "pleniuxfounder0") {
+                    alert("⚠️ ACCESS DENIED: Node UX0 belongs exclusively to founder JHON Gonzales.");
+                    return;
+                }
+                currentUser.isFounder = true;
+                currentUser.credits = 99999;
+            } else {
+                currentUser.isFounder = false;
+                currentUser.credits = 5; // Default starting credit
+            }
+
+            currentUser.id = inputVal || 'ux4';
+            document.getElementById('currentUxLabel').innerText = currentUser.id;
+            document.getElementById('userCredits').innerText = currentUser.credits;
+
+            if (currentUser.isFounder) {
+                document.getElementById('founderBadgeText').style.display = 'inline-block';
+            } else {
+                document.getElementById('founderBadgeText').style.display = 'none';
+            }
+
+            document.getElementById('authCard').classList.remove('active');
+            document.getElementById('dashCard').classList.add('active');
+        }
+
+        function logoutUser() {
+            document.getElementById('dashCard').classList.remove('active');
+            document.getElementById('authCard').classList.add('active');
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            if (tabName === 'inbox') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('tab-inbox').classList.add('active');
+            } else if (tabName === 'send') {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('sendTabContent').classList.add('active');
+            } else if (tabName === 'recharge') {
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
+                document.getElementById('tab-recharge').classList.add('active');
+            } else if (tabName === 'directory') {
+                document.querySelectorAll('.tab-btn')[3].classList.add('active');
+                document.getElementById('tab-directory').classList.add('active');
+            }
+        }
+
+        function addEmoji(emoji) {
+            const textarea = document.getElementById('messageText');
+            textarea.value += emoji;
+            textarea.focus();
+        }
+
+        function selectPackage(amount, price) {
+            pendingPackage = { amount, price };
+            document.getElementById('selectedPkgLabel').innerText = `${amount} UX ($${price} USD)`;
+            document.getElementById('paymentSection').style.display = 'block';
+            document.getElementById('paymentSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function verifyAndCredit() {
+            const txHash = document.getElementById('txHashInput').value.trim();
+            if (!txHash) {
+                alert("Please enter a valid transaction hash/signature to confirm your crypto payment.");
+                return;
+            }
+
+            // Automatically add credits to user account upon verification input
+            currentUser.credits += pendingPackage.amount;
+            document.getElementById('userCredits').innerText = currentUser.credits;
+            
+            alert(`✅ Payment Verified! Successfully added ${pendingPackage.amount} UX to your node (${currentUser.id}). Enjoy communicating on Pleniux!`);
+            
+            document.getElementById('txHashInput').value = '';
+            document.getElementById('paymentSection').style.display = 'none';
+            switchTab('inbox');
+        }
+
+        function searchUxNode() {
+            const query = document.getElementById('searchUxQuery').value.trim().toLowerCase();
+            const resBox = document.getElementById('directoryResult');
+            const resText = document.getElementById('searchResultText');
+            
+            resBox.style.display = 'block';
+
+            if (query === 'ux7') {
+                resText.innerHTML = "⚠️ <b>Error:</b> Node 'ux7' is locked and restricted. Unauthorized access prohibited.";
+                resText.style.color = "#f87171";
+            } else if (query === 'ux0') {
+                resText.innerHTML = "👑 <b>Node found:</b> <code>ux0</code> is active and managed exclusively by Founder <b>JHON Gonzales</b>.";
+                resText.style.color = "#facc15";
+            } else if (query.startsWith('ux') && parseInt(query.replace('ux', '')) >= 1 && parseInt(query.replace('ux', '')) <= 1000) {
+                resText.innerHTML = `✅ <b>Node found:</b> <code>${query}</code> is registered and operational within the Pleniux secure network.`;
+                resText.style.color = "#34d399";
+            } else {
+                resText.innerHTML = `⚠️ <b>Notice:</b> Node <code>${query || 'unknown'}</code> not found or out of range (Allowed range: ux1 to ux1000).`;
+                resText.style.color = "#f87171";
+            }
+        }
+
+        function sendMessage() {
+            const recipient = document.getElementById('recipientUx').value || 'ux1';
+            const text = document.getElementById('messageText').value;
+
+            if (!text.trim()) {
+                alert('Please enter a message before transmitting.');
+                return;
+            }
+
+            if (!currentUser.isFounder && currentUser.credits <= 0) {
+                alert('Insufficient Pleniux credits. Please recharge your balance.');
+                switchTab('recharge');
+                return;
+            }
+
+            if (!currentUser.isFounder) {
+                currentUser.credits -= 1;
+                document.getElementById('userCredits').innerText = currentUser.credits;
+            }
+
+            const list = document.getElementById('messageList');
+            const newItem = document.createElement('div');
+            newItem.className = 'message-item';
+            newItem.innerHTML = `
+                <div class="message-meta">
+                    <span>Sent to: <b>${recipient}</b></span>
+                    <span class="timer" data-time="180">Self-destruct in: 03:00</span>
+                </div>
+                <p style="font-size: 1.05rem;">${escapeHtml(text)}</p>
+            `;
+            list.prepend(newItem);
+            document.getElementById('messageText').value = '';
+            switchTab('inbox');
+            alert('Encrypted message successfully transmitted! It will self-destruct in 3 minutes.');
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // 3-minute self-destruct timer countdown loop (180 seconds)
+        setInterval(() => {
+            const timers = document.querySelectorAll('.timer');
+            timers.forEach(timer => {
+                let timeLeft = parseInt(timer.getAttribute('data-time'));
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    timer.setAttribute('data-time', timeLeft);
+                    const mins = Math.floor(timeLeft / 60);
+                    const secs = timeLeft % 60;
+                    timer.innerText = `Self-destruct in: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                } else {
+                    const msgItem = timer.closest('.message-item');
+                    if (msgItem) {
+                        msgItem.style.opacity = '0';
+                        msgItem.style.transform = 'scale(0.95)';
+                        msgItem.style.transition = 'all 0.5s ease';
+                        setTimeout(() => msgItem.remove(), 500);
+                    }
+                }
+            });
+        }, 1000);
+    </script>
+</body>
+</html>
