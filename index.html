@@ -294,7 +294,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(3, 7, 18, 0.85);
+            background: rgba(3, 7, 18, 0.88);
             z-index: 100;
             justify-content: center;
             align-items: center;
@@ -306,32 +306,79 @@
             border-radius: 12px;
             padding: 20px;
             width: 100%;
-            max-width: 440px;
+            max-width: 480px;
             box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
             max-height: 90vh;
             overflow-y: auto;
         }
         .modal-card h3 {
             color: #ff3333;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             text-transform: uppercase;
             font-size: 1.1rem;
         }
         .modal-card p {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: #cbd5e1;
             margin-bottom: 15px;
+            line-height: 1.4;
         }
         .close-modal {
             background: #334155;
             color: #f87171;
             border: none;
-            padding: 8px 14px;
+            padding: 10px 14px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
             margin-top: 10px;
             width: 100%;
+            text-transform: uppercase;
+        }
+
+        /* NUEVO DISEÑO DE TARJETAS DE PRECIOS */
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .price-card {
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .price-card:hover {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+        .price-card.selected {
+            border: 2px solid #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+        }
+        .price-card .credits-num {
+            font-size: 1.05rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+        .price-card .price-usd {
+            font-size: 0.85rem;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+        .price-card.vip {
+            grid-column: span 2;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), #0b0f19);
+            border-color: #f59e0b;
+        }
+        .price-card.vip .price-usd {
+            color: #f59e0b;
         }
 
         .crypto-box {
@@ -591,21 +638,37 @@
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🪙 Real Crypto Payment Gateway</h3>
-            <p>Select package and send actual cryptocurrency to your personal vault addresses.</p>
+            <p>Select your desired fund package below. Choose the amount to instantly generate your secure payment invoice.</p>
             
-            <div class="form-group">
-                <label for="recharge-amount">Select Fund Package:</label>
-                <select id="recharge-amount" class="form-control" onchange="updateCryptoDetails()">
-                    <option value="5" data-usd="1.99" data-crypto="5 Credits ($1.99 USD)">5 UX Credits - ($1.99 USD)</option>
-                    <option value="10" data-usd="5.00" data-crypto="10 Credits ($5.00 USD)">10 UX Credits - ($5.00 USD)</option>
-                    <option value="50" data-usd="20.00" data-crypto="50 Credits ($20.00 USD)">50 UX Credits - ($20.00 USD)</option>
-                    <option value="200" data-usd="70.00" data-crypto="200 Credits ($70.00 USD)">200 UX Credits - ($70.00 USD)</option>
-                    <option value="500" data-usd="150.00" data-crypto="500 Credits ($150.00 USD)">500 UX Credits - ($150.00 USD)</option>
-                    <option value="10000" data-usd="999.00" data-crypto="10,000 Credits VIP ($999.00 USD)">10,000 UX Credits (VIP) - ($999.00 USD)</option>
-                </select>
+            <!-- NUEVO DISEÑO DE SELECCIÓN DE PRECIOS -->
+            <div class="price-grid" id="price-grid-container">
+                <div class="price-card selected" onclick="selectPricePackage(5, '1.99', '5 Credits ($1.99 USD)', this)">
+                    <div class="credits-num">5 Credits</div>
+                    <div class="price-usd">$1.99 USD</div>
+                </div>
+                <div class="price-card" onclick="selectPricePackage(10, '5.00', '10 Credits ($5.00 USD)', this)">
+                    <div class="credits-num">10 Credits</div>
+                    <div class="price-usd">$5.00 USD</div>
+                </div>
+                <div class="price-card" onclick="selectPricePackage(50, '20.00', '50 Credits ($20.00 USD)', this)">
+                    <div class="credits-num">50 Credits</div>
+                    <div class="price-usd">$20.00 USD</div>
+                </div>
+                <div class="price-card" onclick="selectPricePackage(200, '70.00', '200 Credits ($70.00 USD)', this)">
+                    <div class="credits-num">200 Credits</div>
+                    <div class="price-usd">$70.00 USD</div>
+                </div>
+                <div class="price-card" onclick="selectPricePackage(500, '150.00', '500 Credits ($150.00 USD)', this)">
+                    <div class="credits-num">500 Credits</div>
+                    <div class="price-usd">$150.00 USD</div>
+                </div>
+                <div class="price-card vip" onclick="selectPricePackage(10000, '999.00', '10,000 Credits VIP ($999.00 USD)', this)">
+                    <div class="credits-num">👑 10,000 Credits VIP</div>
+                    <div class="price-usd">$999.00 USD</div>
+                </div>
             </div>
 
-            <div class="form-group" style="margin-top: 10px;">
+            <div class="form-group" style="margin-top: 5px;">
                 <label>Bitcoin (BTC) Official Vault:</label>
                 <div class="crypto-box">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</div>
             </div>
@@ -683,9 +746,15 @@
         let sessionActive = false;
         let activeNodeId = "";
         let currentRoom = "GENERAL";
+        
+        // Variable para guardar el paquete de recarga seleccionado
+        let selectedPackageData = {
+            credits: 5,
+            usd: "1.99",
+            text: "5 Credits ($1.99 USD)"
+        };
 
         window.addEventListener('DOMContentLoaded', () => {
-            updateCryptoDetails();
             checkInactivityAndRecycleNodes();
             
             localStorage.setItem('pleniux_reg_pass_UX0', '1971');
@@ -703,7 +772,6 @@
             // DETECTOR DE RECARGA (REFRESH) O CIERRE DE PESTAÑA / TELÉFONO
             let activeNodeInSession = sessionStorage.getItem('pleniux_active_node');
             if (activeNodeInSession) {
-                // Si existía una sesión activa y la página se recargó, aplicamos la penalización de 1 saldo y borramos mensajes
                 let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeInSession) || '5');
                 currentCredits = Math.max(0, currentCredits - 1);
                 localStorage.setItem('pleniux_credits_' + activeNodeInSession, currentCredits);
@@ -763,19 +831,24 @@
         function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
         function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 
-        function updateCryptoDetails() {
-            const selectEl = document.getElementById('recharge-amount');
-            const cryptoText = selectEl.options[selectEl.selectedIndex].getAttribute('data-crypto');
-            document.getElementById('crypto-amount-display').innerText = cryptoText;
+        // Función para manejar la selección de paquetes de precios visuales
+        function selectPricePackage(credits, usd, text, cardElement) {
+            selectedPackageData = { credits, usd, text };
+            
+            // Quitar clase selected de todas las tarjetas
+            const cards = document.querySelectorAll('.price-card');
+            cards.forEach(c => c.classList.remove('selected'));
+            
+            // Agregar clase selected a la tarjeta clickeada
+            cardElement.classList.add('selected');
+            
+            // Actualizar display inferior
+            document.getElementById('crypto-amount-display').innerText = text;
         }
 
         function requestRealPaymentOrder() {
-            const selectEl = document.getElementById('recharge-amount');
-            const cryptoText = selectEl.options[selectEl.selectedIndex].getAttribute('data-crypto');
-            const amountUSD = selectEl.options[selectEl.selectedIndex].getAttribute('data-usd');
-
             closeModal('recharge-modal');
-            alert(`✅ [PLENIUX SECURE INVOICE ACTIVE]:\n\nPackage: ${cryptoText}\nAmount: $${amountUSD} USD\n\n👉 Send the exact cryptocurrency amount to the vault address displayed in the gateway. Your session will credit automatically upon blockchain confirmation.`);
+            alert(`✅ [PLENIUX SECURE INVOICE ACTIVE]:\n\nPackage: ${selectedPackageData.text}\nAmount: $${selectedPackageData.usd} USD\n\n👉 Send the exact cryptocurrency amount to the vault address displayed in the gateway. Your session will credit automatically upon blockchain confirmation.`);
         }
 
         function joinOrCreateRoom() {
@@ -888,7 +961,6 @@
             document.getElementById('display-node').innerText = nodeInput;
             document.getElementById('credit-count').innerText = userCredits;
 
-            // Guardar sesión activa con timestamp exacto para evitar trampa en temporizador por refrescos
             sessionStorage.setItem('pleniux_active_node', nodeInput);
             sessionStorage.setItem('pleniux_session_start', Date.now().toString());
 
@@ -945,7 +1017,6 @@
                     sessionActive = false;
                     clearInterval(countdownInterval);
 
-                    // Descontar 1 saldo por expirar el tiempo
                     let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId) || '5');
                     currentCredits = Math.max(0, currentCredits - 1);
                     localStorage.setItem('pleniux_credits_' + activeNodeId, currentCredits);
@@ -972,7 +1043,6 @@
             sessionActive = false;
             if (countdownInterval) clearInterval(countdownInterval);
 
-            // Al salir manualmente también se descuenta 1 saldo según la política de cierre
             let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId) || '5');
             currentCredits = Math.max(0, currentCredits - 1);
             localStorage.setItem('pleniux_credits_' + activeNodeId, currentCredits);
