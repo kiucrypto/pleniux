@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>pleniux.com - Secure Encrypted Vault</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #02040a; color: #f3f4f6; min-height: 100vh; overflow-x: hidden; position: relative; }
+        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #02040a; pointer-events: none; }
+        .app-container { max-width: 850px; margin: 25px auto; padding: 20px; position: relative; z-index: 10; }
+        header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 30, 30, 0.3); padding-bottom: 15px; }
+        h1 { font-size: 2.6rem; letter-spacing: 3px; text-transform: uppercase; color: #ff1a1a; text-shadow: 0 0 15px rgba(255, 26, 26, 0.5); }
+        .founder-info { font-size: 0.82rem; color: #94a3b8; margin-top: 6px; letter-spacing: 2px; text-transform: uppercase; }
+        .founder-highlight { color: #ffd4d6; font-weight: 700; text-shadow: 0 0 8px rgba(255, 77, 77, 0.5); }
+        .auth-card, .app-interface, .chat-interface { background: rgba(8, 12, 24, 0.92); border: 1px solid rgba(255, 50, 50, 0.3); border-radius: 12px; padding: 22px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); }
+        h2, h3 { color: #ffd4d6; font-size: 1.2rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1.5px; }
+        p { font-size: 0.86rem; color: #94a3b8; margin-bottom: 18px; line-height: 1.5; }
+        .auth-tabs { display: flex; margin-bottom: 20px; border: 1px solid #1e291b; }
+        .auth-tab { flex: 1; background: none; border: none; color: #64748b; padding: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; text-align: center; background: #020617; border-bottom: 2px solid #020617; }
+        .auth-tab.active { color: #ffd4d6; border-bottom: 2px solid #ffd4d6; background: rgba(255, 77, 77, 0.08); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.8rem; color: #e2e8f0; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+        .input-group-ux { display: flex; align-items: center; background: #020617; border: 1px solid #334155; border-radius: 8px; overflow: hidden; }
+        .us-prefix { background: #0f172a; color: #ffd4d6; font-weight: 800; padding: 12px 14px; border-right: 1px solid #334155; letter-spacing: 1px; }
+        .form-control { width: 100%; background: #020617; border: none; padding: 12px; color: #fff; font-size: 14px; outline: none; }
+        .btn-primary { width: 100%; background: linear-gradient(135deg, #cc0000, #990000); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; box-shadow: 0 4px 12px rgba(204, 0, 0, 0.4); transition: 0.2s; }
+        .btn-primary:active { transform: scale(0.98); }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 15px; }
+        .price-card { background: #020617; border: 1px solid #1e293b; border-radius: 10px; padding: 18px; text-align: center; }
+        .price-card h4 { color: #fff; margin-bottom: 8px; }
+        .price-card .cost { font-size: 1.4rem; color: #ff4d4d; font-weight: bold; margin-bottom: 12px; }
+        .hidden { display: none !important; }
+        .chat-box { height: 250px; background: #020617; border: 1px solid #1e293b; border-radius: 8px; padding: 12px; overflow-y: auto; margin-bottom: 12px; font-family: monospace; font-size: 0.85rem; }
+        .timer-badge { background: rgba(255, 77, 77, 0.15); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); padding: 6px 12px; border-radius: 20px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+        .security-banner { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 8px; padding: 10px; font-size: 0.78rem; color: #f87171; margin-bottom: 15px; text-align: center; }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-canvas"></canvas>
+    <div class="app-container">
+        <header>
+            <h1>Pleniux.com</h1>
+            <div class="founder-info">Secure Encrypted Vault &bull; Architecture Protected</div>
+        </header>
+
+        <!-- SECCIÓN DE AUTENTICACIÓN ESTRICTA -->
+        <div id="auth-section" class="auth-card">
+            <div class="security-banner">🔒 Validación de nodos estrictamente numérica (UX-2 a UX-1,000,000,000)</div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchTab('login')">Acceso Nodo</button>
+                <button class="auth-tab" onclick="switchTab('register')">Nuevo Registro</button>
+            </div>
+
+            <!-- LOGIN -->
+            <div id="login-form">
+                <div class="form-group">
+                    <label>Número de Nodo</label>
+                    <div class="input-group-ux">
+                        <span class="us-prefix">UX</span>
+                        <input type="number" id="login-node" class="form-control" placeholder="Ej: 502" min="2" max="1000000000">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña Numérica</label>
+                    <input type="password" id="login-pass" class="form-control" placeholder="PIN numérico" pattern="[0-9]*" inputmode="numeric">
+                </div>
+                <button class="btn-primary" onclick="loginNode()">Conectar Nodo Seguro</button>
+            </div>
+
+            <!-- REGISTRO -->
+            <div id="register-form" class="hidden">
+                <div class="form-group">
+                    <label>Asignar Rango Numérico (2 a 1,000,000,000)</label>
+                    <div class="input-group-ux">
+                        <span class="us-prefix">UX</span>
+                        <input type="number" id="reg-node" class="form-control" placeholder="Ej: 502" min="2" max="1000000000">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña Numérica Obligatoria</label>
+                    <input type="password" id="reg-pass" class="form-control" placeholder="PIN numérico" pattern="[0-9]*" inputmode="numeric">
+                </div>
+                <button class="btn-primary" onclick="registerNode()">Registrar Nodo</button>
+            </div>
+            <p id="auth-msg" style="margin-top: 15px; text-align: center; color: #ff4d4d;"></p>
+        </div>
+
+        <!-- SECCIÓN DE GESTIÓN Y CREDITOS -->
+        <div id="app-section" class="app-interface hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 id="user-display-node">Nodo: UX...</h2>
+                <div style="background: #020617; padding: 8px 14px; border: 1px solid #334155; border-radius: 6px;">
+                    Créditos: <span id="user-credits" style="color: #4ade80; font-weight: bold;">0</span>
+                </div>
+            </div>
+
+            <p>Selecciona un paquete verificado por pasarela segura (Anti-fraude de créditos):</p>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <h4>Pack Básico</h4>
+                    <div class="cost">$5.00 USD</div>
+                    <p>10 Créditos de sesión</p>
+                    <button class="btn-primary" onclick="buyCredits(10, 5)">Adquirir Pack</button>
+                </div>
+                <div class="price-card">
+                    <h4>Pack Pro</h4>
+                    <div class="cost">$12.00 USD</div>
+                    <p>30 Créditos de sesión</p>
+                    <button class="btn-primary" onclick="buyCredits(30, 12)">Adquirir Pack</button>
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #1e293b; margin: 20px 0;">
+
+            <h3>Canal de Mensajería Cifrada</h3>
+            <div class="form-group">
+                <label>Código de Sala Privada</label>
+                <input type="text" id="room-code" class="form-control" placeholder="Ej: sala-secreta-99">
+            </div>
+            <button class="btn-primary" onclick="joinRoom()" style="margin-bottom: 15px;">Entrar al Canal Seguro</button>
+
+            <div id="chat-box-container" class="hidden">
+                <div class="timer-badge">Auto-destrucción de sesión: <span id="time-left">02:30</span> min</div>
+                <div id="chat-messages" class="chat-box"></div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="chat-input" class="form-control" placeholder="Mensaje cifrado...">
+                    <button class="btn-primary" style="width: 120px;" onclick="sendMessage()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        const chars = "01PLENIUXSECURECRYPTOMSG";
+        const fontSize = 14;
+        const columns = Math.floor(canvas.width / fontSize);
+        const drops = Array(columns).fill(1);
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(2, 4, 10, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(255, 30, 30, 0.25)';
+            ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 50);
+
+        let socket;
+        let currentNode = null;
+        let currentCredits = 0;
+        let sessionTimer = null;
+
+        function switchTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            if(tab === 'login') {
+                document.querySelectorAll('.auth-tab')[0].classList.add('active');
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('register-form').classList.add('hidden');
+            } else {
+                document.querySelectorAll('.auth-tab')[1].classList.add('active');
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('register-form').classList.remove('hidden');
+            }
+        }
+
+        async function registerNode() {
+            const node = document.getElementById('reg-node').value;
+            const pass = document.getElementById('reg-pass').value;
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ node, pass })
+            });
+            const data = await res.json();
+            if(data.success) {
+                document.getElementById('auth-msg').style.color = '#4ade80';
+                document.getElementById('auth-msg').innerText = data.message;
+                setTimeout(() => switchTab('login'), 1500);
+            } else {
+                document.getElementById('auth-msg').innerText = data.error;
+            }
+        }
+
+        async function loginNode() {
+            const node = document.getElementById('login-node').value;
+            const pass = document.getElementById('login-pass').value;
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ node, pass })
+            });
+            const data = await res.json();
+            if(data.success) {
+                currentNode = data.nodeId;
+                currentCredits = data.credits;
+                document.getElementById('user-display-node').innerText = `Nodo: ${currentNode}`;
+                document.getElementById('user-credits').innerText = currentCredits;
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('app-section').classList.remove('hidden');
+                socket = io();
+                socket.on('server_message', (msg) => appendMessage("SISTEMA", msg.text));
+                socket.on('receive_message', (msg) => appendMessage(msg.sender, msg.text));
+            } else {
+                document.getElementById('auth-msg').innerText = data.error;
+            }
+        }
+
+        function buyCredits(credits, amount) {
+            alert(`Conectando con pasarela segura por $${amount}. (El saldo real se actualizará vía webhook del servidor al procesar el pago).`);
+            currentCredits += credits;
+            document.getElementById('user-credits').innerText = currentCredits;
+        }
+
+        function joinRoom() {
+            const roomCode = document.getElementById('room-code').value;
+            if(!roomCode) return alert("Introduce un código de sala válido.");
+            socket.emit('join_room', { roomCode, nodeId: currentNode });
+            document.getElementById('chat-box-container').classList.remove('hidden');
+            startSessionTimer(150); // Temporizador estricto de 2:30 minutos
+        }
+
+        function sendMessage() {
+            const roomCode = document.getElementById('room-code').value;
+            const message = document.getElementById('chat-input').value;
+            if(!message) return;
+            socket.emit('send_message', { roomCode, nodeId: currentNode, message });
+            document.getElementById('chat-input').value = '';
+        }
+
+        function appendMessage(sender, text) {
+            const box = document.getElementById('chat-messages');
+            box.innerHTML += `<div><strong>[${sender}]:</strong> ${text}</div>`;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function startSessionTimer(duration) {
+            let timer = duration, minutes, seconds;
+            if(sessionTimer) clearInterval(sessionTimer);
+            sessionTimer = setInterval(() => {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                document.getElementById('time-left').textContent = minutes + ":" + seconds;
+                if (--timer < 0) {
+                    clearInterval(sessionTimer);
+                    alert("Sesión cifrada expirada. Auto-destruyendo canal...");
+                    location.reload();
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
