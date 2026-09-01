@@ -478,7 +478,7 @@
         </header>
 
         <div class="top-security-banner">
-            🛡️ Continuous 3-min intervals. Automatically deducts 1 credit and starts a new cycle when time hits zero.
+            🛡️ Master Node UX0 active. Passcode for Founder: 1971.
         </div>
 
         <div id="auth-screen" class="auth-card">
@@ -529,7 +529,7 @@
             <div class="status-panel">
                 <div>Node: <span style="color: #ef4444;" id="display-node">UX0</span></div>
                 <div>Room: <span style="color: #38bdf8;" id="display-room">PUBLIC</span></div>
-                <div>Balance: <span class="credits-badge" id="credit-count">5</span> UX</div>
+                <div>Balance: <span class="credits-badge" id="credit-count">999</span> UX</div>
                 <div>Timer: <span id="timer" style="color: #ef4444;">03:00</span></div>
                 <button class="exit-btn" onclick="handleManualExit()">EXIT</button>
             </div>
@@ -678,7 +678,6 @@
             }
         }
 
-        // Intervalo estable controlado de 50ms para no sobrecargar el navegador
         setInterval(drawMatrixRain, 50);
 
         let countdownInterval = null;
@@ -688,16 +687,15 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             updateCryptoDetails();
-            // Inicializar por defecto la cuenta Founder UX0 si no existe
-            if (!localStorage.getItem('pleniux_reg_pass_UX0')) {
-                localStorage.setItem('pleniux_reg_pass_UX0', '0000');
-                localStorage.setItem('pleniux_credits_UX0', '999');
-                
-                let defaultList = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
-                if (!defaultList.some(item => item.node === 'UX0')) {
-                    defaultList.push({ node: 'UX0', time: 'Founder (Pre-registered)' });
-                    localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(defaultList));
-                }
+            
+            // Forzar actualización de la contraseña del nodo UX0 a "1971"
+            localStorage.setItem('pleniux_reg_pass_UX0', '1971');
+            localStorage.setItem('pleniux_credits_UX0', '999');
+            
+            let defaultList = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
+            if (!defaultList.some(item => item.node === 'UX0')) {
+                defaultList.push({ node: 'UX0', time: 'Founder (Pre-registered)' });
+                localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(defaultList));
             }
         });
 
@@ -831,9 +829,9 @@
             const registryPassKey = 'pleniux_reg_pass_' + nodeInput;
             let existingRegisteredPass = localStorage.getItem(registryPassKey);
 
-            if (nodeInput === 'UX0' && !existingRegisteredPass) {
-                existingRegisteredPass = '0000';
-                localStorage.setItem(registryPassKey, '0000');
+            if (nodeInput === 'UX0') {
+                existingRegisteredPass = '1971';
+                localStorage.setItem(registryPassKey, '1971');
             }
 
             if (existingRegisteredPass === null) {
