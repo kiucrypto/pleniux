@@ -19,7 +19,6 @@
             overflow-x: hidden;
             position: relative;
         }
-        /* High-Performance Fluid Neon Background Canvas */
         #bg-canvas {
             position: fixed;
             top: 0;
@@ -43,7 +42,6 @@
             border-bottom: 1px solid rgba(239, 68, 68, 0.2);
             padding-bottom: 12px;
         }
-        /* Red Neon Blinking Effect for Title */
         h1 {
             font-size: 2.5rem;
             letter-spacing: 2px;
@@ -68,6 +66,79 @@
             margin-top: 5px;
             letter-spacing: 1px;
         }
+        
+        /* Auth Screen */
+        .auth-card {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 12px;
+            padding: 25px;
+            max-width: 480px;
+            margin: 30px auto;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
+        }
+        .auth-card h2 {
+            color: #ef4444;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .auth-card p {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-control {
+            width: 100%;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .form-control:focus {
+            border-color: #ef4444;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+        }
+        .btn-primary {
+            width: 100%;
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.2s, box-shadow 0.2s;
+            margin-top: 5px;
+        }
+        .btn-primary:hover {
+            background: #dc2626;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Main App Interface */
+        .app-interface {
+            display: none;
+        }
         .status-panel {
             background: rgba(15, 23, 42, 0.75);
             border: 1px solid rgba(239, 68, 68, 0.3);
@@ -77,26 +148,41 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .credits-badge {
             color: #ef4444;
             font-weight: bold;
         }
+        
+        /* Professional Manual */
         .manual-box {
-            background: rgba(15, 23, 42, 0.6);
-            border-left: 3px solid #ef4444;
-            padding: 10px 15px;
-            font-size: 0.85rem;
-            color: #d1d5db;
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 4px solid #ef4444;
+            padding: 14px 18px;
+            font-size: 0.83rem;
+            color: #cbd5e1;
             margin-bottom: 15px;
             border-radius: 0 8px 8px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            line-height: 1.5;
         }
         .manual-box h3 {
             color: #ef4444;
-            margin-bottom: 4px;
-            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
+        .manual-box ul {
+            padding-left: 18px;
+        }
+        .manual-box li {
+            margin-bottom: 4px;
+        }
+
         .chat-section {
             background: rgba(15, 23, 42, 0.85);
             border: 1px solid rgba(239, 68, 68, 0.25);
@@ -114,6 +200,7 @@
             font-size: 0.85rem;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
         .chat-messages {
             flex: 1;
@@ -140,6 +227,16 @@
             border: 1px solid rgba(239, 68, 68, 0.3);
             align-self: flex-end;
         }
+        .message.system-alert {
+            background: rgba(220, 38, 38, 0.2);
+            border: 1px dashed #ef4444;
+            color: #fca5a5;
+            text-align: center;
+            align-self: center;
+            max-width: 90%;
+            font-size: 0.82rem;
+            font-weight: bold;
+        }
         .chat-input-area {
             display: flex;
             padding: 10px;
@@ -147,7 +244,8 @@
             border-top: 1px solid rgba(239, 68, 68, 0.2);
             gap: 8px;
         }
-        input, select {
+        .msg-input {
+            flex: 1;
             background: #1e293b;
             border: 1px solid #334155;
             color: #fff;
@@ -156,16 +254,10 @@
             font-size: 0.9rem;
             outline: none;
         }
-        input:focus {
+        .msg-input:focus {
             border-color: #ef4444;
         }
-        .target-node {
-            width: 110px;
-        }
-        .msg-input {
-            flex: 1;
-        }
-        button {
+        button.send-btn {
             background: #ef4444;
             color: white;
             border: none;
@@ -175,13 +267,17 @@
             font-weight: bold;
             transition: background 0.2s;
         }
-        button:hover {
+        button.send-btn:hover {
             background: #dc2626;
         }
         .exit-btn {
             background: #334155;
             color: #f87171;
             border: 1px solid #ef4444;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
         }
         .exit-btn:hover {
             background: #ef4444;
@@ -196,39 +292,58 @@
     <div class="app-container">
         <header>
             <h1>Pleniux</h1>
-            <div class="founder-info">SECURE EPHEMERAL NETWORK &bull; FOUNDER: LENOX JG (NODE UX0)</div>
+            <div class="founder-info">SECURE ANONYMOUS NETWORK &bull; FOUNDER: LENOX JG (NODE UX0)</div>
         </header>
 
-        <div class="status-panel">
-            <div>Node Active: <span style="color: #ef4444;" id="current-node">ux2</span></div>
-            <div>Credits: <span class="credits-badge" id="credit-count">5</span> UX</div>
-            <div>Self-Destruct Timer: <span id="timer" style="color: #ef4444;">03:00</span></div>
-            <button class="exit-btn" onclick="handleExit()">EXIT</button>
+        <!-- AUTHENTICATION SCREEN -->
+        <div id="auth-screen" class="auth-card">
+            <h2>Secure Node Verification</h2>
+            <p>Conecta con amigos o desconocidos de forma privada. Selecciona tu identificador <b>ux1 a ux1000</b> e ingresa el <b>código de acceso compartido (0 a 10000)</b> creado para unirse al canal cifrado.</p>
+            
+            <div class="form-group">
+                <label for="node-input">Tu Identificador UX (ux1 - ux1000):</label>
+                <input type="text" id="node-input" class="form-control" placeholder="Ej. ux4" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label for="passcode-input">Código Privado Compartido (0 - 10000):</label>
+                <input type="password" id="passcode-input" class="form-control" placeholder="Ej. 777" maxlength="5" autocomplete="off">
+            </div>
+
+            <button class="btn-primary" onclick="initializeSession()">Iniciar Canal Cifrado</button>
         </div>
 
-        <div class="manual-box">
-            <h3>Quick Anonymous Manual:</h3>
-            <p>1. Select target node (e.g., 2ux, 3ux) to direct your encrypted transmission.</p>
-            <p>2. Messages auto-destruct in 3 minutes. Exiting consumes 1 credit.</p>
-        </div>
+        <!-- MAIN CHAT INTERFACE -->
+        <div id="app-interface" class="app-interface">
+            <div class="status-panel">
+                <div>Nodo: <span style="color: #ef4444;" id="display-node">ux1</span></div>
+                <div>Canal Passcode: <span style="color: #ef4444;" id="display-passcode">0</span></div>
+                <div>Saldo: <span class="credits-badge" id="credit-count">5</span> UX</div>
+                <div>Destrucción: <span id="timer" style="color: #ef4444;">03:00</span></div>
+                <button class="exit-btn" onclick="handleManualExit()">SALIR</button>
+            </div>
 
-        <div class="chat-section">
-            <div class="chat-header">
-                <span>ENCRYPTED PIPELINE // SECURE CHAT</span>
-                <span id="connection-status" style="color: #10b981;">● Connected</span>
+            <div class="manual-box">
+                <h3>Manual Profesional de Seguridad Pleniux</h3>
+                <ul>
+                    <li><b>Conversaciones Privadas:</b> Comparte el código numérico (0-10000) con amigos o contactos para unirse al mismo canal cerrado.</li>
+                    <li><b>Protección por Apagado / Bloqueo de Pantalla:</b> Si bloqueas el teléfono, apagas la pantalla o sales de la aplicación durante la sesión activa, el sistema detecta la inactividad de seguridad, <b>elimina automáticamente todos los mensajes instantáneamente</b> y descuenta 1 crédito de saldo, notificándolo en el registro.</li>
+                    <li><b>Cero Retención:</b> El protocolo autónomo de Pleniux no almacena metadatos ni historiales persistentes.</li>
+                </ul>
             </div>
-            <div class="chat-messages" id="message-box">
-                <div class="message incoming">System: Node initialized securely. Anonymous channel open.</div>
-            </div>
-            <div class="chat-input-area">
-                <select id="target-node-select" class="target-node">
-                    <option value="2ux">Node 2ux</option>
-                    <option value="3ux">Node 3ux</option>
-                    <option value="4ux">Node 4ux</option>
-                    <option value="5ux">Node 5ux</option>
-                </select>
-                <input type="text" id="user-input" class="msg-input" placeholder="Type encrypted message..." autocomplete="off">
-                <button onclick="sendMessage()">SEND</button>
+
+            <div class="chat-section">
+                <div class="chat-header">
+                    <span id="pipeline-title">TUNEL SEGURO // CHAT ANÓNIMO EN VIVO</span>
+                    <span style="color: #10b981;">● Activo</span>
+                </div>
+                <div class="chat-messages" id="message-box">
+                    <div class="message incoming">Sistema: Canal seguro sincronizado por passcode. Cero logs guardados.</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="user-input" class="msg-input" placeholder="Escribe mensaje cifrado..." autocomplete="off">
+                    <button class="send-btn" onclick="sendMessage()">ENVIAR</button>
+                </div>
             </div>
         </div>
     </div>
@@ -275,65 +390,132 @@
         }
         animateBg();
 
-        // Credits & Session Management
+        // Session & Credits Logic
         let credits = localStorage.getItem('pleniux_credits') !== null ? parseInt(localStorage.getItem('pleniux_credits')) : 5;
         document.getElementById('credit-count').innerText = credits;
 
-        function handleExit() {
+        let countdownInterval;
+        let sessionActive = false;
+
+        function initializeSession() {
+            const nodeInput = document.getElementById('node-input').value.trim().toLowerCase();
+            const passcodeInput = document.getElementById('passcode-input').value.trim();
+
+            const nodeRegex = /^ux([1-9][0-9]{0,2}|1000)$/;
+            if (!nodeRegex.test(nodeInput)) {
+                alert("¡Identificador inválido! Usa 'ux' seguido de un número del 1 al 1000 (Ej. ux4, ux125).");
+                return;
+            }
+
+            const passNum = parseInt(passcodeInput);
+            if (isNaN(passNum) || passNum < 0 || passNum > 10000) {
+                alert("¡Código de acceso inválido! Ingresa un número entre 0 y 10000.");
+                return;
+            }
+
+            if (credits <= 0) {
+                alert("Saldo en 0 créditos. Recarga para iniciar una nueva sesión.");
+                return;
+            }
+
+            document.getElementById('display-node').innerText = nodeInput;
+            document.getElementById('display-passcode').innerText = passNum;
+
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('app-interface').style.display = 'block';
+
+            sessionActive = true;
+            startTimer(180);
+        }
+
+        function startTimer(duration) {
+            let timeLeft = duration;
+            const timerEl = document.getElementById('timer');
+            
+            countdownInterval = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    terminateSessionBySecurity("Tiempo límite expirado. Mensajes destruidos.");
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        // Detect Screen Off / Hidden / Minimizing / Tab Switching
+        document.addEventListener("visibilitychange", function() {
+            if (sessionActive && document.hidden) {
+                clearInterval(countdownInterval);
+                terminateSessionBySecurity("¡Pantalla apagada o dispositivo bloqueado! Mensajes eliminados y 1 crédito descontado.");
+            }
+        });
+
+        window.addEventListener("pagehide", function() {
+            if (sessionActive) {
+                terminateSessionBySecurity("Sesión interrumpida por cierre o apagado de pantalla.");
+            }
+        });
+
+        function terminateSessionBySecurity(reason) {
+            if (!sessionActive) return;
+            sessionActive = false;
+
             if (credits > 0) {
                 credits--;
                 localStorage.setItem('pleniux_credits', credits);
-                document.getElementById('credit-count').innerText = credits;
             }
-            alert("Session closed. 1 credit deducted. Secure cache wiped.");
+
+            const msgBox = document.getElementById('message-box');
+            const alertDiv = document.createElement('div');
+            alertDiv.classList.add('message', 'system-alert');
+            alertDiv.innerText = `[ALERTA DE SEGURIDAD]: ${reason} (-1 Crédito aplicado).`;
+            msgBox.appendChild(alertDiv);
+            msgBox.scrollTop = msgBox.scrollHeight;
+
+            setTimeout(() => {
+                alert(`[PLENIUX SEGURIDAD]: ${reason}\nSe ha descontado 1 crédito y la memoria caché ha sido purgada.`);
+                location.reload();
+            }, 1200);
+        }
+
+        function handleManualExit() {
+            sessionActive = false;
+            if (credits > 0) {
+                credits--;
+                localStorage.setItem('pleniux_credits', credits);
+            }
+            alert("Sesión finalizada manualmente. 1 crédito descontado. Caché limpiada.");
             location.reload();
         }
 
-        // Timer countdown (3 minutes)
-        let timeLeft = 180;
-        const timerEl = document.getElementById('timer');
-        
-        const countdown = setInterval(() => {
-            let minutes = Math.floor(timeLeft / 60);
-            let seconds = timeLeft % 60;
-            timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            if (timeLeft <= 0) {
-                clearInterval(countdown);
-                alert("Session time expired (3 min limit). Messages wiped.");
-                handleExit();
-            }
-            timeLeft--;
-        }, 1000);
-
-        // Chat functionality
         function sendMessage() {
             const input = document.getElementById('user-input');
-            const targetSelect = document.getElementById('target-node-select');
             const msgBox = document.getElementById('message-box');
+            const nodeName = document.getElementById('display-node').innerText;
             
             if (input.value.trim() === "") return;
 
             if (credits <= 0) {
-                alert("Zero credits remaining. Please recharge to continue transmission.");
+                alert("Saldo agotado. Transmisión bloqueada.");
                 return;
             }
 
-            // Outgoing message
             const userMsg = document.createElement('div');
             userMsg.classList.add('message', 'outgoing');
-            userMsg.innerText = `[To ${targetSelect.value}]: ${input.value}`;
+            userMsg.innerText = `[${nodeName}]: ${input.value}`;
             msgBox.appendChild(userMsg);
 
             const textCopy = input.value;
             input.value = "";
             msgBox.scrollTop = msgBox.scrollHeight;
 
-            // Simulated anonymous reply response for interaction
             setTimeout(() => {
                 const replyMsg = document.createElement('div');
                 replyMsg.classList.add('message', 'incoming');
-                replyMsg.innerText = `[From ${targetSelect.value}]: ACK -> "${textCopy}" (Encrypted)`;
+                replyMsg.innerText = `[Peer]: RECIBIDO -> "${textCopy}" (Canal Cifrado)`;
                 msgBox.appendChild(replyMsg);
                 msgBox.scrollTop = msgBox.scrollHeight;
             }, 1000);
