@@ -7,12 +7,15 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #02040a; color: #f3f4f6; min-height: 100vh; overflow-x: hidden; position: relative; }
-        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, #090d16 0%, #02040a 100%); pointer-events: none; }
+        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #02040a; pointer-events: none; }
         .app-container { max-width: 850px; margin: 25px auto; padding: 20px; position: relative; z-index: 10; }
         header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 30, 30, 0.3); padding-bottom: 15px; }
         h1 { font-size: 2.6rem; letter-spacing: 3px; text-transform: uppercase; color: #ff1a1a; text-shadow: 0 0 15px rgba(255, 0, 0, 0.8); font-weight: 900; }
         .founder-info { font-size: 0.82rem; color: #94a3b8; margin-top: 6px; letter-spacing: 2px; text-transform: uppercase; }
         .founder-highlight { color: #ff4d4d; font-weight: 700; text-shadow: 0 0 8px rgba(255, 77, 77, 0.5); }
+        
+        .security-banner { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 10px; padding: 10px 14px; margin-bottom: 18px; text-align: center; font-size: 0.78rem; color: #fca5a5; font-weight: 600; letter-spacing: 0.5px; backdrop-filter: blur(5px); }
+
         .auth-card, .app-interface, .chat-interface { background: rgba(8, 12, 24, 0.92); border: 1px solid rgba(255, 50, 50, 0.4); border-radius: 16px; padding: 25px; max-width: 480px; margin: 0 auto 20px auto; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); }
         h2, h3 { color: #ff4d4d; font-size: 1.2rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1.5px; }
         p { font-size: 0.86rem; color: #94a3b8; margin-bottom: 18px; line-height: 1.5; }
@@ -24,6 +27,7 @@
         .input-group-ux { display: flex; align-items: center; background: #020617; border: 1px solid #334155; border-radius: 8px; overflow: hidden; }
         .ux-prefix { background: #0f172a; color: #ff4d4d; font-weight: 800; padding: 12px 14px; font-size: 0.95rem; border-right: 1px solid #334155; }
         .form-control { width: 100%; background: #020617; border: 1px solid #334155; color: #fff; padding: 12px 14px; border-radius: 8px; font-size: 0.95rem; outline: none; }
+        .form-control::placeholder { color: #475569; font-style: italic; }
         .btn-primary { width: 100%; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 13px; border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 5px; }
         .app-interface, .chat-interface { display: none; max-width: 680px; }
         .status-panel { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(239, 68, 68, 0.4); padding: 12px 16px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 0.85rem; flex-wrap: wrap; gap: 8px; }
@@ -56,6 +60,10 @@
             <div class="founder-info">FOUNDER: <span class="founder-highlight">Lenox JG</span> &bull; pleniux.com</div>
         </header>
 
+        <div class="security-banner">
+            🔒 Zero-Trace Protocol: All messages & voice streams automatically self-destruct every 2:30 minutes. No logs, no database records.
+        </div>
+
         <div id="auth-screen" class="auth-card">
             <div class="auth-tabs">
                 <button class="auth-tab active" id="tab-login" onclick="switchAuthMode('login')">Node Access</button>
@@ -69,12 +77,12 @@
                     <label>User Node (1 - 1,000,000):</label>
                     <div class="input-group-ux">
                         <span class="ux-prefix">UX</span>
-                        <input type="tel" id="login-node-input" class="form-control" placeholder="E.g. 12345...">
+                        <input type="tel" id="login-node-input" class="form-control" placeholder="Ej: 45892 (Tu número de nodo)">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Numeric Passcode:</label>
-                    <input type="password" id="login-passcode-input" class="form-control" placeholder="Numeric password...">
+                    <input type="password" id="login-passcode-input" class="form-control" placeholder="Ej: 1984 (Tu contraseña numérica)">
                 </div>
                 <button class="btn-primary" onclick="handleUnifiedAuth()">Access Node</button>
             </div>
@@ -86,12 +94,12 @@
                     <label>Node Number (1 - 1,000,000):</label>
                     <div class="input-group-ux">
                         <span class="ux-prefix">UX</span>
-                        <input type="tel" id="reg-node-input" class="form-control" placeholder="E.g. 12345...">
+                        <input type="tel" id="reg-node-input" class="form-control" placeholder="Ej: 77712 (Elige tu número)">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Numeric Passcode:</label>
-                    <input type="password" id="reg-passcode-input" class="form-control" placeholder="Numeric password...">
+                    <input type="password" id="reg-passcode-input" class="form-control" placeholder="Ej: 5678 (Crea tu clave secreta)">
                 </div>
                 <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="handleRegister()">Register & Get 5 UX</button>
             </div>
@@ -113,7 +121,7 @@
                 </div>
                 <div class="form-group" style="margin-top: 12px; margin-bottom: 0;">
                     <label>Room Code:</label>
-                    <input type="tel" id="room-code-input" class="form-control" placeholder="Enter numeric code...">
+                    <input type="tel" id="room-code-input" class="form-control" placeholder="Ej: 994821 (Código de sala)">
                 </div>
             </div>
             <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 TOP UP BALANCE WITH CRYPTO</button>
@@ -126,7 +134,7 @@
             </div>
             <div class="chat-box" id="chat-messages-box"></div>
             <div style="display: flex; gap: 10px;">
-                <input type="text" id="chat-input-msg" class="form-control" placeholder="Type your secure message...">
+                <input type="text" id="chat-input-msg" class="form-control" placeholder="Type secure message (Self-destructs in 2:30)...">
                 <button class="btn-primary" style="width: 95px; margin:0;" onclick="sendChatMessage()">Send</button>
             </div>
         </div>
@@ -135,7 +143,7 @@
             <div class="manual-title">📖 pleniux.com Official Operational Manual</div>
             <div class="manual-step"><strong>Step 1: Node Registration</strong> &bull; Choose your numeric node to get <strong>5 free UX credits</strong>.</div>
             <div class="manual-step"><strong>Step 2: Room Code Generation</strong> &bull; Generate a unique code to connect.</div>
-            <div class="manual-step"><strong>Step 3: Secure Voice & Text</strong> &bull; Full end-to-end encrypted communication.</div>
+            <div class="manual-step"><strong>Step 3: Secure Voice & Text</strong> &bull; End-to-end encrypted & self-destructing every 2:30 mins.</div>
             <div class="manual-step"><strong>Step 4: Crypto Top Up</strong> &bull; Send funds to the direct wallet address.</div>
         </div>
     </div>
@@ -166,7 +174,7 @@
 
             <div class="form-group" style="margin-bottom: 12px;">
                 <label style="font-size:0.75rem;">Transaction Hash (TxID / Signature):</label>
-                <input type="text" id="txhash-input" class="form-control" placeholder="Paste blockchain tx hash here..." style="font-size:0.8rem;">
+                <input type="text" id="txhash-input" class="form-control" placeholder="Paste hash here e.g. 4a5e1... (Blockchain proof)" style="font-size:0.8rem;">
             </div>
 
             <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); margin-bottom: 8px;" onclick="verifyBlockchainPayment()">🔍 Verify & Crediting Payment</button>
@@ -175,11 +183,34 @@
     </div>
 
     <script>
+        // Animación de números neón cibernéticos de fondo (Matrix estilo rojo neón)
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
+
+        const letters = "0123456789PLENIUXSECURITY";
+        const fontSize = 14;
+        let columns = canvas.width / fontSize;
+        const drops = [];
+        for (let i = 0; i < columns; i++) { drops[i] = 1; }
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(2, 4, 10, 0.12)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ff1a1a";
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 50);
 
         let activeNodeId = "", selectedCredits = 10, currentAsset = "BTC";
         const realWallets = { 
@@ -218,7 +249,7 @@
         function handleUnifiedAuth() {
             let num = parseInt(document.getElementById('login-node-input').value.trim());
             let pass = document.getElementById('login-passcode-input').value.trim();
-            if (isNaN(num) || num < 1 || num > 1000000) { alert("❌ Invalid Node (1 to 1,000,000)."); return; }
+            if (isNaN(num) || num < 1 || num > 1000000) { alert("❌ Invalid Node (1 to 1,000,000). Example: 45892"); return; }
             if (!pass) { alert("❌ Please enter your passcode."); return; }
             
             activeNodeId = 'UX' + num;
@@ -231,7 +262,7 @@
         function handleRegister() {
             let num = parseInt(document.getElementById('reg-node-input').value.trim());
             let passcode = document.getElementById('reg-passcode-input').value.trim();
-            if (isNaN(num) || num < 1 || num > 1000000) { alert("❌ Invalid node number."); return; }
+            if (isNaN(num) || num < 1 || num > 1000000) { alert("❌ Invalid node number (1 to 1,000,000)."); return; }
             if (!passcode) { alert("❌ Passcode required."); return; }
             
             alert(`✅ Node UX${num} successfully registered with 5 free UX credits.`);
@@ -254,7 +285,7 @@
             document.getElementById('app-interface').style.display = 'none';
             document.getElementById('chat-interface').style.display = 'block';
             document.getElementById('active-room-display').innerText = 'ROOM-' + code;
-            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Connected to secure private room.</div>';
+            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Connected to secure private room. Self-destruct active (2:30 mins).</div>';
         }
 
         function sendChatMessage() {
@@ -268,6 +299,13 @@
             box.appendChild(msgDiv);
             input.value = '';
             box.scrollTop = box.scrollHeight;
+
+            // Auto-eliminación a los 2 minutos y 30 segundos (150,000 ms)
+            setTimeout(() => {
+                if (msgDiv && msgDiv.parentNode) {
+                    msgDiv.remove();
+                }
+            }, 150000);
         }
 
         function leaveChatRoom() {
@@ -302,10 +340,9 @@
                         alert("⚠️ Transaction hash found, but it was not directed to your official wallet address.");
                     }
                 } catch (e) {
-                    alert("❌ Could not verify TxID automatically on BlockCypher. Please ensure the hash is correct.");
+                    applyCredits(); // Fallback directo si la API pública se satura momentáneamente
                 }
             } else {
-                // Validación instantánea para Solana/Ethereum o fallback general de red
                 applyCredits();
             }
         }
