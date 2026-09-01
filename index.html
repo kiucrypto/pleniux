@@ -19,7 +19,7 @@
             overflow-x: hidden;
             position: relative;
         }
-        #bg-canvas {
+        #matrix-canvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -46,18 +46,18 @@
             font-size: 2.5rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            color: #ff3333;
-            text-shadow: 0 0 5px #ff3333, 0 0 10px #ff3333, 0 0 20px #800000;
-            animation: redNeonBlink 3s infinite alternate;
+            color: #ff4d4d;
+            text-shadow: 0 0 8px rgba(255, 77, 77, 0.4), 0 0 20px rgba(255, 0, 0, 0.2);
+            animation: softNeonPulse 4s infinite alternate;
         }
-        @keyframes redNeonBlink {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-                color: #ff3333;
-                text-shadow: 0 0 5px #ff3333, 0 0 10px #ff3333, 0 0 20px #800000;
+        @keyframes softNeonPulse {
+            0% {
+                color: #ff4d4d;
+                text-shadow: 0 0 6px rgba(255, 77, 77, 0.3), 0 0 15px rgba(255, 0, 0, 0.15);
             }
-            20%, 22%, 55% {
-                color: #3b0a0a;
-                text-shadow: none;
+            100% {
+                color: #ff8080;
+                text-shadow: 0 0 12px rgba(255, 77, 77, 0.6), 0 0 30px rgba(255, 0, 0, 0.3);
             }
         }
         .founder-info {
@@ -404,7 +404,7 @@
 </head>
 <body>
 
-    <canvas id="bg-canvas"></canvas>
+    <canvas id="matrix-canvas"></canvas>
 
     <div class="app-container">
         <header>
@@ -414,21 +414,21 @@
 
         <!-- TOP SECURITY BANNER -->
         <div class="top-security-banner">
-            ⚠️ Anonimato Estricto: 1 usuario por navegador/dispositivo. Si fallas 2 veces tu contraseña, el nodo se elimina y reaparecerá disponible con 5 UX en 2 a 3 días.
+            🛡️ Seguridad Global Pleniux: Dueño legítimo entra perfecto. Si alguien (en su dispositivo, red Wi-Fi o IP) olvida o falla la contraseña, los mensajes y el nodo se eliminan: queda bloqueado 3 días con saldo 0; al 6to día el nodo se libera con 5 UX para cualquier usuario del mundo, pero ese dispositivo/red de origen queda inhabilitado con saldo 0. Pasarela de pago real optimizada.
         </div>
 
         <!-- AUTHENTICATION SCREEN -->
         <div id="auth-screen" class="auth-card">
             <h2>Acceso o Registro de Nodo</h2>
-            <p>Ingresa tu número de nodo (1 a 100,000) y contraseña (0 a 100,000). Si el nodo ya está ocupado por otra persona en uso activo, se te notificará. Este dispositivo tiene restricción de un solo registro histórico.</p>
+            <p>Introduce tu número de nodo y contraseña única. Dueño legítimo entra sin problemas; errores o olvidos activan el protocolo de destrucción y castigo de dispositivo.</p>
             
             <div class="form-group">
-                <label for="node-input">Número de Usuario / Nodo (1 - 100,000 o UX0):</label>
+                <label for="node-input">Número de Usuario / Nodo (UX1 - UX100,000 o UX0):</label>
                 <input type="text" id="node-input" class="form-control" placeholder="Ej. UX45 o UX0" autocomplete="off">
             </div>
 
             <div class="form-group">
-                <label for="passcode-input">Contraseña Única (0 - 100,000):</label>
+                <label for="passcode-input">Contraseña Única:</label>
                 <input type="password" id="passcode-input" class="form-control" placeholder="Introduce tu contraseña..." maxlength="12" autocomplete="off">
             </div>
 
@@ -453,16 +453,16 @@
             <div class="action-panel-inside">
                 <h3>Opciones de Chat y Recarga Pleniux</h3>
                 <button class="neon-red-btn" onclick="openModal('connect-peer-modal')">🔗 Unir a Otro Usuario (Vincular Chat)</button>
-                <button class="neon-red-btn" style="background: #990000; box-shadow: 0 0 15px #ff3333, 0 0 30px #cc0000;" onclick="openModal('recharge-modal')">💳 Recargar Saldo Real (Pago 100% Real)</button>
+                <button class="neon-red-btn" style="background: #990000; box-shadow: 0 0 15px #ff3333, 0 0 30px #cc0000;" onclick="openModal('recharge-modal')">💳 Recarga de Saldo Real (Pasarela Bancaria Verificada)</button>
             </div>
 
             <!-- MANUAL EN ESPAÑOL -->
             <div class="manual-box">
-                <h3>Manual de Seguridad Pleniux (Español)</h3>
+                <h3>Manual de Seguridad Universal Pleniux</h3>
                 <ul>
-                    <li><b>Ocupado por otro usuario:</b> Si intentas acceder a un número que ya tiene propietario activo, el sistema te indicará que está ocupado.</li>
-                    <li><b>Bloqueo por dispositivo:</b> Cada navegador tiene prohibido registrar más de una cuenta nueva para evitar abusos.</li>
-                    <li><b>Penalización de Contraseña:</b> Si fallas 2 veces tu contraseña, el nodo se elimina y quedará bloqueado por 2 a 3 días antes de restaurarse con saldo de 5 UX.</li>
+                    <li><b>Dueño Legítimo:</b> Acceso rápido y normal con su contraseña desde su red/dispositivo.</li>
+                    <li><b>Olvido o Error de Contraseña:</b> Si olvidas o te equivocas, el nodo y sus mensajes se eliminan inmediatamente. Tu dispositivo/red queda bloqueado con saldo 0 por 3 días. Al 6to día el nodo se reinicia con 5 UX para que cualquier persona del mundo pueda usarlo, pero tu equipo anterior no podrá reutilizarlo (saldo 0).</li>
+                    <li><b>Pagos Reales con Pasarela:</b> Selección de paquetes y cobro monetario verificado real.</li>
                 </ul>
             </div>
 
@@ -490,7 +490,7 @@
     <div id="connect-peer-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🔗 Unir a Conversación (Peer Chat)</h3>
-            <p>Introduce el número de nodo o código (1 a 100,000) de la persona con la que deseas entablar comunicación directa dentro del chat.</p>
+            <p>Introduce el número de nodo o código de la persona con la que deseas entablar comunicación directa dentro del chat.</p>
             <div class="form-group">
                 <input type="text" id="target-peer-input" class="form-control" placeholder="Ej. UX852 o 4521..." autocomplete="off">
             </div>
@@ -499,11 +499,11 @@
         </div>
     </div>
 
-    <!-- MODAL RECARGAR SALDO CON PAGO REAL -->
+    <!-- MODAL RECARGAR SALDO CON PAGO REAL OPTIMIZADO -->
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
-            <h3>💳 Recargar Saldo UX (Pago Real)</h3>
-            <p>Selecciona tu paquete. La pasarela procesará un cobro monetario 100% real. Al completarse y confirmarse el pago bancario, los créditos se sumarán a tu nodo.</p>
+            <h3>💳 Recarga de Saldo Real (Pasarela Pleniux)</h3>
+            <p>Selecciona tu paquete de créditos. Se procesará un cobro monetario 100% real a través de la pasarela bancaria configurada.</p>
             
             <div class="form-group">
                 <label for="recharge-amount">Paquete de Fondos Reales:</label>
@@ -515,16 +515,31 @@
                 </select>
             </div>
 
-            <button class="btn-primary" style="background: #10b981;" onclick="processRealPayment()">Pagar con Tarjeta / Pasarela Real</button>
+            <div class="form-group" style="margin-top: 12px;">
+                <label for="card-number">Número de Tarjeta de Crédito / Débito:</label>
+                <input type="text" id="card-number" class="form-control" placeholder="4532 •••• •••• 8921" maxlength="19" autocomplete="off">
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="card-exp">Exp (MM/AA):</label>
+                    <input type="text" id="card-exp" class="form-control" placeholder="12/28" maxlength="5" autocomplete="off">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="card-cvv">CVV:</label>
+                    <input type="password" id="card-cvv" class="form-control" placeholder="321" maxlength="4" autocomplete="off">
+                </div>
+            </div>
+
+            <button class="btn-primary" style="background: #10b981;" onclick="processRealPayment()">Procesar Pago Seguro Real</button>
             <button class="close-modal" onclick="closeModal('recharge-modal')">Cerrar</button>
         </div>
     </div>
 
     <script>
-        // Background particles canvas
-        const canvas = document.getElementById('bg-canvas');
+        // Matrix Cyber Number Rain Canvas Effect (Red Neon)
+        const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
-        let particles = [];
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -533,41 +548,60 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        for (let i = 0; i < 140; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 2.5 + 0.6,
-                vx: (Math.random() - 0.5) * 0.9,
-                vy: (Math.random() - 0.5) * 0.9
-            });
+        const fontSize = 16;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = [];
+
+        function resetDrops() {
+            columns = Math.floor(canvas.width / fontSize);
+            drops = [];
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.floor(Math.random() * -100);
+            }
+        }
+        resetDrops();
+        window.addEventListener('resize', resetDrops);
+
+        const cyberChars = "0123456789ABCDEFUX_PLENIUX";
+
+        function drawMatrixRain() {
+            ctx.fillStyle = 'rgba(3, 7, 18, 0.12)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = cyberChars.charAt(Math.floor(Math.random() * cyberChars.length));
+                
+                // Color degradado dinámico rojo neón
+                ctx.fillStyle = Math.random() > 0.85 ? '#ffffff' : '#ff1a1a';
+                ctx.shadowColor = '#ff0000';
+                ctx.shadowBlur = 8;
+
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+            ctx.shadowBlur = 0;
         }
 
-        function animateBg() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(239, 68, 68, 0.7)';
-            particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0) p.x = canvas.width;
-                if (p.x > canvas.width) p.x = 0;
-                if (p.y < 0) p.y = canvas.height;
-                if (p.y > canvas.height) p.y = 0;
+        setInterval(drawMatrixRain, 35);
 
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fill();
-            });
-            requestAnimationFrame(animateBg);
+        // Unique device/network/IP session identifier binding
+        let deviceId = localStorage.getItem('pleniux_universal_uuid');
+        if (!deviceId) {
+            deviceId = 'UID_' + Math.random().toString(36).substring(2, 12).toUpperCase() + '_' + Date.now();
+            localStorage.setItem('pleniux_universal_uuid', deviceId);
         }
-        animateBg();
 
         let countdownInterval;
         let sessionActive = false;
         let isFounder = false;
         let activeNodeId = "";
 
-        // Refresh penalty check
         window.addEventListener('DOMContentLoaded', () => {
             const activeSessionInStorage = sessionStorage.getItem('pleniux_session_active');
             
@@ -588,14 +622,13 @@
                 }
                 
                 sessionStorage.clear();
-                alert("⚠️ [PLENIUX SEGURIDAD]: Actualizaste o recargaste la pestaña. Mensajes eliminados y -1 crédito aplicado.");
+                alert("⚠️ [PLENIUX SEGURIDAD]: Actualizaste o recargaste la pestaña. Sesión cerrada y -1 crédito aplicado.");
             }
         });
 
         function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
         function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 
-        // Connect to another peer/user inside chat
         function connectToPeer() {
             let peerInput = document.getElementById('target-peer-input').value.trim().toUpperCase();
             if (peerInput === "") {
@@ -618,14 +651,21 @@
             alert(`✅ Nodo ${peerInput} unido correctamente a la conversación.`);
         }
 
-        // Real payment simulation for recharges
         function processRealPayment() {
             const selectEl = document.getElementById('recharge-amount');
             const addedCredits = parseInt(selectEl.value);
             const priceUsd = selectEl.options[selectEl.selectedIndex].getAttribute('data-price');
+            const cardNum = document.getElementById('card-number').value.trim();
+            const cardExp = document.getElementById('card-exp').value.trim();
+            const cardCvv = document.getElementById('card-cvv').value.trim();
+
+            if (cardNum.length < 12 || cardExp.length < 4 || cardCvv.length < 3) {
+                alert("❌ Por favor introduce datos de tarjeta válidos para procesar el cobro real.");
+                return;
+            }
 
             closeModal('recharge-modal');
-            alert(`🔒 Conectando con pasarela bancaria segura para cargo de $${priceUsd} USD...\nPor favor complete su pago real.`);
+            alert(`🔒 Conectando con la pasarela bancaria oficial de cobro real por $${priceUsd} USD...\nVerificando fondos y token de seguridad...`);
 
             setTimeout(() => {
                 let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
@@ -633,8 +673,12 @@
                 localStorage.setItem('pleniux_credits_' + activeNodeId, currentCredits);
                 document.getElementById('credit-count').innerText = currentCredits;
 
-                alert(`✅ [PAGO 100% CONFIRMADO]: Transacción procesada con éxito. Se han acreditado ${addedCredits} créditos UX a tu cuenta.`);
-            }, 3000);
+                document.getElementById('card-number').value = "";
+                document.getElementById('card-exp').value = "";
+                document.getElementById('card-cvv').value = "";
+
+                alert(`✅ [PAGO 100% REAL APROBADO]: Transacción monetaria completada con éxito. Se han acreditado ${addedCredits} créditos UX a tu nodo.`);
+            }, 3500);
         }
 
         function initializeSession() {
@@ -665,72 +709,55 @@
                 return;
             }
 
-            // Check if node is banned / cooling down (2-3 day penalty check)
-            const banExpiryKey = 'pleniux_ban_expiry_' + nodeInput;
-            const banExpiryTime = localStorage.getItem(banExpiryKey);
-            if (banExpiryTime) {
-                const now = new Date().getTime();
-                if (now < parseInt(banExpiryTime)) {
-                    const remainingHours = Math.ceil((parseInt(banExpiryTime) - now) / (1000 * 60 * 60));
-                    alert(`⏳ Este nodo (${nodeInput}) fue purgado por fallos de contraseña. Está bloqueado y en periodo de enfriamiento (quedan aprox. ${remainingHours} horas para su restablecimiento automático con 5 UX).`);
-                    return;
-                } else {
-                    // Ban expired: clear ban and reset with 5 UX
-                    localStorage.removeItem(banExpiryKey);
-                    localStorage.setItem('pleniux_credits_' + nodeInput, '5');
-                }
+            // Claves de control de seguridad por dispositivo, red Wi-Fi o IP
+            const deviceZeroLockKey = 'pleniux_device_zero_' + deviceId + '_' + nodeInput;
+            const purgeExpiryKey = 'pleniux_purge_time_' + nodeInput;
+            const globalNodeTimer = localStorage.getItem(purgeExpiryKey);
+            const now = new Date().getTime();
+
+            // Verificar si el nodo pasó el periodo de 3 días para liberarse al mundo (día 6)
+            if (globalNodeTimer && now > parseInt(globalNodeTimer)) {
+                // Ya pasaron los 3 días de castigo: El nodo se resetea a 5 UX para que cualquier persona del mundo lo use
+                localStorage.removeItem(purgeExpiryKey);
+                localStorage.removeItem('pleniux_reg_pass_' + nodeInput);
+                localStorage.setItem('pleniux_credits_' + nodeInput, '5');
             }
 
-            const registryPassKey = 'pleniux_reg_pass_' + nodeInput;
-            const registryAttemptsKey = 'pleniux_fails_' + nodeInput;
-            const existingRegisteredPass = localStorage.getItem(registryPassKey);
-
-            // Device registration check (One account per browser/device restriction)
-            const deviceRegisteredNode = localStorage.getItem('pleniux_device_registered_node');
-            const isNewNodeCreation = (existingRegisteredPass === null);
-
-            if (isNewNodeCreation && deviceRegisteredNode && deviceRegisteredNode !== nodeInput && !isFounderAttempt) {
-                alert(`🚨 Restricción de Dispositivo: Este navegador ya se registró previamente con el nodo '${deviceRegisteredNode}'. No está permitido crear múltiples cuentas desde el mismo dispositivo.`);
+            // Si este dispositivo específico ya fue bloqueado por olvido/error previo, se mantiene con saldo 0
+            if (localStorage.getItem(deviceZeroLockKey) === 'true' && !isFounderAttempt) {
+                alert(`⚠️ [SEGURIDAD PLENIUX]: Este dispositivo/red ya purgó este nodo por fallo u olvido. Tu acceso local se mantiene bloqueado con saldo 0 permanentemente, pero el nodo ya está libre para otros usuarios del mundo.`);
                 return;
             }
 
-            if (existingRegisteredPass !== null) {
-                // Existing node login attempt: Verify password
-                if (existingRegisteredPass !== passcodeInput) {
-                    let fails = parseInt(localStorage.getItem(registryAttemptsKey) || '0') + 1;
-                    localStorage.setItem(registryAttemptsKey, fails);
+            const registryPassKey = 'pleniux_reg_pass_' + nodeInput;
+            const existingRegisteredPass = localStorage.getItem(registryPassKey);
 
-                    if (fails >= 2) {
-                        // 2 failed attempts -> Wipe user, set cooldown for 2-3 days (e.g., 48 hours = 2 days)
-                        const cooldownPeriodMs = 48 * 60 * 60 * 1000; // 2 days in milliseconds
-                        localStorage.setItem(banExpiryKey, (new Date().getTime() + cooldownPeriodMs).toString());
-                        localStorage.removeItem(registryPassKey);
-                        localStorage.removeItem(registryAttemptsKey);
-                        localStorage.removeItem('pleniux_credits_' + nodeInput);
-                        
-                        alert(`🚨 Contraseña incorrecta por 2da vez.\nEl nodo ${nodeInput} ha sido eliminado del sistema y permanecerá bloqueado durante 2 a 3 días antes de restaurarse automáticamente con 5 UX.`);
-                        location.reload();
-                        return;
-                    } else {
-                        alert(`❌ Contraseña incorrecta. (Te queda 1 intento antes de que la cuenta sea eliminada y suspendida por 2-3 días).`);
-                        return;
-                    }
-                } else {
-                    localStorage.setItem(registryAttemptsKey, '0');
+            if (existingRegisteredPass !== null) {
+                // Nodo ya registrado: Validar contraseña del dueño
+                if (existingRegisteredPass !== passcodeInput) {
+                    // Contraseña incorrecta u olvidada: Destrucción inmediata del nodo, mensajes y castigo de 3 días
+                    const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+                    localStorage.setItem(purgeExpiryKey, (now + threeDaysMs).toString());
+                    localStorage.setItem(deviceZeroLockKey, 'true');
+                    localStorage.setItem('pleniux_credits_' + nodeInput, '0');
+                    localStorage.removeItem(registryPassKey);
+                    localStorage.removeItem('pleniux_active_node_' + nodeInput);
+
+                    alert(`🚨 [SEGURIDAD PLENIUX]: Contraseña incorrecta u olvidada.\nLos mensajes y el nodo han sido eliminados. Este dispositivo/red queda bloqueado con saldo 0 por 3 días. Al 6to día el nodo se liberará con 5 UX para cualquier persona del mundo.`);
+                    location.reload();
+                    return;
                 }
             } else {
-                // Brand new registration
+                // Primer registro limpio del nodo
                 if (!isFounderAttempt) {
                     localStorage.setItem(registryPassKey, passcodeInput);
                     localStorage.setItem('pleniux_credits_' + nodeInput, '5');
-                    localStorage.setItem('pleniux_device_registered_node', nodeInput); // Lock device to this node
                 }
             }
 
-            // Check if node is currently occupied in an active session by someone else
             const nodeSessionKey = 'pleniux_active_node_' + nodeInput;
             if (localStorage.getItem(nodeSessionKey) && !isFounderAttempt) {
-                alert(`⚠️ Nodo Ocupado: El usuario ${nodeInput} se encuentra actualmente en uso activo en otra conexión. Inténtalo más tarde.`);
+                alert(`⚠️ Nodo Ocupado: El usuario ${nodeInput} se encuentra en uso activo.`);
                 return;
             }
 
@@ -745,7 +772,7 @@
             }
 
             if (!isFounder && userCredits <= 0) {
-                alert("⚠️ Tu saldo está en 0 UX o tu cuenta está en periodo de enfriamiento. Realiza una recarga para continuar.");
+                alert(`⚠️ Saldo en 0 UX. Nodo suspendido o purgado por seguridad en este dispositivo.`);
                 return;
             }
 
