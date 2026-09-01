@@ -8,7 +8,7 @@ const io = new Server(server);
 
 app.use(express.json());
 
-// Base de datos de saldos VIP iniciales
+// Base de datos en memoria para los saldos VIP iniciales de UX1 y UX0
 const nodeBalances = {
     'UX1': 10000,
     'UX0': 10000
@@ -257,9 +257,9 @@ app.get('/chat', (req, res) => {
                 });
 
                 function sendMessage() {
-                    const iconText = document.getElementById('messageInput').value;
-                    if(!iconText) return;
-                    socket.emit('chat-message', { room, user, text: iconText });
+                    const text = document.getElementById('messageInput').value;
+                    if(!text) return;
+                    socket.emit('chat-message', { room, user, text });
                     document.getElementById('messageInput').value = '';
                 }
 
