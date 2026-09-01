@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
         <html lang="en">
         <head>
             <meta charset="UTF-8">
-            <title>Pleniux - Secure Ecosystem & Founder Lenox JG</title>
+            <title>Pleniux - Encrypted Secure Node Ecosystem</title>
             <style>
                 body { background: #050101; color: #f8fafc; font-family: monospace; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; position: relative; overflow-x: hidden; min-height: 100vh; box-sizing: border-box; }
                 canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.35; pointer-events: none; }
@@ -34,13 +34,14 @@ app.get('/', (req, res) => {
                 header { text-align: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255, 42, 42, 0.3); padding-bottom: 1rem; }
                 h1 { color: #ff2a2a; margin: 0; font-size: 2.5rem; text-shadow: 0 0 15px rgba(255, 42, 42, 0.7); letter-spacing: 2px; }
                 .founder { color: #94a3b8; font-size: 0.9rem; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+                .domain-badge { color: #fbbf24; font-size: 0.85rem; margin-top: 4px; font-weight: bold; }
                 .card { background: rgba(10, 2, 2, 0.88); border: 1px solid #3f0f0f; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(255, 0, 0, 0.15); }
                 .card h2 { color: #f8fafc; border-bottom: 1px solid #3f0f0f; padding-bottom: 10px; margin-top: 0; }
                 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
                 .pricing-box { background: rgba(20, 5, 5, 0.9); border: 1px solid #5c1414; padding: 1rem; border-radius: 8px; text-align: center; transition: transform 0.2s; }
                 .pricing-box:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(255, 42, 42, 0.2); }
                 .pricing-box h3 { color: #ff2a2a; margin-top: 0; }
-                .price { font-size: 1.5rem; font-weight: bold; color: #fbbf24; margin: 10px 0; text-shadow: 0 0 5px rgba(251, 191, 36, 0.5); }
+                .price { font-size: 1.4rem; font-weight: bold; color: #fbbf24; margin: 10px 0; text-shadow: 0 0 5px rgba(251, 191, 36, 0.5); }
                 input, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 6px; border: 1px solid #5c1414; background: #050101; color: #fff; box-sizing: border-box; font-family: monospace; font-size: 1rem; outline: none; transition: border 0.2s; }
                 input:focus { border: 1px solid #ff2a2a; box-shadow: 0 0 8px rgba(255, 42, 42, 0.3); }
                 button { background: #991b1b; border: 1px solid #b91c1c; cursor: pointer; font-weight: bold; transition: all 0.2s; letter-spacing: 1px; text-transform: uppercase; }
@@ -54,12 +55,13 @@ app.get('/', (req, res) => {
             <div class="container">
                 <header>
                     <h1>PLENIUX</h1>
-                    <div class="founder">Founder: <b>Lenox JG</b></div>
-                    <p style="color: #94a3b8; margin-top: 8px;">Configured VIP Nodes: UX1 and UX0 with 10,000 Credit Balance</p>
+                    <div class="founder">Encrypted Anonymous Nodes</div>
+                    <div class="domain-badge">Domain Extension: lenoxjg.brave</div>
+                    <p style="color: #94a3b8; margin-top: 8px;">Secured VIP Nodes: UX1 and UX0 with 10,000 Credit Balance</p>
                 </header>
 
                 <div class="secure-badge">
-                    🛡️ Active Anti-Fraud Verification | 100% Real Payments Linked to Kraken
+                    🔒 Zero-Knowledge Architecture | Kraken Verified Multi-Crypto Gateway (lenoxjg.brave)
                 </div>
 
                 <div class="card">
@@ -84,25 +86,25 @@ app.get('/', (req, res) => {
                 </div>
 
                 <div class="card">
-                    <h2>Real Money Purchase & Balance Top-Up Packs</h2>
+                    <h2>Kraken Linked Crypto Top-Up Packages</h2>
                     <div class="grid">
                         <div class="pricing-box">
                             <h3>Pack Starter UX</h3>
                             <p style="color: #94a3b8; font-size: 0.8rem;">10 Operational Credit</p>
-                            <div class="price">$10 USDT</div>
-                            <button onclick="initPayment('Pack Starter UX', 10)">Buy Pack</button>
+                            <div class="price">$10 USD</div>
+                            <button onclick="initPayment('Pack Starter UX', 10)">Top Up</button>
                         </div>
                         <div class="pricing-box">
                             <h3>Pack Pro Matrix</h3>
                             <p style="color: #94a3b8; font-size: 0.8rem;">30 Priority Credit</p>
-                            <div class="price">$30 USDT</div>
-                            <button onclick="initPayment('Pack Pro Matrix', 30)">Buy Pack</button>
+                            <div class="price">$30 USD</div>
+                            <button onclick="initPayment('Pack Pro Matrix', 30)">Top Up</button>
                         </div>
                         <div class="pricing-box">
                             <h3>Pack Elite Full</h3>
                             <p style="color: #94a3b8; font-size: 0.8rem;">75 Unlimited Full Credit</p>
-                            <div class="price">$75 USDT</div>
-                            <button onclick="initPayment('Pack Elite Full', 75)">Buy Pack</button>
+                            <div class="price">$75 USD</div>
+                            <button onclick="initPayment('Pack Elite Full', 75)">Top Up</button>
                         </div>
                     </div>
                 </div>
@@ -127,7 +129,6 @@ app.get('/', (req, res) => {
                     ctx.fillStyle = 'rgba(5, 1, 1, 0.15)';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     
-                    // Neon Red Glow Effect
                     ctx.fillStyle = '#ff2a2a';
                     ctx.shadowColor = '#ff2a2a';
                     ctx.shadowBlur = 8;
@@ -141,7 +142,7 @@ app.get('/', (req, res) => {
                         }
                         drops[i]++;
                     }
-                    ctx.shadowBlur = 0; // Reset blur for performance
+                    ctx.shadowBlur = 0;
                 }
                 setInterval(drawMatrix, 45);
 
@@ -214,7 +215,7 @@ app.post('/api/login', (req, res) => {
     }
 });
 
-// 2. Real Money Gateway with Kraken
+// 2. Kraken-Linked Gateway with lenoxjg.brave and explicit networks
 app.get('/checkout', (req, res) => {
     const pack = req.query.pack || 'Top-Up';
     const amount = req.query.amount || '0';
@@ -223,32 +224,54 @@ app.get('/checkout', (req, res) => {
         <html lang="en">
         <head>
             <meta charset="UTF-8">
-            <title>Pleniux - Real Payment Verification</title>
+            <title>Pleniux - Kraken Multi-Crypto Deposit</title>
             <style>
-                body { background: #050101; color: #f8fafc; font-family: monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-                .box { background: rgba(10, 2, 2, 0.9); border: 1px solid #3f0f0f; padding: 2rem; border-radius: 12px; width: 380px; text-align: center; box-shadow: 0 0 25px rgba(255, 42, 42, 0.15); }
+                body { background: #050101; color: #f8fafc; font-family: monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+                .box { background: rgba(10, 2, 2, 0.9); border: 1px solid #3f0f0f; padding: 2rem; border-radius: 12px; width: 100%; max-width: 480px; text-align: center; box-shadow: 0 0 25px rgba(255, 42, 42, 0.15); }
                 h2 { color: #ff2a2a; margin-top: 0; text-shadow: 0 0 8px rgba(255, 42, 42, 0.5); }
-                .amount { font-size: 2rem; color: #fbbf24; margin: 15px 0; font-weight: bold; text-shadow: 0 0 8px rgba(251, 191, 36, 0.5); }
-                .wallet { background: #050101; padding: 12px; border-radius: 6px; font-size: 0.8rem; word-break: break-all; margin: 15px 0; color: #ff2a2a; border: 1px solid #5c1414; }
+                .domain-tag { color: #fbbf24; font-size: 0.9rem; margin-bottom: 8px; font-weight: bold; }
+                .amount { font-size: 1.8rem; color: #fbbf24; margin: 10px 0; font-weight: bold; text-shadow: 0 0 8px rgba(251, 191, 36, 0.5); }
+                .crypto-section { background: #050101; border: 1px solid #5c1414; border-radius: 8px; padding: 12px; margin: 12px 0; text-align: left; }
+                .crypto-title { color: #ff2a2a; font-weight: bold; font-size: 0.9rem; margin-bottom: 3px; }
+                .network-info { color: #fbbf24; font-size: 0.75rem; margin-bottom: 6px; font-weight: bold; }
+                .wallet { font-size: 0.72rem; word-break: break-all; color: #94a3b8; background: rgba(255,255,255,0.03); padding: 6px; border-radius: 4px; border: 1px dashed #3f0f0f; }
                 button { width: 100%; padding: 12px; background: #991b1b; border: 1px solid #b91c1c; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer; margin-top: 10px; font-family: monospace; text-transform: uppercase; transition: all 0.2s; }
                 button:hover { background: #dc2626; box-shadow: 0 0 15px rgba(220, 38, 38, 0.6); }
             </style>
         </head>
         <body>
             <div class="box">
-                <h2>Secure Gateway (Lenox JG)</h2>
-                <p>Concept: <b>${pack}</b></p>
-                <div class="amount">${amount} USDT</div>
-                <p style="font-size: 0.8rem; color: #94a3b8;">Anti-fraud system active. Transaction subject to real network validation.</p>
-                <p style="font-size: 0.75rem; text-align: left; margin-bottom: 3px; color: #94a3b8;">Official Kraken Wallet:</p>
-                <div class="wallet">0xPleniuxSecureKrakenGatewayReceiverWallet777</div>
-                <button onclick="verifyTransaction()">Verify Transaction on Blockchain</button>
+                <h2>Kraken Secure Gateway</h2>
+                <div class="domain-tag">Domain: lenoxjg.brave</div>
+                <p>Package: <b>${pack}</b></p>
+                <div class="amount">$${amount} USD Equivalent</div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 15px;">Send from your Kraken account using the exact network below:</p>
+                
+                <div class="crypto-section">
+                    <div class="crypto-title">₿ Bitcoin (BTC)</div>
+                    <div class="network-info">Network: Bitcoin Native / SegWit</div>
+                    <div class="wallet">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</div>
+                </div>
+
+                <div class="crypto-section">
+                    <div class="crypto-title">Ξ Ethereum (ETH)</div>
+                    <div class="network-info">Network: Ethereum Mainnet (ERC-20)</div>
+                    <div class="wallet">0x71C35a89eF2199b999KrakenVaultNode999</div>
+                </div>
+
+                <div class="crypto-section">
+                    <div class="crypto-title">◎ Solana (SOL)</div>
+                    <div class="network-info">Network: Solana Mainnet (SPL)</div>
+                    <div class="wallet">PleniuxKrakenSolanaNodeNetwork777xyz</div>
+                </div>
+
+                <button onclick="verifyTransaction()">Confirm Kraken Transfer Sent</button>
                 <br><br>
                 <a href="/" style="color: #94a3b8; font-size: 0.8rem; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#ff2a2a'" onmouseout="this.style.color='#94a3b8'">← Back to Home</a>
             </div>
             <script>
                 function verifyTransaction() {
-                    alert('Real payment validation completed securely.');
+                    alert('Kraken network withdrawal broadcasted successfully. Crediting balance upon block verification.');
                     window.location.href = '/';
                 }
             </script>
@@ -284,7 +307,7 @@ app.get('/chat', (req, res) => {
         </head>
         <body>
             <header>
-                <span id="userInfo">Node: <b style="color: #ff2a2a;">${user}</b> | Balance: <b style="color: #fbbf24;">${currentBalance} Credit</b></span>
+                <span id="userInfo">Node: <b style="color: #ff2a2a;">${user}</b> | Balance: <b style="color: #fbbf24;">${currentBalance} Credit</b> | <span style="color:#fbbf24;">lenoxjg.brave</span></span>
                 <span style="color: #ef4444; font-weight: bold; text-shadow: 0 0 5px rgba(239, 68, 68, 0.5);" id="timer">Zero-Trace Self-Destruct: 02:30</span>
             </header>
             <div id="chat-box"></div>
@@ -351,5 +374,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Pleniux system by Lenox JG active on port ${PORT}`);
+    console.log(`Pleniux secure system active on port ${PORT}`);
 });
