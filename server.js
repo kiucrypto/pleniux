@@ -8,13 +8,13 @@ const io = new Server(server);
 
 app.use(express.json());
 
-// Base de datos simulada en memoria para los saldos de nodos (UX1 y UX0 con 10,000 iniciales)
+// Base de datos de saldos VIP iniciales
 const nodeBalances = {
     'UX1': 10000,
     'UX0': 10000
 };
 
-// 1. Interfaz Principal: Fundador Lenox JG, Saldos VIP de UX1/UX0 (10,000), Packs y Canales
+// 1. Interfaz Principal (Login / Generar Canal / Packs)
 app.get('/', (req, res) => {
     res.send(`
         <!DOCTYPE html>
@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
             <meta charset="UTF-8">
             <title>Pleniux - Secure Ecosystem & Founder Lenox JG</title>
             <style>
-                body { background: #020617; color: #f8fafc; font-family: monospace; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; position: relative; overflow-x: hidden; min-height: 100vh; }
+                body { background: #020617; color: #f8fafc; font-family: monospace; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; position: relative; overflow-x: hidden; min-height: 100vh; box-sizing: border-box; }
                 canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.25; pointer-events: none; }
                 .container { width: 100%; max-width: 800px; z-index: 1; }
                 header { text-align: center; margin-bottom: 2rem; border-bottom: 1px solid rgba(56, 189, 248, 0.3); padding-bottom: 1rem; }
@@ -46,28 +46,26 @@ app.get('/', (req, res) => {
                 <header>
                     <h1>PLENIUX</h1>
                     <div class="founder">Fundador: <b>Lenox JG</b></div>
-                    <p style="color: #94a3b8; margin-top: 8px;">Nodos VIP Configurados: UX1 y UX0 con saldo de 10,000</p>
+                    <p style="color: #94a3b8; margin-top: 8px;">Nodos VIP configurados: UX1 y UX0 con 10,000 de saldo</p>
                 </header>
 
                 <div class="secure-badge">
                     🛡️ Verificación Antifraude Activa | Pagos 100% Reales Vinculados a Kraken
                 </div>
 
-                <!-- Panel de Acceso -->
                 <div class="card">
                     <h2>Generar o Unirse a Canal Seguro (Auto-destrucción 02:30)</h2>
-                    <p style="font-size: 0.85rem; color: #94a3b8;">Los usuarios UX1 y UX0 poseen un saldo preferencial de 10,000 pre-cargados.</p>
-                    <input type="text" id="nodeUser" value="UX-" inputmode="numeric" placeholder="Usuario / Nodo (Ej: UX1 o UX0)">
+                    <p style="font-size: 0.85rem; color: #94a3b8;">Ingresa tu usuario (ej. UX1, UX0 o UX-99) y conéctate al canal cifrado en vivo.</p>
+                    <input type="text" id="nodeUser" value="UX-" inputmode="numeric" placeholder="Usuario / Nodo">
                     <div style="display: flex; gap: 10px; margin-top: 10px;">
                         <button onclick="generateRoom()" style="background: #059669;">Generar Nuevo Canal</button>
                         <button onclick="joinRoom()" style="background: #2563eb;">Unirse a Canal</button>
                     </div>
-                    <input type="text" id="roomCode" inputmode="numeric" placeholder="Código numérico del canal" style="margin-top: 10px;">
+                    <input type="text" id="roomCode" inputmode="numeric" placeholder="Código numérico del canal (Para unirse)" style="margin-top: 10px;">
                 </div>
 
-                <!-- Packs y Precios Reales -->
                 <div class="card">
-                    <h2>Packs de Compra y Recarga de Saldo (Verificación Real)</h2>
+                    <h2>Packs de Compra y Recarga de Saldo</h2>
                     <div class="grid">
                         <div class="pricing-box">
                             <h3>Pack Starter UX</h3>
@@ -92,7 +90,6 @@ app.get('/', (req, res) => {
             </div>
 
             <script>
-                // Fondo Matrix de ciber-números
                 const canvas = document.getElementById('matrixCanvas');
                 const ctx = canvas.getContext('2d');
                 function resize() {
@@ -126,11 +123,11 @@ app.get('/', (req, res) => {
                 function generateRoom() {
                     const user = document.getElementById('nodeUser').value.trim();
                     if(!user || user === 'UX-') {
-                        alert('Ingresa tu identificador de nodo (Ej: UX1, UX0 o UX-99)');
+                        alert('Ingresa tu identificador de nodo (Ej: UX1, UX0)');
                         return;
                     }
                     const randomCode = Math.floor(1000 + Math.random() * 9000);
-                    window.location.href = \`/chat?user=\${encodeURIComponent(user)}&room=\${randomCode}\`;
+                    window.location.href = '/chat?user=' + encodeURIComponent(user) + '&room=' + randomCode;
                 }
 
                 function joinRoom() {
@@ -140,11 +137,11 @@ app.get('/', (req, res) => {
                         alert('Completa tu usuario y el código del canal.');
                         return;
                     }
-                    window.location.href = \`/chat?user=\${encodeURIComponent(user)}&room=\${encodeURIComponent(room)}\`;
+                    window.location.href = '/chat?user=' + encodeURIComponent(user) + '&room=' + encodeURIComponent(room);
                 }
 
                 function initPayment(packName, amount) {
-                    window.location.href = \`/checkout?pack=\${encodeURIComponent(packName)}&amount=\${amount}\`;
+                    window.location.href = '/checkout?pack=' + encodeURIComponent(packName) + '&amount=' + amount;
                 }
             </script>
         </body>
@@ -152,7 +149,7 @@ app.get('/', (req, res) => {
     `);
 });
 
-// 2. Pasarela de Pagos Reales con Kraken (Verificación Antifraude)
+// 2. Pasarela de Pagos Reales con Kraken
 app.get('/checkout', (req, res) => {
     const pack = req.query.pack || 'Recarga';
     const amount = req.query.amount || '0';
@@ -194,14 +191,14 @@ app.get('/checkout', (req, res) => {
     `);
 });
 
-// 3. Sala de Chat con Saldo dinámico (UX1 y UX0 con 10,000) y Temporizador de 02:30
+// 3. Sala de Chat con Temporizador estricto de 02:30 y Saldos de UX1 / UX0
 app.get('/chat', (req, res) => {
     const user = req.query.user || 'UX-Anónimo';
-    // Si el usuario es UX1 o UX0, se le asignan 10,000 de saldo automáticamente
-    let currentBalance = 3; // Bono general por defecto
-    if (user.toUpperCase() === 'UX1' || user.toUpperCase() === 'UX-UX1') {
+    let currentBalance = 3; 
+    const upperUser = user.toUpperCase().replace('UX-', '');
+    if (upperUser === 'UX1' || upperUser === '1') {
         currentBalance = nodeBalances['UX1'];
-    } else if (user.toUpperCase() === 'UX0' || user.toUpperCase() === 'UX-UX0') {
+    } else if (upperUser === 'UX0' || upperUser === '0') {
         currentBalance = nodeBalances['UX0'];
     }
 
@@ -212,7 +209,7 @@ app.get('/chat', (req, res) => {
             <meta charset="UTF-8">
             <title>Pleniux - Live Encrypted Session</title>
             <style>
-                body { background: #020617; color: #f8fafc; font-family: monospace; display: flex; flex-direction: column; height: 100vh; margin: 0; }
+                body { background: #020617; color: #f8fafc; font-family: monospace; display: flex; flex-direction: column; height: 100vh; margin: 0; box-sizing: border-box; }
                 header { background: rgba(15, 23, 42, 0.9); padding: 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; font-size: 0.9rem; }
                 #chat-box { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
                 .message { background: rgba(30, 41, 59, 0.8); padding: 10px 14px; border-radius: 8px; max-width: 70%; word-break: break-word; border: 1px solid #334155; }
@@ -240,7 +237,7 @@ app.get('/chat', (req, res) => {
                 const socket = io();
                 socket.emit('join-room', { room, user });
 
-                // Temporizador exacto de 2 minutos y 30 segundos (150 segundos)
+                // Temporizador de 02:30 (150 segundos) exacto
                 let tSecs = 150;
                 const countdown = setInterval(() => {
                     if(tSecs <= 0) {
@@ -289,10 +286,6 @@ io.on('connection', (socket) => {
     socket.on('chat-message', (data) => {
         io.to(data.room).emit('chat-message', data);
     });
-});
-
-app.post('/api/webhook-payment', (req, res) => {
-    res.status(200).json({ status: 'verified', anti_fraud: true });
 });
 
 const PORT = process.env.PORT || 3000;
