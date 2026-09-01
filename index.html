@@ -104,6 +104,31 @@
             margin-bottom: 18px;
             line-height: 1.4;
         }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #334155;
+        }
+        .auth-tab {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #9ca3af;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+        .auth-tab.active {
+            color: #ef4444;
+            border-bottom: 2px solid #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+
         .form-group {
             margin-bottom: 15px;
         }
@@ -147,19 +172,6 @@
         .btn-primary:hover {
             background: #dc2626;
             box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
-        }
-
-        .founder-panel-badge {
-            background: linear-gradient(135deg, #7f1d1d, #450a0a);
-            border: 1px solid #ef4444;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #fca5a5;
-            letter-spacing: 1px;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
         }
 
         .app-interface {
@@ -280,7 +292,7 @@
             border-radius: 6px;
             margin-bottom: 10px;
             font-family: monospace;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: #38bdf8;
             word-break: break-all;
             text-align: center;
@@ -351,12 +363,6 @@
             border: 1px solid rgba(239, 68, 68, 0.3);
             align-self: flex-end;
         }
-        .message.founder-outgoing {
-            background: rgba(127, 29, 29, 0.3);
-            border: 1px solid #ef4444;
-            align-self: flex-end;
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
-        }
         .message.system-alert {
             background: rgba(220, 38, 38, 0.2);
             border: 1px dashed #ef4444;
@@ -424,38 +430,60 @@
     <div class="app-container">
         <header>
             <h1>Pleniux</h1>
-            <div class="founder-info">SECURE ANONYMOUS NETWORK &bull; FOUNDER: LENOX JG</div>
+            <div class="founder-info">SECURE ANONYMOUS NETWORK &bull; ENCRYPTED GATEWAY</div>
         </header>
 
         <!-- TOP SECURITY BANNER -->
         <div class="top-security-banner">
-            🛡️ 3-min session timer. 6-second grace window to return. Exiting or finishing deducts 1 credit.
+            🛡️ Continuous 3-min intervals. Automatically deducts 1 credit and starts a new cycle when time hits zero.
         </div>
 
-        <!-- AUTHENTICATION SCREEN -->
+        <!-- AUTHENTICATION & REGISTRATION SCREEN -->
         <div id="auth-screen" class="auth-card">
-            <h2>Node Access & Registration</h2>
-            <p>Enter your unique node number and <b>numeric</b> secure passcode. UX0 requires passcode 1971.</p>
-            
-            <div class="form-group">
-                <label for="node-input">User Node (UX1 - UX100,000 or UX0):</label>
-                <input type="text" id="node-input" class="form-control" placeholder="E.g. UX45 or UX0" autocomplete="off">
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login" onclick="switchAuthMode('login')">Access Node</button>
+                <button class="auth-tab" id="tab-register" onclick="switchAuthMode('register')">New Registration</button>
             </div>
 
-            <div class="form-group">
-                <label for="passcode-input">Numeric Passcode (Numbers Only):</label>
-                <input type="password" id="passcode-input" class="form-control" placeholder="Enter numbers only..." maxlength="12" autocomplete="off" inputmode="numeric">
+            <!-- LOGIN FORM -->
+            <div id="form-login-container">
+                <h2>Node Login</h2>
+                <p>Enter your registered node number (UX1 - UX100000) and your numeric passcode.</p>
+                
+                <div class="form-group">
+                    <label for="login-node-input">User Node:</label>
+                    <input type="text" id="login-node-input" class="form-control" placeholder="E.g. UX45..." autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="login-passcode-input">Numeric Passcode:</label>
+                    <input type="password" id="login-passcode-input" class="form-control" placeholder="Numbers only..." maxlength="12" autocomplete="off" inputmode="numeric">
+                </div>
+
+                <button class="btn-primary" onclick="handleLogin()">Access Secure Node</button>
             </div>
 
-            <button class="btn-primary" onclick="initializeSession()">Enter / Register Unique Node</button>
+            <!-- REGISTRATION FORM -->
+            <div id="form-register-container" style="display: none;">
+                <h2>Register New Node</h2>
+                <p>Claim your unique node (1 to 100,000) and set a secure numeric passcode so no one else can use it.</p>
+                
+                <div class="form-group">
+                    <label for="reg-node-input">Choose Node Number (1 - 100,000):</label>
+                    <input type="number" id="reg-node-input" class="form-control" placeholder="E.g. 777..." min="1" max="100000" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-passcode-input">Create Numeric Passcode:</label>
+                    <input type="password" id="reg-passcode-input" class="form-control" placeholder="Numbers only (e.g. 1234)..." maxlength="12" autocomplete="off" inputmode="numeric">
+                </div>
+
+                <button class="btn-primary" style="background: #10b981;" onclick="handleRegister()">Register & Claim Node (5 Free UX)</button>
+            </div>
         </div>
 
         <!-- MAIN CHAT INTERFACE -->
         <div id="app-interface" class="app-interface">
-            
-            <div id="founder-panel-indicator" class="founder-panel-badge" style="display: none;">
-                👑 SUPREME CONTROL PANEL &bull; EXCLUSIVE CREATOR NODE LENOX JG (UX0) ACTIVE 👑
-            </div>
 
             <div class="status-panel">
                 <div>Node: <span style="color: #ef4444;" id="display-node">UX1</span></div>
@@ -465,20 +493,20 @@
                 <button class="exit-btn" onclick="handleManualExit()">EXIT</button>
             </div>
 
-            <!-- SUPER RED BUTTONS PANEL INSIDE CHAT -->
+            <!-- ACTION PANEL INSIDE CHAT -->
             <div class="action-panel-inside">
                 <h3>Pleniux Chat & Rooms Manager</h3>
                 <button class="neon-red-btn" onclick="openModal('room-modal')">🚪 Create / Join Chat Room (1 - 100,000)</button>
-                <button class="neon-red-btn" style="background: #990000; box-shadow: 0 0 15px #ff3333, 0 0 30px #cc0000;" onclick="openModal('recharge-modal')">🪙 Official Crypto Balance Recharge</button>
+                <button class="neon-red-btn" style="background: #990000; box-shadow: 0 0 15px #ff3333, 0 0 30px #cc0000;" onclick="openModal('recharge-modal')">🪙 Official Crypto Recharge (BTC, ETH, SOL)</button>
             </div>
 
-            <!-- MANUAL IN ENGLISH -->
+            <!-- MANUAL -->
             <div class="manual-box">
-                <h3>Pleniux Universal Security Manual</h3>
+                <h3>Pleniux Security Manual</h3>
                 <ul>
                     <li><b>Chat Rooms:</b> Create or join a private group room using any code between 1 and 100,000.</li>
-                    <li><b>Session Duration:</b> Each active window lasts 3 minutes before concluding and deducting 1 credit.</li>
-                    <li><b>Grace Period:</b> You have 6 seconds to return if you switch tabs or leave the browser.</li>
+                    <li><b>Continuous Cycle:</b> Every 3 minutes deducts 1 credit automatically and rolls over seamlessly into a fresh 3-minute session without freezing.</li>
+                    <li><b>Grace Period:</b> You have 6 seconds to return if you leave the browser tab.</li>
                 </ul>
             </div>
 
@@ -498,7 +526,7 @@
         </div>
 
         <footer>
-            CREATOR: LENOX JG &bull; NODE UX0 &bull; 01-09-2026
+            PLENIUX SECURE NETWORK &bull; 2026
         </footer>
     </div>
 
@@ -506,7 +534,7 @@
     <div id="room-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🚪 Create or Join Chat Room</h3>
-            <p>Enter a numerical code between <b>1 and 100,000</b> to create a new private group chat or join an existing one with that code.</p>
+            <p>Enter a numerical code between <b>1 and 100,000</b> to create a new private group chat or join an existing one.</p>
             <div class="form-group">
                 <input type="number" id="room-code-input" class="form-control" placeholder="E.g. 7777..." min="1" max="100000" autocomplete="off">
             </div>
@@ -515,35 +543,40 @@
         </div>
     </div>
 
-    <!-- MODAL RECHARGE BALANCE -->
+    <!-- MODAL RECHARGE BALANCE (BTC, ETH, SOL) -->
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🪙 Official Crypto Payment Gateway</h3>
-            <p>Select your credit package. Send funds to your designated official crypto addresses below.</p>
+            <p>Select your credit package and send funds to your designated official wallet addresses below (BTC, ETH, SOL only).</p>
             
             <div class="form-group">
                 <label for="recharge-amount">Select Fund Package:</label>
                 <select id="recharge-amount" class="form-control" onchange="updateCryptoDetails()">
-                    <option value="10" data-crypto="1.5 TON / USDT ($5.00 USD)">10 UX Credits - 1.5 TON / USDT ($5.00 USD)</option>
-                    <option value="50" data-crypto="6.0 TON / USDT ($20.00 USD)">50 UX Credits - 6.0 TON / USDT ($20.00 USD)</option>
-                    <option value="200" data-crypto="21.0 TON / USDT ($70.00 USD)">200 UX Credits - 21.0 TON / USDT ($70.00 USD)</option>
-                    <option value="500" data-crypto="45.0 TON / USDT ($150.00 USD)">500 UX Credits - 45.0 TON / USDT ($150.00 USD)</option>
+                    <option value="10" data-crypto="10 Credits ($5.00 USD equivalent)">10 UX Credits - ($5.00 USD)</option>
+                    <option value="50" data-crypto="50 Credits ($20.00 USD equivalent)">50 UX Credits - ($20.00 USD)</option>
+                    <option value="200" data-crypto="200 Credits ($70.00 USD equivalent)">200 UX Credits - ($70.00 USD)</option>
+                    <option value="500" data-crypto="500 Credits ($150.00 USD equivalent)">500 UX Credits - ($150.00 USD)</option>
                 </select>
             </div>
 
             <div class="form-group" style="margin-top: 10px;">
-                <label>Official Uphold Public Deposit Address:</label>
-                <div class="crypto-box">Uphold: UQBy8Z_PleniuxNodeReceiverAddress9910CryptoVault</div>
+                <label>Bitcoin (BTC) Official Wallet Address:</label>
+                <div class="crypto-box">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</div>
             </div>
 
             <div class="form-group">
-                <label>Official Trust Wallet / Web3 Domain Address:</label>
-                <div class="crypto-box">lenoxjg.brave / 0xLenoxJG...TrustWalletVault</div>
+                <label>Ethereum (ETH) Official Wallet Address:</label>
+                <div class="crypto-box">0x71C...B892PleniuxSecureVaultETH</div>
             </div>
 
             <div class="form-group">
-                <label>Exact Amount Required:</label>
-                <div class="crypto-box" id="crypto-amount-display" style="color: #f59e0b; font-weight: bold; font-size: 0.9rem;">1.5 TON / USDT</div>
+                <label>Solana (SOL) Official Wallet Address:</label>
+                <div class="crypto-box">PLNX99SolanaVaultReceiverAddress9182371</div>
+            </div>
+
+            <div class="form-group">
+                <label>Selected Package Details:</label>
+                <div class="crypto-box" id="crypto-amount-display" style="color: #f59e0b; font-weight: bold; font-size: 0.9rem;">10 Credits ($5.00 USD)</div>
             </div>
 
             <button class="btn-primary" style="background: #10b981;" onclick="verifyCryptoPayment()">Verify Blockchain Transaction</button>
@@ -604,15 +637,8 @@
 
         setInterval(drawMatrixRain, 35);
 
-        let deviceId = localStorage.getItem('pleniux_universal_uuid');
-        if (!deviceId) {
-            deviceId = 'UID_' + Math.random().toString(36).substring(2, 12).toUpperCase() + '_' + Date.now();
-            localStorage.setItem('pleniux_universal_uuid', deviceId);
-        }
-
         let countdownInterval;
         let sessionActive = false;
-        let isFounder = false;
         let activeNodeId = "";
         let currentRoom = "GENERAL";
         let graceTimer = null;
@@ -620,6 +646,25 @@
         window.addEventListener('DOMContentLoaded', () => {
             updateCryptoDetails();
         });
+
+        function switchAuthMode(mode) {
+            const loginContainer = document.getElementById('form-login-container');
+            const registerContainer = document.getElementById('form-register-container');
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+
+            if (mode === 'login') {
+                loginContainer.style.display = 'block';
+                registerContainer.style.display = 'none';
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+            } else {
+                loginContainer.style.display = 'none';
+                registerContainer.style.display = 'block';
+                tabRegister.classList.add('active');
+                tabLogin.classList.remove('active');
+            }
+        }
 
         function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
         function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
@@ -659,7 +704,7 @@
             const cryptoText = selectEl.options[selectEl.selectedIndex].getAttribute('data-crypto');
 
             closeModal('recharge-modal');
-            alert(`🔄 Connecting to decentralized network & checking Uphold / Trust Wallet destination...\nScanning blockchain mempool for incoming transfer (${cryptoText})...`);
+            alert(`🔄 Scanning Bitcoin (BTC), Ethereum (ETH) & Solana (SOL) mempools for incoming transfer (${cryptoText})...`);
 
             setTimeout(() => {
                 let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
@@ -671,90 +716,79 @@
             }, 3000);
         }
 
-        function initializeSession() {
-            let nodeInput = document.getElementById('node-input').value.trim().toUpperCase();
-            const passcodeInput = document.getElementById('passcode-input').value.trim();
+        function handleRegister() {
+            let nodeNum = document.getElementById('reg-node-input').value.trim();
+            let passcode = document.getElementById('reg-passcode-input').value.trim();
+
+            if (!nodeNum || isNaN(nodeNum) || parseInt(nodeNum) < 1 || parseInt(nodeNum) > 100000) {
+                alert("❌ Invalid Node Number: Please enter a number between 1 and 100,000.");
+                return;
+            }
+
+            const numericRegex = /^[0-9]+$/;
+            if (!numericRegex.test(passcode)) {
+                alert("❌ Access Denied: Passcodes must contain numbers only.");
+                return;
+            }
+
+            let fullNodeId = 'UX' + parseInt(nodeNum);
+            const registryPassKey = 'pleniux_reg_pass_' + fullNodeId;
+
+            if (localStorage.getItem(registryPassKey) !== null) {
+                alert(`⚠️ Node ${fullNodeId} is already registered by someone else. Choose another number or log in.`);
+                return;
+            }
+
+            localStorage.setItem(registryPassKey, passcode);
+            localStorage.setItem('pleniux_credits_' + fullNodeId, '5');
+
+            alert(`✅ Success! Node ${fullNodeId} has been registered securely with your numeric passcode. You received 5 free UX credits.`);
+            
+            document.getElementById('login-node-input').value = fullNodeId;
+            document.getElementById('login-passcode-input').value = "";
+            switchAuthMode('login');
+        }
+
+        function handleLogin() {
+            let nodeInput = document.getElementById('login-node-input').value.trim().toUpperCase();
+            const passcodeInput = document.getElementById('login-passcode-input').value.trim();
 
             if (!nodeInput.startsWith('UX') && !isNaN(nodeInput)) {
                 nodeInput = 'UX' + nodeInput;
             }
 
-            const numericRegex = /^[0-9]+$/;
-            if (!numericRegex.test(passcodeInput)) {
-                alert("❌ Access Denied: Passcodes must contain numbers only (no letters allowed).");
-                return;
-            }
-
-            const isFounderAttempt = (nodeInput === 'UX0' && passcodeInput === '1971');
-            const founderWrongPass = (nodeInput === 'UX0' && passcodeInput !== '1971');
-
-            if (founderWrongPass) {
-                alert("❌ Access Denied: UX0 requires the exact unique creator numeric password (1971).");
-                return;
-            }
-
             const standardNodeRegex = /^UX([1-9][0-9]{0,4}|100000)$/;
-            if (!isFounderAttempt && !standardNodeRegex.test(nodeInput)) {
-                alert("Invalid identifier. Use 'UX0' or a number between 'UX1' and 'UX100000'.");
-                return;
-            }
-
-            const deviceZeroLockKey = 'pleniux_device_zero_' + deviceId + '_' + nodeInput;
-            const purgeExpiryKey = 'pleniux_purge_time_' + nodeInput;
-            const globalNodeTimer = localStorage.getItem(purgeExpiryKey);
-            const now = new Date().getTime();
-
-            if (globalNodeTimer && now > parseInt(globalNodeTimer)) {
-                localStorage.removeItem(purgeExpiryKey);
-                localStorage.removeItem('pleniux_reg_pass_' + nodeInput);
-                localStorage.setItem('pleniux_credits_' + nodeInput, '5');
-            }
-
-            if (localStorage.getItem(deviceZeroLockKey) === 'true' && !isFounderAttempt) {
-                alert(`⚠️ [SECURITY NOTICE]: Access restricted on this local device due to previous login error.`);
+            if (!standardNodeRegex.test(nodeInput)) {
+                alert("Invalid identifier format. Use 'UX' followed by a number between 1 and 100000.");
                 return;
             }
 
             const registryPassKey = 'pleniux_reg_pass_' + nodeInput;
             const existingRegisteredPass = localStorage.getItem(registryPassKey);
 
-            if (existingRegisteredPass !== null) {
-                if (existingRegisteredPass !== passcodeInput) {
-                    const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
-                    localStorage.setItem(purgeExpiryKey, (now + threeDaysMs).toString());
-                    localStorage.setItem(deviceZeroLockKey, 'true');
-                    localStorage.setItem('pleniux_credits_' + nodeInput, '0');
-                    localStorage.removeItem(registryPassKey);
-                    localStorage.removeItem('pleniux_active_node_' + nodeInput);
-
-                    alert(`🚨 [SECURITY PROTOCOL]: Passcode error detected on unique node. Data and balance purged.`);
-                    location.reload();
-                    return;
-                }
-            } else {
-                if (!isFounderAttempt) {
-                    localStorage.setItem(registryPassKey, passcodeInput);
-                    localStorage.setItem('pleniux_credits_' + nodeInput, '5');
-                }
-            }
-
-            const nodeSessionKey = 'pleniux_active_node_' + nodeInput;
-            if (localStorage.getItem(nodeSessionKey) && !isFounderAttempt) {
-                alert(`⚠️ Node Busy: User ${nodeInput} is currently active elsewhere.`);
+            if (existingRegisteredPass === null) {
+                alert(`⚠️ Node ${nodeInput} is not registered yet. Please click on 'New Registration' first.`);
+                switchAuthMode('register');
+                document.getElementById('reg-node-input').value = nodeInput.replace('UX', '');
                 return;
             }
 
-            let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + nodeInput)) !== null ? parseInt(localStorage.getItem('pleniux_credits_' + nodeInput)) : 5;
-
-            if (isFounderAttempt) {
-                isFounder = true;
-                userCredits = 200;
-                localStorage.setItem('pleniux_credits_UX0', 200);
-                document.getElementById('founder-panel-indicator').style.display = 'block';
+            if (existingRegisteredPass !== passcodeInput) {
+                alert(`🚨 [SECURITY PROTOCOL]: Incorrect passcode for node ${nodeInput}. Access denied.`);
+                return;
             }
 
-            if (!isFounder && userCredits <= 0) {
-                alert(`⚠️ Balance at 0 UX. Node suspended.`);
+            const nodeSessionKey = 'pleniux_active_node_' + nodeInput;
+            if (localStorage.getItem(nodeSessionKey)) {
+                alert(`⚠️ Node Busy: User ${nodeInput} is currently active in another session.`);
+                return;
+            }
+
+            let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + nodeInput));
+            if (isNaN(userCredits)) userCredits = 5;
+
+            if (userCredits <= 0) {
+                alert(`⚠️ Balance at 0 UX. Node suspended. Please recharge via BTC, ETH or SOL.`);
                 return;
             }
 
@@ -768,60 +802,65 @@
             document.getElementById('app-interface').style.display = 'block';
 
             sessionActive = true;
-            startTimer(180);
+            startContinuousTimer(180);
         }
 
-        function startTimer(duration) {
+        // NUEVO: Temporizador continuo que descuenta y arranca un ciclo nuevo de 3 min automáticamente
+        function startContinuousTimer(duration) {
             let timeLeft = duration;
             const timerEl = document.getElementById('timer');
             
+            if (countdownInterval) clearInterval(countdownInterval);
+
             countdownInterval = setInterval(() => {
+                if (!sessionActive) return;
+
                 let minutes = Math.floor(timeLeft / 60);
                 let seconds = timeLeft % 60;
                 timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 
                 if (timeLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    concludeSessionNaturally();
+                    // Se acabaron los 3 minutos: descontar crédito y renovar ciclo
+                    let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
+
+                    if (userCredits > 1) {
+                        userCredits--;
+                        localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
+                        document.getElementById('credit-count').innerText = userCredits;
+
+                        const msgBox = document.getElementById('message-box');
+                        const alertDiv = document.createElement('div');
+                        alertDiv.classList.add('message', 'system-alert');
+                        alertDiv.innerText = `[CYCLE CONCLUDED]: 3 minutes elapsed. -1 Credit deducted. Starting new 3-minute session...`;
+                        msgBox.appendChild(alertDiv);
+                        msgBox.scrollTop = msgBox.scrollHeight;
+
+                        // Reiniciar conteo a 3 minutos sin congelar ni salir
+                        timeLeft = 180;
+                    } else if (userCredits === 1) {
+                        // Último crédito consumido, se queda en 0 y suspende
+                        userCredits = 0;
+                        localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
+                        document.getElementById('credit-count').innerText = userCredits;
+                        
+                        sessionActive = false;
+                        clearInterval(countdownInterval);
+                        if (activeNodeId) localStorage.removeItem('pleniux_active_node_' + activeNodeId);
+
+                        alert("⚠️ Balance exhausted (0 UX). Session concluded. Please recharge via BTC, ETH or SOL.");
+                        location.reload();
+                        return;
+                    }
                 }
                 timeLeft--;
             }, 1000);
         }
 
-        function concludeSessionNaturally() {
-            if (!sessionActive) return;
-            sessionActive = false;
-
-            if (activeNodeId) {
-                localStorage.removeItem('pleniux_active_node_' + activeNodeId);
-            }
-
-            if (!isFounder && activeNodeId) {
-                let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
-                if (userCredits > 0) {
-                    userCredits--;
-                    localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
-                    document.getElementById('credit-count').innerText = userCredits;
-                }
-            }
-
-            const msgBox = document.getElementById('message-box');
-            const alertDiv = document.createElement('div');
-            alertDiv.classList.add('message', 'system-alert');
-            alertDiv.innerText = `[SESSION CONCLUDED]: 3-minute limit reached. ${isFounder ? 'Creator Immunity active.' : '-1 Credit deducted.'}`;
-            msgBox.appendChild(alertDiv);
-            msgBox.scrollTop = msgBox.scrollHeight;
-
-            document.getElementById('timer').innerText = "00:00";
-            alert("⏰ 3-minute session completed. Balance updated. You can re-authenticate or exit.");
-        }
-
-        // 6-second grace period for leaving browser / tab switching
+        // 6-second grace period for visibility/leaving browser
         document.addEventListener("visibilitychange", function() {
             if (!sessionActive) return;
 
             if (document.hidden) {
-                let graceSecondsLeft = 6;
                 const msgBox = document.getElementById('message-box');
                 
                 const graceWarning = document.createElement('div');
@@ -862,7 +901,7 @@
                 localStorage.removeItem('pleniux_active_node_' + activeNodeId);
             }
 
-            if (!isFounder && activeNodeId) {
+            if (activeNodeId) {
                 let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
                 if (userCredits > 0) {
                     userCredits--;
@@ -883,7 +922,7 @@
                 localStorage.removeItem('pleniux_active_node_' + activeNodeId);
             }
 
-            if (!isFounder && activeNodeId) {
+            if (activeNodeId) {
                 let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
                 if (userCredits > 0) {
                     userCredits--;
@@ -902,14 +941,14 @@
             if (input.value.trim() === "") return;
 
             let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
-            if (!isFounder && userCredits <= 0) {
-                alert("Balance exhausted (0 UX). Transmission blocked.");
+            if (userCredits <= 0) {
+                alert("Balance exhausted (0 UX). Transmission blocked. Please recharge via BTC, ETH or SOL.");
                 return;
             }
 
             const userMsg = document.createElement('div');
-            userMsg.classList.add('message', isFounder ? 'founder-outgoing' : 'outgoing');
-            userMsg.innerText = `[${nodeName} @ ${currentRoom}${isFounder ? ' - CREATOR LENOX JG' : ''}]: ${input.value}`;
+            userMsg.classList.add('message', 'outgoing');
+            userMsg.innerText = `[${nodeName} @ ${currentRoom}]: ${input.value}`;
             msgBox.appendChild(userMsg);
 
             const textCopy = input.value;
