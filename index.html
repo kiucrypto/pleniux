@@ -96,7 +96,6 @@
             line-height: 1.4;
         }
 
-        /* Pestañas de Navegación (Acceso / Registro) */
         .auth-tabs {
             display: flex;
             margin-bottom: 20px;
@@ -278,10 +277,10 @@
         </header>
 
         <div class="notice-banner">
-            🔒 <strong>SISTEMA DE PAGOS ESTRICTO:</strong> Los usuarios nuevos se registran con 0 tokens. Ningún token se acredita sin un pago verificado por pasarela externa real.
+            🛡️ <strong>SEGURIDAD ACTIVA:</strong> Bono de registro único por dispositivo. Los tokens adicionales requieren pagos reales confirmados a través de pasarela.
         </div>
 
-        <!-- PANTALLA DE ACCESO Y REGISTRO RESTAURADA -->
+        <!-- PANTALLA DE ACCESO Y REGISTRO -->
         <div id="auth-screen" class="auth-card">
             <div class="auth-tabs">
                 <button class="auth-tab active" id="tab-login" onclick="switchAuthMode('login')">Acceso Node</button>
@@ -306,19 +305,19 @@
             <!-- CONTENEDOR REGISTRO -->
             <div id="form-register-container" style="display: none;">
                 <h2>Registrar Nuevo Nodo</h2>
-                <p>Crea tu cuenta oficial. Los nodos nuevos inician con 0 tokens hasta procesar un pago real.</p>
+                <p>Crea tu cuenta oficial. Recibe tu bono de bienvenida único por dispositivo.</p>
                 <div class="form-group">
-                    <label>Elegir Número de Nodo (0 - 100,000):</label>
+                    <label>Elegir Número de Nodo:</label>
                     <div class="input-group-prefix">
                         <span class="input-prefix-tag">UX</span>
-                        <input type="number" id="reg-node-input" placeholder="Ej. 777..." min="0" max="100000" autocomplete="off">
+                        <input type="number" id="reg-node-input" placeholder="Ej. 123..." min="1" max="100000" autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Crear Contraseña Numérica:</label>
                     <input type="password" id="reg-passcode-input" class="form-control" placeholder="Solo números..." maxlength="12" autocomplete="off">
                 </div>
-                <button class="btn-primary" style="background: #10b981;" onclick="handleRegister()">Registrar Nodo</button>
+                <button class="btn-primary" style="background: #10b981;" onclick="handleRegister()">Registrar con Bono</button>
             </div>
         </div>
 
@@ -326,13 +325,13 @@
         <div id="app-interface" class="app-interface">
             <div class="status-panel">
                 <div>Nodo: <span style="color: #ef4444;" id="display-node">UX1</span></div>
-                <div>Tokens Reales: <span class="credits-badge" id="credit-count">0</span> UX</div>
+                <div>Tokens: <span class="credits-badge" id="credit-count">0</span> UX</div>
                 <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0;" onclick="location.reload()">SALIR</button>
             </div>
 
             <div class="action-panel-inside">
-                <h3>Bóveda de Pagos</h3>
-                <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 12px;">Tu saldo actual es 0. Para obtener tokens, debes realizar un pago real a través de la pasarela oficial.</p>
+                <h3>Bóveda de Pagos y Recargas</h3>
+                <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 12px;">Para aumentar tu saldo de forma permanente, adquiere paquetes mediante pago real en la pasarela oficial.</p>
                 <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 Recargar Saldo con Pasarela Real</button>
             </div>
         </div>
@@ -342,7 +341,7 @@
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🪙 Seleccionar Paquete de Tokens</h3>
-            <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 15px;">Al hacer clic en pagar, serás redirigido a la pasarela externa real. El saldo solo se acreditará cuando el pago se complete de forma real.</p>
+            <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 15px;">Al continuar, serás redirigido a la pasarela de pagos oficial. El saldo se acreditará en tu nodo al confirmar el pago real.</p>
             
             <div class="price-grid">
                 <div class="price-card selected" onclick="selectPackage(5, '1.99', this)">
@@ -355,7 +354,7 @@
                 </div>
             </div>
 
-            <button class="btn-primary" style="background: #10b981;" onclick="redirectToRealGateway()">💳 Pagar Realmente en Pasarela Externa</button>
+            <button class="btn-primary" style="background: #10b981;" onclick="redirectToRealGateway()">💳 Pagar en Pasarela Externa</button>
             <button class="close-modal" onclick="closeModal('recharge-modal')">Cancelar</button>
         </div>
     </div>
@@ -430,16 +429,32 @@
 
             let fullNodeId = 'UX' + parseInt(nodeNum);
             
+            if (fullNodeId === 'UX0') {
+                alert("⚠️ El nodo UX0 está reservado para el Fundador.");
+                return;
+            }
+
             if (localStorage.getItem('pleniux_pass_' + fullNodeId) !== null) {
                 alert(`⚠️ El nodo ${fullNodeId} ya está registrado.`);
                 return;
             }
 
-            // Guardar credenciales de registro con 0 tokens iniciales (estricto)
-            localStorage.setItem('pleniux_pass_' + fullNodeId, passcode);
-            localStorage.setItem('pleniux_real_credits_' + fullNodeId, '0');
+            // SEGURIDAD ANTI-MULTICUENTA POR DISPOSITIVO
+            let deviceClaimed = localStorage.getItem('pleniux_device_bonus_claimed');
+            let bonusTokens = 0;
 
-            alert(`✅ ¡Nodo ${fullNodeId} registrado exitosamente!\n\nNota: Tus tokens están en 0. Debes realizar un pago real en la pasarela para obtener saldo.`);
+            if (!deviceClaimed) {
+                bonusTokens = 10; // Bono único de bienvenida por teléfono/dispositivo
+                localStorage.setItem('pleniux_device_bonus_claimed', 'true');
+            } else {
+                alert("⚠️ Este dispositivo ya reclamó su bono de bienvenida anterior. Tu cuenta se creó con 0 tokens de bono.");
+            }
+
+            // Guardar credenciales y saldo de bono
+            localStorage.setItem('pleniux_pass_' + fullNodeId, passcode);
+            localStorage.setItem('pleniux_real_credits_' + fullNodeId, bonusTokens.toString());
+
+            alert(`✅ ¡Nodo ${fullNodeId} registrado con éxito!\n\n🎁 Bono aplicado en este dispositivo: ${bonusTokens} Tokens.`);
             
             document.getElementById('login-node-input').value = fullNodeId;
             switchAuthMode('login');
@@ -449,15 +464,20 @@
             let node = document.getElementById('login-node-input').value.trim().toUpperCase();
             const pass = document.getElementById('login-passcode-input').value.trim();
             
-            if (/^[0-9]+$/.test(node)) node = 'UX' + node;
+            if (/^[0-9]+$/.test(node)) node = 'UX0' === node ? 'UX0' : 'UX' + node;
 
             if (!node || !pass) { 
                 alert("Ingresa nodo y contraseña"); 
                 return; 
             }
 
-            let savedPass = localStorage.setItem ? localStorage.getItem('pleniux_pass_' + node) : null;
-            if (node === 'UX0') savedPass = '1971'; // Founder bypass si aplica
+            let savedPass = localStorage.getItem('pleniux_pass_' + node);
+            
+            // CONFIGURACIÓN ESTRICTA DEL FUNDADOR (UX0 = 10,000 tokens)
+            if (node === 'UX0') {
+                savedPass = '1971'; // Contraseña de fundador (cámbiala si gustas)
+                localStorage.setItem('pleniux_real_credits_UX0', '10000');
+            }
 
             if (savedPass !== pass) {
                 alert("🚨 Contraseña incorrecta o nodo no registrado.");
@@ -465,7 +485,6 @@
             }
 
             activeNodeId = node;
-            // Saldo real estrictamente obtenido del almacenamiento/base de datos (inicia en 0 para nuevos)
             let realCredits = parseInt(localStorage.getItem('pleniux_real_credits_' + node) || '0');
             
             document.getElementById('display-node').innerText = node;
@@ -478,11 +497,11 @@
         function redirectToRealGateway() {
             closeModal('recharge-modal');
 
-            // AQUÍ SE CONECTARÁ TU PASARELA DE PAGOS REAL EXTERNA:
+            // URL DE TU PASARELA REAL:
             // const gatewayUrl = `https://tu-pasarela.com/checkout?node=${activeNodeId}&amount=${selectedUsd}&credits=${selectedCredits}`;
             // window.location.href = gatewayUrl;
 
-            alert(`🔗 [PASARELA DE PAGO EXTERNA]:\n\nRedirigiendo pasarela para procesar ${selectedUsd} USD al nodo (${activeNodeId}).\n\n⚠️ Ningún saldo cambiará en tu cuenta hasta que la pasarela de pagos confirme el dinero de forma real.`);
+            alert(`🔗 [PASARELA DE PAGO EXTERNA]:\n\nRedirigiendo para procesar ${selectedUsd} USD al nodo (${activeNodeId}).\n\n⚠️ Los tokens se cargarán de forma real una vez que el servidor confirme el depósito.`);
         }
     </script>
 </body>
