@@ -157,15 +157,6 @@
             border-top: 1px solid rgba(239, 68, 68, 0.2);
             padding-top: 15px;
         }
-        .redeem-box toggle-btn {
-            background: none;
-            border: none;
-            color: #ef4444;
-            cursor: pointer;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
 
         /* Founder Control Panel Badge */
         .founder-panel-badge {
@@ -358,94 +349,84 @@
 
         <!-- TOP SECURITY BANNER -->
         <div class="top-security-banner">
-            ⚠️ Total Anonymity: Messages auto-destruct every 3 minutes, or instantly upon screen lock, app switch, or tab change.
+            ⚠️ Anonimato Total: Los mensajes se autodestruyen cada 3 minutos, o al bloquear pantalla, cambiar de app/pestaña o actualizar la web.
         </div>
 
         <!-- AUTHENTICATION SCREEN -->
         <div id="auth-screen" class="auth-card">
-            <h2>Secure Node Verification</h2>
-            <p>Connect privately with friends or strangers. Select your identifier (ux1 to ux1000, or founder node <b>ux0</b>) and enter your shared passcode (0 to 10000).</p>
+            <h2>Acceso a Nodo Seguro</h2>
+            <p>Ingresa tu identificador único (UX1 a UX100000 o el nodo exclusivo del Creador <b>UX0</b>) y tu contraseña compartida (0 a 100000).</p>
             
             <div class="form-group">
-                <label for="node-input">Your UX Identifier (ux0 - ux1000):</label>
-                <input type="text" id="node-input" class="form-control" placeholder="E.g. ux4 or ux0" autocomplete="off">
+                <label for="node-input">Identificador UX (Ej. UX1, UX4 o UX0):</label>
+                <input type="text" id="node-input" class="form-control" placeholder="Ej. UX4 o UX0" autocomplete="off">
             </div>
 
             <div class="form-group">
-                <label for="passcode-input">Shared Private Passcode (0 - 10000):</label>
-                <input type="password" id="passcode-input" class="form-control" placeholder="E.g. 777 or 666" maxlength="12" autocomplete="off">
+                <label for="passcode-input">Contraseña de Acceso (0 - 100000):</label>
+                <input type="password" id="passcode-input" class="form-control" placeholder="Ej. 777 o 666" maxlength="12" autocomplete="off">
             </div>
 
-            <button class="btn-primary" onclick="initializeSession()">Initialize Encrypted Channel</button>
+            <button class="btn-primary" onclick="initializeSession()">Iniciar Sesión Única</button>
 
             <!-- REDEEM CODE SECTION -->
             <div class="redeem-box">
                 <div class="form-group" style="margin-bottom: 8px;">
-                    <label for="redeem-input" style="color: #ef4444;">Canjear Código / Redeem Code:</label>
-                    <input type="text" id="redeem-input" class="form-control" placeholder="Enter secret promo code..." autocomplete="off">
+                    <label for="redeem-input" style="color: #ef4444;">Canjear Código / Promo Code:</label>
+                    <input type="text" id="redeem-input" class="form-control" placeholder="Introduce código..." autocomplete="off">
                 </div>
-                <button class="btn-primary" style="background: #334155; border: 1px solid #ef4444;" onclick="redeemCode()">Canjear Código (Redeem)</button>
+                <button class="btn-primary" style="background: #334155; border: 1px solid #ef4444;" onclick="redeemCode()">Canjear Código (Santamuerte777)</button>
             </div>
         </div>
 
         <!-- MAIN CHAT INTERFACE -->
         <div id="app-interface" class="app-interface">
             
-            <!-- FOUNDER UNIQUE BADGE PANEL (Only shows for ux0 + 666) -->
+            <!-- FOUNDER UNIQUE BADGE PANEL (Only UX0 + 666) -->
             <div id="founder-panel-indicator" class="founder-panel-badge" style="display: none;">
-                👑 FOUNDER SUPREME ACCESS GRANTED &bull; LENOX JG MASTER NODE (UX0) ACTIVE 👑
+                👑 PANEL DE CONTROL SUPREMO &bull; NODO EXCLUSIVO CREADOR LENOX JG (UX0) ACTIVO 👑
             </div>
 
             <div class="status-panel">
-                <div>Node: <span style="color: #ef4444;" id="display-node">ux1</span></div>
-                <div>Passcode: <span style="color: #ef4444;" id="display-passcode">0</span></div>
-                <div>Balance: <span class="credits-badge" id="credit-count">5</span> UX</div>
-                <div>Destruction: <span id="timer" style="color: #ef4444;">03:00</span></div>
-                <button class="exit-btn" onclick="handleManualExit()">EXIT</button>
-            </div>
-
-            <!-- ENGLISH MANUAL -->
-            <div class="manual-box">
-                <h3>Pleniux Professional Security Manual (English)</h3>
-                <ul>
-                    <li><b>Total Anonymity & Ephemeral Chats:</b> Messages are automatically purged every 3 minutes.</li>
-                    <li><b>Security Triggers:</b> Any screen lock, app minimization, or browser tab change instantly destroys messages, triggers a security alert, and deducts 1 credit.</li>
-                    <li><b>Founder & Redemption:</b> Founder Lenox JG uses node <b>ux0</b> with passcode <b>666</b>. Promo code <b>santamuerte777</b> can be redeemed once for bonus credits.</li>
-                </ul>
+                <div>Nodo: <span style="color: #ef4444;" id="display-node">UX1</span></div>
+                <div>Contraseña: <span style="color: #ef4444;" id="display-passcode">0</span></div>
+                <div>Saldo: <span class="credits-badge" id="credit-count">5</span> UX</div>
+                <div>Destrucción: <span id="timer" style="color: #ef4444;">03:00</span></div>
+                <button class="exit-btn" onclick="handleManualExit()">SALIR</button>
             </div>
 
             <!-- MANUAL EN ESPAÑOL -->
             <div class="manual-box">
                 <h3>Manual Profesional de Seguridad Pleniux (Español)</h3>
                 <ul>
-                    <li><b>Anonimato Total y Chats Efímeros:</b> Los mensajes se eliminan automáticamente cada 3 minutos.</li>
-                    <li><b>Activadores de Seguridad:</b> Cualquier bloqueo de pantalla, cambio de app o cambio de pestaña destruye los mensajes al instante, emite una alerta y descuenta 1 crédito.</li>
-                    <li><b>Fundador y Canje:</b> El fundador Lenox JG utiliza el nodo <b>ux0</b> con código <b>666</b>. El código promocional <b>santamuerte777</b> se puede canjear una sola vez por créditos adicionales.</li>
+                    <li><b>Nodo Exclusivo del Creador:</b> El identificador <b>UX0</b> con contraseña <b>666</b> es único e intransferible para Lenox JG, otorgándole un saldo inicial incorporado de <b>200 UX</b>.</li>
+                    <li><b>Usuarios Nuevos:</b> Los demás usuarios crean su nodo de 1 a 100,000 con contraseña de 0 a 100,000, obteniendo un saldo propio inicial de <b>5 UX</b>.</li>
+                    <li><b>Seguridad Estricta por Pestaña/Bloqueo:</b> Si bloqueas la pantalla, cambias de aplicación, cambias de pestaña o actualizas (refresh) la web, los mensajes se eliminan al instante y se descuenta 1 crédito de saldo.</li>
                 </ul>
             </div>
 
             <div class="chat-section">
                 <div class="chat-header">
-                    <span id="pipeline-title">SECURE TUNNEL // LIVE ANONYMOUS CHAT</span>
-                    <span style="color: #10b981;">● Active</span>
+                    <span id="pipeline-title">TÚNEL SEGURO // CHAT ANÓNIMO EN VIVO</span>
+                    <span style="color: #10b981;">● Activo</span>
                 </div>
                 <div class="chat-messages" id="message-box">
-                    <div class="message incoming">System: Secure channel synchronized by passcode. Zero logs stored.</div>
+                    <div class="message incoming">Sistema: Canal seguro sincronizado por contraseña. Sin registros almacenados.</div>
                 </div>
                 <div class="chat-input-area">
-                    <input type="text" id="user-input" class="msg-input" placeholder="Type encrypted message..." autocomplete="off">
-                    <button class="send-btn" onclick="sendMessage()">SEND</button>
+                    <input type="text" id="user-input" class="msg-input" placeholder="Escribe un mensaje cifrado..." autocomplete="off">
+                    <button class="send-btn" onclick="sendMessage()">ENVIAR</button>
                 </div>
             </div>
         </div>
 
         <footer>
-            FOUNDER: LENOX JG &bull; 31-08-26 &bull; 11:51 PM
+            CREADOR: LENOX JG &bull; NODO UX0 &bull; 01-09-2026
         </footer>
     </div>
 
     <script>
-        // High Density Red Glowing Background Particles (Increased amount for visual depth)
+        // Background canvas with dense red glowing moving points
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -457,19 +438,20 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        for (let i = 0; i < 120; i++) {
+        // Lots of moving red particles for visual uniqueness
+        for (let i = 0; i < 140; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                radius: Math.random() * 2.5 + 0.5,
-                vx: (Math.random() - 0.5) * 0.8,
-                vy: (Math.random() - 0.5) * 0.8
+                radius: Math.random() * 2.5 + 0.6,
+                vx: (Math.random() - 0.5) * 0.9,
+                vy: (Math.random() - 0.5) * 0.9
             });
         }
 
         function animateBg() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(239, 68, 68, 0.65)';
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.7)';
             particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
@@ -486,7 +468,7 @@
         }
         animateBg();
 
-        // Session & Credits Logic
+        // Balance & State Logic
         let credits = localStorage.getItem('pleniux_credits') !== null ? parseInt(localStorage.getItem('pleniux_credits')) : 5;
         document.getElementById('credit-count').innerText = credits;
 
@@ -494,91 +476,105 @@
         let sessionActive = false;
         let isFounder = false;
 
-        // Check if there's an active session stored on page load/refresh
+        // Detect Refresh / Page Load: If a session was running, refreshing destroys messages and deducts 1 credit immediately
         window.addEventListener('DOMContentLoaded', () => {
-            const savedNode = sessionStorage.getItem('pleniux_node');
-            const savedPass = sessionStorage.getItem('pleniux_pass');
-            const savedTime = sessionStorage.getItem('pleniux_time');
-            const savedFounder = sessionStorage.getItem('pleniux_founder') === 'true';
-
-            if (savedNode && savedPass && savedTime !== null) {
-                document.getElementById('display-node').innerText = savedNode;
-                document.getElementById('display-passcode').innerText = savedPass;
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('app-interface').style.display = 'block';
-
-                isFounder = savedFounder;
-                if (isFounder) {
-                    document.getElementById('founder-panel-indicator').style.display = 'block';
+            const activeSessionInStorage = sessionStorage.getItem('pleniux_session_active');
+            
+            if (activeSessionInStorage === 'true') {
+                // A session was active before a refresh/reload -> Apply penalty
+                const wasFounder = sessionStorage.getItem('pleniux_founder') === 'true';
+                
+                if (!wasFounder) {
+                    let currentCredits = localStorage.getItem('pleniux_credits') !== null ? parseInt(localStorage.getItem('pleniux_credits')) : 5;
+                    if (currentCredits > 0) {
+                        currentCredits--;
+                        localStorage.setItem('pleniux_credits', currentCredits);
+                    }
                 }
+                
+                // Clear active session storage markers
+                sessionStorage.removeItem('pleniux_session_active');
+                sessionStorage.removeItem('pleniux_node');
+                sessionStorage.removeItem('pleniux_pass');
+                sessionStorage.removeItem('pleniux_time');
+                sessionStorage.removeItem('pleniux_founder');
 
-                sessionActive = true;
-                startTimer(parseInt(savedTime));
+                alert("⚠️ [SEGURIDAD PLENIUX]: Actualizaste o recargaste la pestaña. Los mensajes han sido eliminados y se ha descontado 1 crédito.");
             }
         });
 
-        // Redeem Code Logic (santamuerte777 can only be used once)
+        // Redeem Code Logic for santamuerte777 (adds 200 credits once)
         function redeemCode() {
             const codeInput = document.getElementById('redeem-input').value.trim();
             const alreadyRedeemed = localStorage.getItem('pleniux_redeemed_santamuerte777') === 'true';
 
             if (codeInput === "") {
-                alert("Please enter a code to redeem.");
+                alert("Por favor introduce un código para canjear.");
                 return;
             }
 
             if (codeInput === "santamuerte777") {
                 if (alreadyRedeemed) {
-                    alert("⚠️ Este código ya ha sido canjeado anteriormente. Solo se permite una vez por dispositivo.");
+                    alert("⚠️ Este código ya ha sido canjeado anteriormente en este dispositivo.");
                     return;
                 }
-                credits += 10; // Reward bonus credits
+                credits += 200;
                 localStorage.setItem('pleniux_credits', credits);
                 localStorage.setItem('pleniux_redeemed_santamuerte777', 'true');
                 document.getElementById('credit-count').innerText = credits;
                 document.getElementById('redeem-input').value = "";
-                alert("🎉 ¡Código canjeado con éxito! Se han añadido 10 créditos UX a tu saldo. (Santamuerte777)");
+                alert("🎉 ¡Código santamuerte777 canjeado con éxito! Se han incorporado 200 créditos UX a tu saldo.");
             } else {
-                alert("❌ Código inválido o expirado. Verifique e intente nuevamente.");
+                alert("❌ Código inválido. Introduce el código correcto.");
             }
         }
 
         function initializeSession() {
-            const nodeInput = document.getElementById('node-input').value.trim().toLowerCase();
+            const nodeInput = document.getElementById('node-input').value.trim().toUpperCase();
             const passcodeInput = document.getElementById('passcode-input').value.trim();
 
-            // Validate Founder Node ux0 with passcode 666, or standard nodes ux1 to ux1000
-            const isFounderAttempt = (nodeInput === 'ux0' && passcodeInput === '666');
-            const standardNodeRegex = /^ux([1-9][0-9]{0,2}|1000)$/;
+            // Strict check: Only Lenox JG can use UX0 with password 666
+            const isFounderAttempt = (nodeInput === 'UX0' && passcodeInput === '666');
+            const unauthorizedFounderUse = (nodeInput === 'UX0' && passcodeInput !== '666') || (nodeInput !== 'UX0' && passcodeInput === '666');
+
+            if (unauthorizedFounderUse && nodeInput === 'UX0') {
+                alert("❌ Acceso denegado: UX0 es el nodo exclusivo y protegido del creador Lenox JG (Contraseña incorrecta).");
+                return;
+            }
+
+            const standardNodeRegex = /^UX([1-9][0-9]{0,4}|100000)$/;
 
             if (!isFounderAttempt && !standardNodeRegex.test(nodeInput)) {
-                alert("Invalid identifier! Use 'ux0' for founder or 'ux1' through 'ux1000'.");
+                alert("Identificador inválido. Usa 'UX0' (Creador) o un número de nodo entre 'UX1' y 'UX100000'.");
                 return;
             }
 
             if (!isFounderAttempt) {
                 const passNum = parseInt(passcodeInput);
-                if (isNaN(passNum) || passNum < 0 || passNum > 10000) {
-                    alert("Invalid passcode! Enter a number between 0 and 10000.");
+                if (isNaN(passNum) || passNum < 0 || passNum > 100000) {
+                    alert("Contraseña inválida. Introduce un número entre 0 y 100000.");
                     return;
                 }
             }
 
             if (!isFounderAttempt && credits <= 0) {
-                alert("Balance is 0 credits. Recharge or redeem a code to start a session.");
+                alert("Saldo agotado (0 UX). Canjea un código o recarga para iniciar sesión.");
                 return;
             }
 
             if (isFounderAttempt) {
                 isFounder = true;
-                sessionStorage.setItem('pleniux_founder', 'true');
-                credits = 999; // Unlimited/Founder credits
+                credits = 200; // Founder starting balance incorporated
+                localStorage.setItem('pleniux_credits', credits);
+                document.getElementById('credit-count').innerText = credits;
                 document.getElementById('founder-panel-indicator').style.display = 'block';
+                sessionStorage.setItem('pleniux_founder', 'true');
             }
 
             sessionStorage.setItem('pleniux_node', nodeInput);
             sessionStorage.setItem('pleniux_pass', passcodeInput);
             sessionStorage.setItem('pleniux_time', 180);
+            sessionStorage.setItem('pleniux_session_active', 'true');
 
             document.getElementById('display-node').innerText = nodeInput;
             document.getElementById('display-passcode').innerText = passcodeInput;
@@ -603,21 +599,17 @@
                 
                 if (timeLeft <= 0) {
                     clearInterval(countdownInterval);
-                    sessionStorage.removeItem('pleniux_node');
-                    sessionStorage.removeItem('pleniux_pass');
-                    sessionStorage.removeItem('pleniux_time');
-                    sessionStorage.removeItem('pleniux_founder');
-                    terminateSessionBySecurity("Time limit expired (3 minutes). Messages destroyed.");
+                    terminateSessionBySecurity("Tiempo límite expirado (3 minutos). Mensajes eliminados.");
                 }
                 timeLeft--;
             }, 1000);
         }
 
-        // Detect Screen Lock, App Switch, Tab Change or Minimizing
+        // Detect Screen Lock, App Switch or Tab Visibility Loss
         document.addEventListener("visibilitychange", function() {
             if (sessionActive && document.hidden) {
                 clearInterval(countdownInterval);
-                terminateSessionBySecurity("Screen locked, app changed, or tab left! Messages deleted and credit handled.");
+                terminateSessionBySecurity("Pantalla bloqueada o cambio de aplicación/pestaña detectado. Mensajes destruidos y saldo descontado.");
             }
         });
 
@@ -625,6 +617,7 @@
             if (!sessionActive) return;
             sessionActive = false;
 
+            sessionStorage.removeItem('pleniux_session_active');
             sessionStorage.removeItem('pleniux_node');
             sessionStorage.removeItem('pleniux_pass');
             sessionStorage.removeItem('pleniux_time');
@@ -638,18 +631,19 @@
             const msgBox = document.getElementById('message-box');
             const alertDiv = document.createElement('div');
             alertDiv.classList.add('message', 'system-alert');
-            alertDiv.innerText = `[SECURITY ALERT]: ${reason} ${isFounder ? '(Founder Immunity Active)' : '(-1 Credit applied)'}.`;
+            alertDiv.innerText = `[ALERTA DE SEGURIDAD]: ${reason} ${isFounder ? '(Inmunidad Creador Activa)' : '(-1 Crédito aplicado)'}.`;
             msgBox.appendChild(alertDiv);
             msgBox.scrollTop = msgBox.scrollHeight;
 
             setTimeout(() => {
-                alert(`[PLENIUX SECURITY]: ${reason}\nCache has been purged.`);
+                alert(`[PLENIUX SEGURIDAD]: ${reason}\nCaché limpiada.`);
                 location.reload();
             }, 1200);
         }
 
         function handleManualExit() {
             sessionActive = false;
+            sessionStorage.removeItem('pleniux_session_active');
             sessionStorage.removeItem('pleniux_node');
             sessionStorage.removeItem('pleniux_pass');
             sessionStorage.removeItem('pleniux_time');
@@ -659,7 +653,7 @@
                 credits--;
                 localStorage.setItem('pleniux_credits', credits);
             }
-            alert("Session ended manually. Cache cleaned.");
+            alert("Sesión finalizada manualmente. Caché limpia.");
             location.reload();
         }
 
@@ -671,13 +665,13 @@
             if (input.value.trim() === "") return;
 
             if (!isFounder && credits <= 0) {
-                alert("Balance depleted. Transmission blocked.");
+                alert("Saldo agotado. Transmisión bloqueada.");
                 return;
             }
 
             const userMsg = document.createElement('div');
             userMsg.classList.add('message', isFounder ? 'founder-outgoing' : 'outgoing');
-            userMsg.innerText = `[${nodeName}${isFounder ? ' - FOUNDER LENOX JG' : ''}]: ${input.value}`;
+            userMsg.innerText = `[${nodeName}${isFounder ? ' - CREADOR LENOX JG' : ''}]: ${input.value}`;
             msgBox.appendChild(userMsg);
 
             const textCopy = input.value;
@@ -687,7 +681,7 @@
             setTimeout(() => {
                 const replyMsg = document.createElement('div');
                 replyMsg.classList.add('message', 'incoming');
-                replyMsg.innerText = `[Peer]: RECEIVED -> "${textCopy}" (Encrypted Channel)`;
+                replyMsg.innerText = `[Peer]: RECIBIDO -> "${textCopy}" (Canal Cifrado)`;
                 msgBox.appendChild(replyMsg);
                 msgBox.scrollTop = msgBox.scrollHeight;
             }, 1000);
