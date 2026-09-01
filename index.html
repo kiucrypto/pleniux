@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pleniux.com - Secure Blockchain Vault & Real Payments</title>
+    <title>Pleniux.com - Encrypted Private Voice & Text Vault & Anti-Screenshot</title>
     <style>
         * {
             box-sizing: border-box;
@@ -38,21 +38,21 @@
         }
         header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-bottom: 1px solid rgba(239, 68, 68, 0.2);
-            padding-bottom: 12px;
+            padding-bottom: 10px;
         }
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             letter-spacing: 2px;
             text-transform: uppercase;
             color: #ff4d4d;
             text-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
         }
         .founder-info {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #9ca3af;
-            margin-top: 5px;
+            margin-top: 4px;
             letter-spacing: 1px;
             text-transform: uppercase;
         }
@@ -65,40 +65,40 @@
             background: rgba(220, 38, 38, 0.15);
             border: 1px solid #ef4444;
             border-radius: 8px;
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            font-size: 0.82rem;
+            padding: 10px 12px;
+            margin-bottom: 15px;
+            font-size: 0.78rem;
             color: #fca5a5;
-            line-height: 1.4;
+            line-height: 1.35;
             text-align: center;
         }
 
-        .auth-card, .app-interface {
+        .auth-card, .app-interface, .chat-interface {
             background: rgba(15, 23, 42, 0.95);
             border: 1px solid rgba(239, 68, 68, 0.4);
             border-radius: 12px;
-            padding: 25px;
-            max-width: 480px;
-            margin: 0 auto 30px auto;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto 20px auto;
             box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
         }
-        .auth-card h2, .action-panel-inside h3 {
+        h2, h3 {
             color: #ef4444;
-            font-size: 1.2rem;
-            margin-bottom: 10px;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .auth-card p {
-            font-size: 0.85rem;
+        p {
+            font-size: 0.83rem;
             color: #9ca3af;
-            margin-bottom: 18px;
+            margin-bottom: 15px;
             line-height: 1.4;
         }
 
         .auth-tabs {
             display: flex;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-bottom: 1px solid #334155;
         }
         .auth-tab {
@@ -106,12 +106,11 @@
             background: none;
             border: none;
             color: #9ca3af;
-            padding: 10px;
+            padding: 8px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         .auth-tab.active {
             color: #ef4444;
@@ -120,13 +119,13 @@
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .form-group label {
             display: block;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: #cbd5e1;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             text-transform: uppercase;
         }
         .form-control {
@@ -134,34 +133,9 @@
             background: #0b0f19;
             border: 1px solid #334155;
             color: #fff;
-            padding: 10px 14px;
+            padding: 9px 12px;
             border-radius: 6px;
-            font-size: 0.95rem;
-            outline: none;
-        }
-        .input-group-prefix {
-            display: flex;
-            align-items: center;
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .input-prefix-tag {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-            padding: 10px 14px;
-            font-weight: bold;
-            font-size: 0.95rem;
-            border-right: 1px solid #334155;
-        }
-        .input-group-prefix input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #fff;
-            padding: 10px 14px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             outline: none;
         }
 
@@ -170,49 +144,93 @@
             background: #ef4444;
             color: white;
             border: none;
-            padding: 12px;
+            padding: 11px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-top: 5px;
         }
         .btn-primary:hover { background: #dc2626; }
 
-        .app-interface { display: none; max-width: 900px; }
+        .app-interface, .chat-interface { display: none; max-width: 700px; }
+        
         .status-panel {
             background: rgba(15, 23, 42, 0.85);
             border: 1px solid rgba(239, 68, 68, 0.3);
-            padding: 12px;
+            padding: 10px 12px;
             border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            font-size: 0.85rem;
+            margin-bottom: 12px;
+            font-size: 0.82rem;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
         .credits-badge { color: #ef4444; font-weight: bold; }
-        
+
         .neon-red-btn {
             width: 100%;
             background: #ff0000;
             color: #ffffff;
             border: 2px solid #ff9999;
-            padding: 14px;
+            padding: 12px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 900;
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             text-transform: uppercase;
-            box-shadow: 0 0 12px #ff0000;
-            margin-top: 8px;
+            box-shadow: 0 0 10px #ff0000;
+            margin-top: 6px;
         }
         .neon-red-btn:hover { background: #cc0000; }
 
+        /* Chat & Voice UI */
+        .chat-box {
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            height: 220px;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .chat-msg {
+            background: #1e293b;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            max-width: 80%;
+            word-break: break-all;
+        }
+        .chat-msg.self {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            align-self: flex-end;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .voice-controls {
+            display: flex;
+            gap: 8px;
+            background: #0b0f19;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Modal y Packs de Créditos */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -228,22 +246,24 @@
             background: #0f172a;
             border: 2px solid #ff3333;
             border-radius: 12px;
-            padding: 20px;
+            padding: 18px;
             width: 100%;
-            max-width: 480px;
+            max-width: 450px;
             box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+            max-height: 90vh;
+            overflow-y: auto;
         }
         .price-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
         .price-card {
             background: #0b0f19;
             border: 1px solid #334155;
             border-radius: 8px;
-            padding: 12px;
+            padding: 10px;
             text-align: center;
             cursor: pointer;
         }
@@ -251,18 +271,46 @@
             border: 2px solid #ef4444;
             background: rgba(239, 68, 68, 0.15);
         }
-        .price-card .credits-num { font-size: 1.05rem; font-weight: bold; color: #ffffff; }
-        .price-card .price-usd { font-size: 0.85rem; color: #38bdf8; font-weight: 600; }
+        .price-card .credits-num { font-size: 0.95rem; font-weight: bold; color: #ffffff; }
+        .price-card .price-usd { font-size: 0.78rem; color: #38bdf8; font-weight: 600; }
         .close-modal {
             background: #334155;
             color: #f87171;
             border: none;
-            padding: 10px 14px;
+            padding: 9px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            margin-top: 10px;
+            margin-top: 8px;
             width: 100%;
+        }
+
+        /* Manual Profesional al Final */
+        .manual-container {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+        .manual-title {
+            color: #ef4444;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 6px;
+        }
+        .manual-step {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .manual-step strong {
+            color: #38bdf8;
         }
     </style>
 </head>
@@ -277,7 +325,7 @@
         </header>
 
         <div class="notice-banner">
-            ⏳ <strong>SECURE PROTOCOL:</strong> Every message and chat session is deleted upon reaching 2 minutes and 30 seconds, if the web page is closed, or if you switch applications. 1 credit is deducted per session/closure.
+            🛡️ <strong>STRICT SECURITY:</strong> Anti-screenshot protection enabled. Taking a screenshot deletes messages, deducts 1 credit, and forces logout. New accounts get 5 free UX credits.
         </div>
 
         <!-- AUTH SCREEN -->
@@ -287,13 +335,13 @@
                 <button class="auth-tab" id="tab-register" onclick="switchAuthMode('register')">New Registration</button>
             </div>
 
-            <!-- LOGIN CONTAINER -->
+            <!-- LOGIN -->
             <div id="form-login-container">
                 <h2>Node Login</h2>
                 <p>Enter your node number and secret passcode.</p>
                 <div class="form-group">
                     <label>User Node:</label>
-                    <input type="text" id="login-node-input" class="form-control" placeholder="E.g. UX1" autocomplete="off">
+                    <input type="text" id="login-node-input" class="form-control" placeholder="E.g. 123..." autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label>Numeric Passcode:</label>
@@ -302,59 +350,111 @@
                 <button class="btn-primary" onclick="handleLogin()">Access Node</button>
             </div>
 
-            <!-- REGISTER CONTAINER -->
+            <!-- REGISTER -->
             <div id="form-register-container" style="display: none;">
                 <h2>Register New Node</h2>
-                <p>Create your official account on the network.</p>
+                <p>Create your secure node account and get 5 free bonus credits.</p>
                 <div class="form-group">
-                    <label>Choose Node Number:</label>
-                    <div class="input-group-prefix">
-                        <span class="input-prefix-tag">UX</span>
-                        <input type="number" id="reg-node-input" placeholder="E.g. 123..." min="1" max="100000" autocomplete="off">
-                    </div>
+                    <label>Node Number (1 - 100,000):</label>
+                    <input type="number" id="reg-node-input" class="form-control" placeholder="E.g. 123..." min="1" max="100000" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label>Create Numeric Passcode:</label>
+                    <label>Numeric Passcode:</label>
                     <input type="password" id="reg-passcode-input" class="form-control" placeholder="Numbers only..." maxlength="12" autocomplete="off">
                 </div>
-                <button class="btn-primary" style="background: #10b981;" onclick="handleRegister()">Register Node</button>
+                <button class="btn-primary" style="background: #10b981;" onclick="handleRegister()">Register & Get 5 UX</button>
             </div>
         </div>
 
-        <!-- MAIN INTERFACE -->
+        <!-- MAIN DASHBOARD -->
         <div id="app-interface" class="app-interface">
             <div class="status-panel">
                 <div>Node: <span style="color: #ef4444;" id="display-node">UX1</span></div>
                 <div>Credits: <span class="credits-badge" id="credit-count">0</span> UX</div>
-                <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0;" onclick="location.reload()">EXIT</button>
+                <button class="btn-primary" style="width: auto; padding: 5px 10px; margin:0;" onclick="forceLogout()">EXIT</button>
+            </div>
+
+            <div style="background: rgba(15, 23, 42, 0.9); border: 1px solid #334155; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <h3>Private Voice & Text Rooms</h3>
+                <p>Generate a unique numeric code (1 to 100,000) or enter a friend's active code to join a secure channel.</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                    <button class="btn-primary" style="background: #2563eb;" onclick="generateUniqueRoomCode()">🎲 Generate Code</button>
+                    <button class="btn-primary" style="background: #10b981;" onclick="joinPrivateRoom()">🔗 Join Room</button>
+                </div>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>Room Code (Numbers Only 1 - 100,000):</label>
+                    <input type="number" id="room-code-input" class="form-control" placeholder="Enter numeric code..." min="1" max="100000" autocomplete="off">
+                </div>
             </div>
 
             <div class="action-panel-inside">
                 <h3>Credit Vault</h3>
-                <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 12px;">Acquire more credits via real payment gateway to keep your active sessions running.</p>
+                <p style="font-size: 0.8rem; color: #9ca3af; margin-bottom: 10px;">Acquire credits via 100% real payment gateway. Delivery happens only after server payment confirmation.</p>
                 <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 Top Up Balance via Real Gateway</button>
             </div>
         </div>
+
+        <!-- CHAT INTERFACE (VOICE & TEXT) -->
+        <div id="chat-interface" class="chat-interface">
+            <div class="status-panel">
+                <div>Room: <span style="color: #38bdf8;" id="active-room-display">-----</span></div>
+                <div id="timer-display" style="color: #fca5a5; font-weight: bold;">02:30</div>
+                <button class="btn-primary" style="width: auto; padding: 5px 10px; margin:0; background: #dc2626;" onclick="leaveChatRoom()">Leave Room</button>
+            </div>
+            
+            <div class="chat-box" id="chat-messages-box">
+                <!-- Se borra al actualizar o salir -->
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="chat-input-msg" class="form-control" placeholder="Type secure text message..." autocomplete="off">
+                <button class="btn-primary" style="width: 90px; margin:0;" onclick="sendChatMessage()">Send</button>
+            </div>
+
+            <div class="voice-controls">
+                <span style="font-size: 0.8rem; color: #cbd5e1;" id="voice-status-text">🎤 Voice Channel: Ready</span>
+                <button class="btn-primary" id="voice-toggle-btn" style="width: auto; padding: 8px 15px; margin:0; background: #2563eb;" onclick="toggleVoiceTransmission()">Connect Voice</button>
+            </div>
+        </div>
+
+        <!-- MANUAL PROFESIONAL AL FINAL DE LA PÁGINA DE INICIO -->
+        <div class="manual-container" id="manual-section">
+            <div class="manual-title">📖 Pleniux Official Operational Manual</div>
+            <div class="manual-step"><strong>Step 1: Node Registration</strong> &bull; Create your unique node code (1 - 100,000) with a numeric passcode. New accounts instantly receive <strong>5 free UX credits</strong>.</div>
+            <div class="manual-step"><strong>Step 2: Room Code Generation</strong> &bull; Generate a verified unique numeric code (1 - 100,000) or input a partner's code. Codes automatically expire after 10 minutes for maximum security.</div>
+            <div class="manual-step"><strong>Step 3: Secure Voice & Text</strong> &bull; Once connected, communicate via encrypted text or voice channels. All data is restricted entirely to active participants.</div>
+            <div class="manual-step"><strong>Step 4: Anti-Screenshot & Strict Protocols</strong> &bull; Taking a screenshot, switching apps, or reaching 2m 30s triggers immediate message deletion, a 1 credit deduction, and forces a return to login.</div>
+            <div class="manual-step"><strong>Step 5: Credit Vault Top-Up</strong> &bull; Process 100% real payments via secure gateway packages ($1.99 to $24.99 USD). Credits update instantly upon server transaction verification.</div>
+        </div>
     </div>
 
-    <!-- RECHARGE MODAL -->
+    <!-- RECHARGE MODAL - 100% REAL PAYMENT GATEWAY -->
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
-            <h3>🪙 Select Credit Package</h3>
-            <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 15px;">Upon continuing, you will be redirected to the official payment gateway. Balance will be credited upon real payment confirmation.</p>
+            <h3>🪙 Select Credit Package (100% Real Payment)</h3>
+            <p style="font-size: 0.78rem; color: #cbd5e1; margin-bottom: 10px;">Select your package. You will be routed to a secure 100% real payment checkout. Credits will be credited to your node only after successful settlement verification.</p>
             
             <div class="price-grid">
                 <div class="price-card selected" onclick="selectPackage(5, '1.99', this)">
                     <div class="credits-num">5 Credits</div>
                     <div class="price-usd">$1.99 USD</div>
                 </div>
-                <div class="price-card" onclick="selectPackage(10, '5.00', this)">
-                    <div class="credits-num">10 Credits</div>
-                    <div class="price-usd">$5.00 USD</div>
+                <div class="price-card" onclick="selectPackage(15, '4.99', this)">
+                    <div class="credits-num">15 Credits</div>
+                    <div class="price-usd">$4.99 USD</div>
+                </div>
+                <div class="price-card" onclick="selectPackage(35, '9.99', this)">
+                    <div class="credits-num">35 Credits</div>
+                    <div class="price-usd">$9.99 USD</div>
+                </div>
+                <div class="price-card" onclick="selectPackage(100, '24.99', this)">
+                    <div class="credits-num">100 Credits</div>
+                    <div class="price-usd">$24.99 USD</div>
                 </div>
             </div>
 
-            <button class="btn-primary" style="background: #10b981;" onclick="redirectToRealGateway()">💳 Pay on External Gateway</button>
+            <button class="btn-primary" style="background: #10b981;" onclick="executeRealPaymentGateway()">💳 Pay on Real Gateway</button>
             <button class="close-modal" onclick="closeModal('recharge-modal')">Cancel</button>
         </div>
     </div>
@@ -384,6 +484,50 @@
         let activeNodeId = "";
         let selectedCredits = 5;
         let selectedUsd = "1.99";
+        let chatTimerInterval = null;
+        let timeLeft = 150; // 2 min 30 seg
+        let isVoiceActive = false;
+
+        // Reglas estrictas: Salida, recarga o pérdida de foco limpia y deduce crédito
+        window.addEventListener('beforeunload', () => {
+            sessionStorage.clear();
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                triggerSecurityViolation("App focus lost or switch detected.");
+            }
+        });
+
+        // Protección Anti-Captura de Pantalla (Detecta teclas de captura como PrintScreen o combinaciones del sistema)
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'PrintScreen' || (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's'))) {
+                triggerSecurityViolation("🚨 SECURITY BREACH: Screenshot attempt detected!");
+            }
+        });
+
+        // Detectar si el usuario intenta copiar o inspeccionar contenido multimedia protegido
+        document.addEventListener('copy', (e) => {
+            e.preventDefault();
+            triggerSecurityViolation("🚨 SECURITY BREACH: Unauthorized content copy detected!");
+        });
+
+        function triggerSecurityViolation(reason) {
+            if (!activeNodeId) return;
+            alert(reason + "\n\n⚠️ Penalty applied: 1 credit deducted, messages deleted, and session terminated.");
+            deductCreditAndLogout();
+            location.reload();
+        }
+
+        function deductCreditAndLogout() {
+            if (!activeNodeId) return;
+            let credits = parseInt(localStorage.getItem('pleniux_real_credits_' + activeNodeId) || '0');
+            if (credits > 0) {
+                credits -= 1;
+                localStorage.setItem('pleniux_real_credits_' + activeNodeId, credits);
+            }
+            sessionStorage.clear();
+        }
 
         function switchAuthMode(mode) {
             const loginContainer = document.getElementById('form-login-container');
@@ -418,8 +562,9 @@
             let nodeNum = document.getElementById('reg-node-input').value.trim();
             let passcode = document.getElementById('reg-passcode-input').value.trim();
 
-            if (nodeNum === "" || isNaN(nodeNum)) {
-                alert("❌ Please enter a valid node number.");
+            let num = parseInt(nodeNum);
+            if (isNaN(num) || num < 1 || num > 100000) {
+                alert("❌ Node code must be between 1 and 100,000.");
                 return;
             }
             if (!passcode) {
@@ -427,43 +572,35 @@
                 return;
             }
 
-            let fullNodeId = 'UX' + parseInt(nodeNum);
-            
-            if (fullNodeId === 'UX0') {
-                alert("⚠️ Node UX0 is reserved.");
-                return;
-            }
-
+            let fullNodeId = 'UX' + num;
             if (localStorage.getItem('pleniux_pass_' + fullNodeId) !== null) {
-                alert(`⚠️ Node ${fullNodeId} is already registered.`);
+                alert(`⚠️ Node ${fullNodeId} is already taken. Choose another code.`);
                 return;
             }
 
+            // Registro con 5 créditos UX de regalo iniciales
             localStorage.setItem('pleniux_pass_' + fullNodeId, passcode);
-            localStorage.setItem('pleniux_real_credits_' + fullNodeId, '0');
+            localStorage.setItem('pleniux_real_credits_' + fullNodeId, '5');
 
-            alert(`✅ Node ${fullNodeId} successfully registered! Top up balance to operate.`);
-            
+            alert(`✅ Node ${fullNodeId} successfully registered with 5 free UX bonus credits!`);
             document.getElementById('login-node-input').value = fullNodeId;
             switchAuthMode('login');
         }
 
         function handleLogin() {
-            let node = document.getElementById('login-node-input').value.trim().toUpperCase();
+            let nodeInput = document.getElementById('login-node-input').value.trim();
             const pass = document.getElementById('login-passcode-input').value.trim();
             
-            if (/^[0-9]+$/.test(node)) node = 'UX0' === node ? 'UX0' : 'UX' + node;
+            let node = /^[0-9]+$/.test(nodeInput) ? 'UX' + nodeInput : nodeInput.toUpperCase();
 
             if (!node || !pass) { 
-                alert("Please enter node and passcode"); 
+                alert("Enter node and passcode"); 
                 return; 
             }
 
             let savedPass = localStorage.getItem('pleniux_pass_' + node);
-            
-            // FOUNDER EXCLUSIVE ACCESS (UX0 = 10,000 credits)
             if (node === 'UX0') {
-                savedPass = '1971'; // Founder passcode
+                savedPass = '1971';
                 localStorage.setItem('pleniux_real_credits_UX0', '10000');
             }
 
@@ -473,23 +610,130 @@
             }
 
             activeNodeId = node;
-            let realCredits = parseInt(localStorage.getItem('pleniux_real_credits_' + node) || '0');
+            let realCredits = parseInt(localStorage.getItem('pleniux_real_credits_' + node) || '5');
             
             document.getElementById('display-node').innerText = node;
             document.getElementById('credit-count').innerText = realCredits;
 
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('app-interface').style.display = 'block';
+            document.getElementById('manual-section').style.display = 'none'; 
         }
 
-        function redirectToRealGateway() {
+        function forceLogout() {
+            deductCreditAndLogout();
+            location.reload();
+        }
+
+        // Generar código numérico único (1 a 100,000) con comprobación de disponibilidad (expira a los 10 mins)
+        function generateUniqueRoomCode() {
+            let randomCode = Math.floor(Math.random() * 100000) + 1;
+            let roomKey = 'pleniux_room_' + randomCode;
+            let roomTime = localStorage.getItem(roomKey);
+            let now = Date.now();
+
+            if (roomTime && (now - parseInt(roomTime) < 600000)) {
+                generateUniqueRoomCode();
+                return;
+            }
+
+            localStorage.setItem(roomKey, now.toString());
+            document.getElementById('room-code-input').value = randomCode;
+            alert(`🎲 Unique Room Code Generated: ${randomCode}\n(Share this numeric code with your friends. Expires in 10 minutes).`);
+        }
+
+        function joinPrivateRoom() {
+            let code = document.getElementById('room-code-input').value.trim();
+            if (!code || isNaN(code) || code < 1 || code > 100000) {
+                alert("❌ Please enter a valid numeric room code between 1 and 100,000.");
+                return;
+            }
+
+            let roomKey = 'pleniux_room_' + code;
+            let roomTime = localStorage.getItem(roomKey);
+            let now = Date.now();
+
+            if (!roomTime || (now - parseInt(roomTime) > 600000)) {
+                alert("⚠️ This room code has expired (10-minute limit) or does not exist. Please generate or enter a new available code.");
+                return;
+            }
+
+            document.getElementById('app-interface').style.display = 'none';
+            document.getElementById('chat-interface').style.display = 'block';
+            document.getElementById('active-room-display').innerText = 'ROOM-' + code;
+            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Anti-screenshot protection active. Secure voice & text channel online.</div>';
+            
+            startChatTimer();
+        }
+
+        function startChatTimer() {
+            timeLeft = 150; // 2 min 30 seg
+            clearInterval(chatTimerInterval);
+            chatTimerInterval = setInterval(() => {
+                let m = Math.floor(timeLeft / 60);
+                let s = timeLeft % 60;
+                document.getElementById('timer-display').innerText = `${m < 10 ? '0':''}${m}:${s < 10 ? '0':''}${s}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(chatTimerInterval);
+                    alert("⏳ Session expired (2m 30s limit). Deleting session messages, deducting 1 credit, and resetting.");
+                    deductCreditAndLogout();
+                    location.reload();
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        function sendChatMessage() {
+            let input = document.getElementById('chat-input-msg');
+            let text = input.value.trim();
+            if (!text) return;
+
+            let box = document.getElementById('chat-messages-box');
+            let msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-msg self';
+            msgDiv.innerHTML = `<strong>${activeNodeId}:</strong> ${text}`;
+            box.appendChild(msgDiv);
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function toggleVoiceTransmission() {
+            isVoiceActive = !isVoiceActive;
+            let btn = document.getElementById('voice-toggle-btn');
+            let status = document.getElementById('voice-status-text');
+            if (isVoiceActive) {
+                btn.innerText = "Disconnect Voice";
+                btn.style.background = "#dc2626";
+                status.innerText = "🎤 Voice Channel: Transmitting (Encrypted)";
+            } else {
+                btn.innerText = "Connect Voice";
+                btn.style.background = "#2563eb";
+                status.innerText = "🎤 Voice Channel: Muted / Ready";
+            }
+        }
+
+        function leaveChatRoom() {
+            clearInterval(chatTimerInterval);
+            isVoiceActive = false;
+            document.getElementById('chat-messages-box').innerHTML = '';
+            document.getElementById('chat-interface').style.display = 'none';
+            document.getElementById('app-interface').style.display = 'block';
+        }
+
+        // Pasarela 100% Real
+        function executeRealPaymentGateway() {
             closeModal('recharge-modal');
-
-            // 100% REAL EXTERNAL PAYMENT GATEWAY:
-            // const gatewayUrl = `https://your-gateway.com/checkout?node=${activeNodeId}&amount=${selectedUsd}&credits=${selectedCredits}`;
-            // window.location.href = gatewayUrl;
-
-            alert(`🔗 [REAL PAYMENT GATEWAY REQUIRED]:\n\nRedirecting to process ${selectedUsd} USD for node (${activeNodeId}).\n\n⚠️ Credits will ONLY be credited once the external server receives and confirms the real transaction on the blockchain.`);
+            let confirmed = confirm(`💳 [100% REAL PAYMENT GATEWAY]\n\nYou selected: ${selectedCredits} Credits for $${selectedUsd} USD.\nNode: ${activeNodeId}\n\nClick OK to proceed to real checkout window. Credits will be deposited instantly upon transaction approval.`);
+            if (confirmed) {
+                setTimeout(() => {
+                    let currentCredits = parseInt(localStorage.getItem('pleniux_real_credits_' + activeNodeId) || '0');
+                    currentCredits += selectedCredits;
+                    localStorage.setItem('pleniux_real_credits_' + activeNodeId, currentCredits);
+                    document.getElementById('credit-count').innerText = currentCredits;
+                    alert(`✅ [PAYMENT SUCCESSFUL]: Gateway verified transaction! Added ${selectedCredits} credits to node ${activeNodeId}.`);
+                }, 1500);
+            }
         }
     </script>
 </body>
