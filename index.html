@@ -336,7 +336,6 @@
             text-transform: uppercase;
         }
 
-        /* NUEVO DISEÑO DE TARJETAS DE PRECIOS */
         .price-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -526,7 +525,7 @@
         </header>
 
         <div class="notice-banner">
-            ⚠️ <strong>PLENIUX SECURITY NOTICE:</strong> Messages automatically self-destruct every 3 minutes. Closing the web, exiting, powering off phone, or refreshing the page will immediately wipe all messages, close the user session, and deduct 1 UX balance credit.
+            ⚠️ <strong>PLENIUX SECURITY NOTICE:</strong> Messages automatically self-destruct every 3 minutes. Closing the web, exiting, powering off phone, locking screen, or refreshing the page will immediately wipe all messages, close the user session, and deduct 1 UX balance credit.
         </div>
 
         <div id="auth-screen" class="auth-card">
@@ -537,7 +536,7 @@
 
             <div id="form-login-container">
                 <h2>Node Login</h2>
-                <p>Enter your node number (UX0, UX1 - UX100000) and your numeric passcode. Strict 3-minute ephemeral auto-delete & immediate session self-destruction upon closing tab, refreshing, or phone shutdown.</p>
+                <p>Enter your node number (UX0, UX1 - UX100000) and your numeric passcode. Strict ephemeral auto-delete & immediate session self-destruction upon closing tab, locking screen, or refreshing.</p>
                 
                 <div class="form-group">
                     <label for="login-node-input">User Node:</label>
@@ -554,7 +553,7 @@
 
             <div id="form-register-container" style="display: none;">
                 <h2>Register New Node</h2>
-                <p>Claim your unique node (0 to 100,000) with automatic starting balance.</p>
+                <p>Strict device policy: Only 1 node registration allowed per phone/device.</p>
                 
                 <div class="form-group">
                     <label for="reg-node-input">Choose Node Number (0 - 100,000):</label>
@@ -597,9 +596,9 @@
             <div class="manual-box">
                 <h3>Pleniux Ephemeral Security Protocol</h3>
                 <ul>
-                    <li><b>3-Minute Auto-Delete & Close:</b> Messages automatically self-destruct after exactly 3 minutes. Closing, powering off, or refreshing instantly wipes all logs and deducts 1 UX balance credit.</li>
-                    <li><b>Inactivity Recycle (1-6 Days):</b> Inactive accounts without login for 1 to 6 days are automatically purged, recycling the node and resetting balance.</li>
-                    <li><b>Real Crypto Payments:</b> Send cryptocurrency directly to official vault addresses to fund your account.</li>
+                    <li><b>Single Device Registration Lock:</b> Each phone or device is strictly restricted to registering only 1 node to prevent multi-account abuse.</li>
+                    <li><b>Screen Lock / Close Auto-Delete:</b> Turning off the screen, switching apps, locking the phone, closing the browser, or refreshing instantly wipes all chats, closes the session, and deducts 1 UX credit.</li>
+                    <li><b>Inactivity Recycle (1-6 Days):</b> Inactive accounts without login for 1 to 6 days are automatically purged.</li>
                 </ul>
             </div>
 
@@ -609,7 +608,7 @@
                     <span style="color: #10b981;" id="peer-status-indicator">● Channel Active</span>
                 </div>
                 <div class="chat-messages" id="message-box">
-                    <div class="message incoming">System: Secure ephemeral tunnel synchronized. Zero logs stored. Messages auto-delete in 3 minutes or when closing/refreshing.</div>
+                    <div class="message incoming">System: Secure ephemeral tunnel synchronized. Zero logs stored. Messages auto-delete in 3 minutes or when closing/locking screen.</div>
                 </div>
                 <div class="chat-input-area">
                     <input type="text" id="user-input" class="msg-input" placeholder="Type an encrypted ephemeral message..." autocomplete="off">
@@ -640,7 +639,6 @@
             <h3>🪙 Real Crypto Payment Gateway</h3>
             <p>Select your desired fund package below. Choose the amount to instantly generate your secure payment invoice.</p>
             
-            <!-- NUEVO DISEÑO DE SELECCIÓN DE PRECIOS -->
             <div class="price-grid" id="price-grid-container">
                 <div class="price-card selected" onclick="selectPricePackage(5, '1.99', '5 Credits ($1.99 USD)', this)">
                     <div class="credits-num">5 Credits</div>
@@ -747,7 +745,6 @@
         let activeNodeId = "";
         let currentRoom = "GENERAL";
         
-        // Variable para guardar el paquete de recarga seleccionado
         let selectedPackageData = {
             credits: 5,
             usd: "1.99",
@@ -769,27 +766,34 @@
                 localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(defaultList));
             }
 
-            // DETECTOR DE RECARGA (REFRESH) O CIERRE DE PESTAÑA / TELÉFONO
             let activeNodeInSession = sessionStorage.getItem('pleniux_active_node');
             if (activeNodeInSession) {
-                let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeInSession) || '5');
-                currentCredits = Math.max(0, currentCredits - 1);
-                localStorage.setItem('pleniux_credits_' + activeNodeInSession, currentCredits);
-                sessionStorage.clear();
-                alert(`⚠️ SECURITY ALERT: Page refreshed or connection lost. 1 UX balance credit has been deducted and all messages wiped.`);
+                applyScreenLockPenalization(activeNodeInSession, "Page refreshed");
             }
         });
 
-        // Al cerrar pestaña, navegador o apagar teléfono, limpiamos la sesión
-        window.addEventListener('beforeunload', () => {
-            let activeNode = sessionStorage.getItem('pleniux_active_node');
-            if (activeNode) {
-                let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNode) || '5');
-                currentCredits = Math.max(0, currentCredits - 1);
-                localStorage.setItem('pleniux_credits_' + activeNode, currentCredits);
+        // Candado estricto al apagar pantalla, cambiar app o cerrar pestaña
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "hidden" && sessionActive && activeNodeId) {
+                applyScreenLockPenalization(activeNodeId, "Screen locked or minimized");
             }
-            sessionStorage.clear();
         });
+
+        window.addEventListener('beforeunload', () => {
+            let activeNode = sessionStorage.getItem('pleniux_active_node') || activeNodeId;
+            if (activeNode && sessionActive) {
+                applyScreenLockPenalization(activeNode, "Session closed");
+            }
+        });
+
+        function applyScreenLockPenalization(nodeId, reason) {
+            if (!nodeId) return;
+            let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + nodeId) || '5');
+            currentCredits = Math.max(0, currentCredits - 1);
+            localStorage.setItem('pleniux_credits_' + nodeId, currentCredits);
+            sessionStorage.clear();
+            sessionActive = false;
+        }
 
         function checkInactivityAndRecycleNodes() {
             let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
@@ -831,24 +835,17 @@
         function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
         function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 
-        // Función para manejar la selección de paquetes de precios visuales
         function selectPricePackage(credits, usd, text, cardElement) {
             selectedPackageData = { credits, usd, text };
-            
-            // Quitar clase selected de todas las tarjetas
             const cards = document.querySelectorAll('.price-card');
             cards.forEach(c => c.classList.remove('selected'));
-            
-            // Agregar clase selected a la tarjeta clickeada
             cardElement.classList.add('selected');
-            
-            // Actualizar display inferior
             document.getElementById('crypto-amount-display').innerText = text;
         }
 
         function requestRealPaymentOrder() {
             closeModal('recharge-modal');
-            alert(`✅ [PLENIUX SECURE INVOICE ACTIVE]:\n\nPackage: ${selectedPackageData.text}\nAmount: $${selectedPackageData.usd} USD\n\n👉 Send the exact cryptocurrency amount to the vault address displayed in the gateway. Your session will credit automatically upon blockchain confirmation.`);
+            alert(`✅ [PLENIUX SECURE INVOICE ACTIVE]:\n\nPackage: ${selectedPackageData.text}\nAmount: $${selectedPackageData.usd} USD\n\n👉 Send the exact cryptocurrency amount to the vault address displayed in the gateway.`);
         }
 
         function joinOrCreateRoom() {
@@ -875,6 +872,13 @@
         }
 
         function handleRegister() {
+            // CANDADO: Evitar que este dispositivo registre múltiples nodos
+            let deviceRegisteredNode = localStorage.getItem('pleniux_device_bound_node');
+            if (deviceRegisteredNode) {
+                alert(`🚨 RESTRICTION ACTIVE: This device has already registered node (${deviceRegisteredNode}). Only 1 node registration is allowed per phone/device.`);
+                return;
+            }
+
             let nodeNum = document.getElementById('reg-node-input').value.trim();
             let passcode = document.getElementById('reg-passcode-input').value.trim();
 
@@ -898,6 +902,7 @@
 
             localStorage.setItem(registryPassKey, passcode);
             localStorage.setItem('pleniux_credits_' + fullNodeId, '5');
+            localStorage.setItem('pleniux_device_bound_node', fullNodeId); // Vincula permanentemente al teléfono
 
             let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
             if (!allRegistered.some(item => item.node === fullNodeId)) {
@@ -909,7 +914,7 @@
                 localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(allRegistered));
             }
 
-            alert(`✅ Success! Node ${fullNodeId} registered.`);
+            alert(`✅ Success! Node ${fullNodeId} registered and bound to this device.`);
             document.getElementById('login-node-input').value = fullNodeId;
             document.getElementById('login-passcode-input').value = "";
             switchAuthMode('login');
@@ -938,7 +943,7 @@
             }
 
             if (existingRegisteredPass === null) {
-                alert(`⚠️ Node ${nodeInput} not registered or recycled due to inactivity. Register first.`);
+                alert(`⚠️ Node ${nodeInput} not registered. Register first.`);
                 switchAuthMode('register');
                 document.getElementById('reg-node-input').value = nodeInput.replace('UX', '');
                 return;
@@ -953,7 +958,7 @@
             if (isNaN(userCredits)) userCredits = (nodeInput === 'UX0') ? 999 : 5;
 
             if (userCredits <= 0) {
-                alert(`⚠️ Balance at 0 UX. Node suspended pending recharge.`);
+                alert(`⚠️ Balance at 0 UX. Node suspended.`);
                 return;
             }
 
@@ -1002,7 +1007,7 @@
 
         function startContinuousTimer() {
             const timerEl = document.getElementById('timer');
-            const totalDurationSec = 180; // 3 minutos exactos
+            const totalDurationSec = 180;
 
             if (countdownInterval) clearInterval(countdownInterval);
 
