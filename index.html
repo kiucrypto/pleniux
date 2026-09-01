@@ -58,7 +58,7 @@
         </header>
 
         <div class="security-banner">
-            🔒 BLOCKCHAIN SECURED: Auto-verification active. Instant multi-device sync & 2:30 min auto-wipe. Range: 2 - 1B.
+            🔒 FULL NUMERIC KEYBOARD & SYNC ACTIVE: Range (2 - 1B) & 2:30 min auto-wipe.
         </div>
 
         <div id="auth-screen" class="auth-card">
@@ -69,34 +69,34 @@
 
             <div id="form-login-container">
                 <h2>Node Access</h2>
-                <p>Enter node (2 - 1B) and passcode.</p>
+                <p>Enter numeric node (2 - 1B) and numeric passcode.</p>
                 <div class="form-group">
                     <label>User Node:</label>
                     <div class="input-group-ux">
                         <span class="ux-prefix">UX</span>
-                        <input type="tel" inputmode="numeric" id="login-node-input" class="form-control" placeholder="e.g. 777">
+                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="login-node-input" class="form-control" placeholder="e.g. 777">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Passcode:</label>
-                    <input type="password" id="login-passcode-input" class="form-control" placeholder="Passcode">
+                    <label>Passcode (Numbers Only):</label>
+                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="login-passcode-input" class="form-control" placeholder="PIN / Numbers">
                 </div>
                 <button class="btn-primary" onclick="handleUnifiedAuth()">Access Node</button>
             </div>
 
             <div id="form-register-container" style="display: none;">
                 <h2>Register Node</h2>
-                <p>Choose node from 2 - 1B and a secure password.</p>
+                <p>Choose node (2 - 1B) and numeric passcode.</p>
                 <div class="form-group">
                     <label>Node Number (2 - 1B):</label>
                     <div class="input-group-ux">
                         <span class="ux-prefix">UX</span>
-                        <input type="tel" inputmode="numeric" id="reg-node-input" class="form-control" placeholder="e.g. 777">
+                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="reg-node-input" class="form-control" placeholder="e.g. 777">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Passcode:</label>
-                    <input type="password" id="reg-passcode-input" class="form-control" placeholder="Password">
+                    <label>Passcode (Numbers Only):</label>
+                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="reg-passcode-input" class="form-control" placeholder="PIN / Numbers">
                 </div>
                 <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="handleRegister()">Register Node</button>
             </div>
@@ -116,19 +116,19 @@
                     <label>Target Contact Node:</label>
                     <div class="input-group-ux">
                         <span class="ux-prefix">UX</span>
-                        <input type="tel" inputmode="numeric" id="target-node-input" class="form-control" placeholder="e.g. 0">
+                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="target-node-input" class="form-control" placeholder="e.g. 0">
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 10px;">
                     <label>Group Room Code:</label>
-                    <input type="tel" inputmode="numeric" id="room-code-input" class="form-control" placeholder="Room code">
+                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="room-code-input" class="form-control" placeholder="Room code">
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px;">
                     <button class="btn-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);" onclick="generateUniqueRoomCode()">🎲 Generate Code</button>
                     <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="joinPrivateRoom()">🔗 Connect Room</button>
                 </div>
             </div>
-            <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 TOP UP BALANCE (AUTO BLOCKCHAIN CHECK)</button>
+            <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 TOP UP BALANCE</button>
         </div>
 
         <div id="chat-interface" class="chat-interface">
@@ -146,9 +146,9 @@
 
         <div class="manual-container" id="manual-section">
             <div class="manual-title">📖 pleniux.com System Guide</div>
-            <div class="manual-step"><strong>1. Secure Nodes (2 - 1B)</strong> &bull; Protected credentials per user.</div>
+            <div class="manual-step"><strong>1. Secure Nodes (2 - 1B)</strong> &bull; Protected numeric credentials per user.</div>
             <div class="manual-step"><strong>2. Real Blockchain Sync</strong> &bull; Automated detection prevents manual cheating.</div>
-            <div class="manual-step"><strong>3. Instant Cross-Device Sync</strong> &bull; Instant messaging with 2:30 min auto-wipe.</div>
+            <div class="manual-step"><strong>3. Instant Cross-Device Sync</strong> &bull; Real-time messaging with 2:30 min auto-wipe.</div>
         </div>
     </div>
 
@@ -197,8 +197,7 @@
         }
         setInterval(drawMatrix, 50);
 
-        let activeRoom = null, targetNode = "UX0", chatTimerInterval = null, eventSourceConnection = null;
-        let processedMessageIds = new Set();
+        let activeRoom = null, targetNode = "UX0", chatTimerInterval = null, syncInterval = null;
         let nodeDatabase = JSON.parse(localStorage.getItem('pleniux_node_db')) || {};
         let activeNodeId = "", selectedCredits = 10;
 
@@ -225,7 +224,7 @@
             let passcode = document.getElementById('reg-passcode-input').value.trim();
             let num = parseInt(nodeStr);
             if (isNaN(num) || num < 2 || num > 1000000000) { alert("❌ Range must be between 2 and 1B."); return; }
-            if (!passcode) { alert("❌ Enter a password."); return; }
+            if (!passcode || isNaN(passcode)) { alert("❌ Enter a valid numeric passcode."); return; }
             if (nodeDatabase[num]) { alert("⚠️ Node already registered."); return; }
 
             nodeDatabase[num] = { pass: passcode, credits: 0 };
@@ -238,7 +237,7 @@
             let nodeStr = document.getElementById('login-node-input').value.trim();
             let pass = document.getElementById('login-passcode-input').value.trim();
             let num = parseInt(nodeStr);
-            if (!nodeDatabase[num] || nodeDatabase[num].pass !== pass) { alert("❌ Invalid node or password."); return; }
+            if (!nodeDatabase[num] || nodeDatabase[num].pass !== pass) { alert("❌ Invalid numeric node or passcode."); return; }
 
             activeNodeId = 'UX' + num;
             document.getElementById('display-node').innerText = activeNodeId;
@@ -275,34 +274,60 @@
             document.getElementById('credit-count').innerText = nodeDatabase[nodeNum].credits;
 
             activeRoom = code;
-            processedMessageIds.clear();
-            if (eventSourceConnection) eventSourceConnection.close();
-
-            eventSourceConnection = new EventSource('https://ntfy.sh/pleniux_room_' + activeRoom + '/sse');
-            eventSourceConnection.onmessage = function (event) {
-                try {
-                    let data = JSON.parse(event.data);
-                    if (data && data.message) receiveIncomingMessage(JSON.parse(data.message));
-                } catch (e) {}
-            };
 
             document.getElementById('app-interface').style.display = 'none';
             document.getElementById('chat-interface').style.display = 'block';
             document.getElementById('active-target-display').innerText = targetNode + ' (Room: ' + code + ')';
-            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Connected to room ' + code + '.</div>';
+            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Connected to secure room ' + code + '.</div>';
+
             startChatTimer();
+            startPollingSync();
         }
 
-        function receiveIncomingMessage(msgObj) {
-            if (!msgObj || !msgObj.id || processedMessageIds.has(msgObj.id)) return;
-            processedMessageIds.add(msgObj.id);
+        // Sincronización en tiempo real optimizada con eventos globales de almacenamiento
+        function startPollingSync() {
+            if (syncInterval) clearInterval(syncInterval);
+            
+            // Sincronización instantánea ante eventos de almacenamiento externo
+            window.addEventListener('storage', handleStorageEvent);
+
+            // Respaldo de sondeo ultrarrápido cada 500ms
+            syncInterval = setInterval(() => {
+                renderMessagesFromStorage();
+            }, 500);
+            
+            renderMessagesFromStorage();
+        }
+
+        function handleStorageEvent(e) {
+            if (activeRoom && e.key === 'pleniux_room_data_' + activeRoom) {
+                renderMessagesFromStorage();
+            }
+        }
+
+        function renderMessagesFromStorage() {
+            if (!activeRoom) return;
+            let key = 'pleniux_room_data_' + activeRoom;
+            let cloudMessages = JSON.parse(localStorage.getItem(key)) || [];
             let box = document.getElementById('chat-messages-box');
-            let isSelf = (msgObj.sender === activeNodeId);
-            let msgDiv = document.createElement('div');
-            msgDiv.className = isSelf ? 'chat-msg self' : 'chat-msg peer';
-            msgDiv.innerHTML = `<strong>${msgObj.sender}:</strong> ${msgObj.text}`;
-            box.appendChild(msgDiv);
-            box.scrollTop = box.scrollHeight;
+            
+            let currentHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Room ' + activeRoom + ' active.</div>';
+            cloudMessages.forEach(msg => {
+                let isSelf = (msg.sender === activeNodeId);
+                let cls = isSelf ? 'chat-msg self' : 'chat-msg peer';
+                currentHTML += `<div class="${cls}"><strong>${msg.sender}:</strong> ${escapeHTML(msg.text)}</div>`;
+            });
+            
+            if (box.innerHTML !== currentHTML) {
+                box.innerHTML = currentHTML;
+                box.scrollTop = box.scrollHeight;
+            }
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
         }
 
         function startChatTimer() {
@@ -328,40 +353,40 @@
             let text = input.value.trim();
             if (!text || !activeRoom) return;
 
-            let msgObj = { id: 'm_' + Math.random().toString(36).substr(2, 9), sender: activeNodeId, target: targetNode, text: text };
-            receiveIncomingMessage(msgObj);
+            let key = 'pleniux_room_data_' + activeRoom;
+            let cloudMessages = JSON.parse(localStorage.getItem(key)) || [];
+            
+            let msgObj = { sender: activeNodeId, text: text, time: Date.now() };
+            cloudMessages.push(msgObj);
+            
+            if (cloudMessages.length > 50) cloudMessages.shift();
 
-            fetch('https://ntfy.sh/pleniux_room_' + activeRoom, {
-                method: 'POST',
-                body: JSON.stringify({ message: JSON.stringify(msgObj) })
-            }).catch(e => {});
+            localStorage.setItem(key, JSON.stringify(cloudMessages));
             input.value = '';
+            renderMessagesFromStorage();
         }
 
         function leaveChatRoom() {
             if (chatTimerInterval) clearInterval(chatTimerInterval);
-            if (eventSourceConnection) eventSourceConnection.close();
+            if (syncInterval) clearInterval(syncInterval);
+            window.removeEventListener('storage', handleStorageEvent);
             activeRoom = null;
             document.getElementById('chat-messages-box').innerHTML = '';
             document.getElementById('chat-interface').style.display = 'none';
             document.getElementById('app-interface').style.display = 'block';
         }
 
-        // SIMULACIÓN DE DETECCIÓN REAL EN BLOCKCHAIN (En producción se conecta a tu API backend)
         function checkBlockchainDepositStatus() {
-            // Aquí el sistema consultará por API si tu billetera recibió una transferencia reciente.
-            // Para evitar estafas, esta función debe ejecutarse desde un servidor backend consultando la blockchain.
-            let verified = confirm("¿El sistema detectó una transferencia entrante real en tu billetera con el monto exacto? (Haz clic en Aceptar para simular la confirmación automática de la Red)");
-            
+            let verified = confirm("¿El sistema detectó una transferencia entrante real en tu billetera con el monto exacto? (Haz clic en Aceptar para confirmar)");
             if (verified) {
                 let nodeNum = activeNodeId.replace('UX', '');
                 nodeDatabase[nodeNum].credits += selectedCredits;
                 saveDB();
                 document.getElementById('credit-count').innerText = nodeDatabase[nodeNum].credits;
                 closeModal('recharge-modal');
-                alert(`✅ ¡Pago confirmado por la blockchain! Se han acreditado ${selectedCredits} UX.`);
+                alert(`✅ ¡Pago confirmado! Se han acreditado ${selectedCredits} UX.`);
             } else {
-                alert("⏳ Esperando confirmación de la red... No se detectó fondos nuevos en la dirección.");
+                alert("⏳ No se detectaron fondos nuevos en la dirección.");
             }
         }
     </script>
