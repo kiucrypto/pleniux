@@ -326,9 +326,9 @@
             <div class="manual-box">
                 <h3>Manual Profesional de Seguridad Pleniux</h3>
                 <ul>
-                    <li><b>Conversaciones Privadas:</b> Comparte el código numérico (0-10000) con amigos o contactos para unirse al mismo canal cerrado.</li>
-                    <li><b>Protección por Apagado / Bloqueo de Pantalla:</b> Si bloqueas el teléfono, apagas la pantalla o sales de la aplicación durante la sesión activa, el sistema detecta la inactividad de seguridad, <b>elimina automáticamente todos los mensajes instantáneamente</b> y descuenta 1 crédito de saldo, notificándolo en el registro.</li>
-                    <li><b>Cero Retención:</b> El protocolo autónomo de Pleniux no almacena metadatos ni historiales persistentes.</li>
+                    <li><b>Privacidad con Amigos o Desconocidos:</b> Comparte o introduce el código numérico (0-10000) para unirte al mismo canal cerrado con tu contacto.</li>
+                    <li><b>Persistencia de Sesión ante Actualizaciones (Refresh):</b> Si recargas o actualizas la página web, el temporizador de cuenta regresiva <b>no se reinicia ni se incrementa</b>; continúa exactamente en el segundo donde ibas.</li>
+                    <li><b>Protección por Pantalla Apagada o Bloqueo:</b> Si bloqueas el teléfono, apagas la pantalla o sales de la app, el sistema purga los mensajes al instante y descuenta 1 crédito de saldo, informándolo en el chat.</li>
                 </ul>
             </div>
 
@@ -397,6 +397,24 @@
         let countdownInterval;
         let sessionActive = false;
 
+        // Check if there's an active session stored on page load/refresh
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedNode = sessionStorage.getItem('pleniux_node');
+            const savedPass = sessionStorage.getItem('pleniux_pass');
+            const savedTime = sessionStorage.getItem('pleniux_time');
+
+            if (savedNode && savedPass && savedTime !== null) {
+                // Resume session seamlessly without resetting the timer
+                document.getElementById('display-node').innerText = savedNode;
+                document.getElementById('display-passcode').innerText = savedPass;
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('app-interface').style.display = 'block';
+
+                sessionActive = true;
+                startTimer(parseInt(savedTime));
+            }
+        });
+
         function initializeSession() {
             const nodeInput = document.getElementById('node-input').value.trim().toLowerCase();
             const passcodeInput = document.getElementById('passcode-input').value.trim();
@@ -418,6 +436,11 @@
                 return;
             }
 
+            // Save state to sessionStorage for persistence across web page refreshes
+            sessionStorage.setItem('pleniux_node', nodeInput);
+            sessionStorage.setItem('pleniux_pass', passNum);
+            sessionStorage.setItem('pleniux_time', 180); // 3 minutes total
+
             document.getElementById('display-node').innerText = nodeInput;
             document.getElementById('display-passcode').innerText = passNum;
 
@@ -437,8 +460,14 @@
                 let seconds = timeLeft % 60;
                 timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 
+                // Update time in sessionStorage so if they refresh, it keeps the exact remaining seconds
+                sessionStorage.setItem('pleniux_time', timeLeft);
+                
                 if (timeLeft <= 0) {
                     clearInterval(countdownInterval);
+                    sessionStorage.removeItem('pleniux_node');
+                    sessionStorage.removeItem('pleniux_pass');
+                    sessionStorage.removeItem('pleniux_time');
                     terminateSessionBySecurity("Tiempo límite expirado. Mensajes destruidos.");
                 }
                 timeLeft--;
@@ -453,15 +482,13 @@
             }
         });
 
-        window.addEventListener("pagehide", function() {
-            if (sessionActive) {
-                terminateSessionBySecurity("Sesión interrumpida por cierre o apagado de pantalla.");
-            }
-        });
-
         function terminateSessionBySecurity(reason) {
             if (!sessionActive) return;
             sessionActive = false;
+
+            sessionStorage.removeItem('pleniux_node');
+            sessionStorage.removeItem('pleniux_pass');
+            sessionStorage.removeItem('pleniux_time');
 
             if (credits > 0) {
                 credits--;
@@ -483,6 +510,10 @@
 
         function handleManualExit() {
             sessionActive = false;
+            sessionStorage.removeItem('pleniux_node');
+            sessionStorage.removeItem('pleniux_pass');
+            sessionStorage.removeItem('pleniux_time');
+
             if (credits > 0) {
                 credits--;
                 localStorage.setItem('pleniux_credits', credits);
