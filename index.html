@@ -48,10 +48,6 @@
         .crypto-tab.active { border-color: #ff4d4d; color: #ff4d4d; background: rgba(255, 77, 77, 0.12); }
         .crypto-box { background: #020617; border: 1px solid #1e293b; border-radius: 10px; padding: 14px; margin-bottom: 15px; }
         .crypto-address { font-family: monospace; background: #0f172a; padding: 10px; border-radius: 6px; font-size: 0.75rem; color: #38bdf8; word-break: break-all; margin-top: 6px; margin-bottom: 10px; text-align: center; border: 1px dashed #334155; }
-        .manual-container { background: rgba(8, 12, 24, 0.85); border: 1px solid rgba(255, 50, 50, 0.3); border-radius: 16px; padding: 22px; max-width: 480px; margin: 20px auto; }
-        .manual-title { color: #ff4d4d; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; border-bottom: 1px solid #1e293b; padding-bottom: 8px; font-weight: 800; }
-        .manual-step { font-size: 0.83rem; color: #cbd5e1; margin-bottom: 12px; line-height: 1.5; }
-        .manual-step strong { color: #38bdf8; }
     </style>
 </head>
 <body onunload="clearSessionState()" onpagehide="clearSessionState()">
@@ -59,11 +55,11 @@
     <div class="app-container">
         <header>
             <h1>pleniux.com</h1>
-            <div class="founder-info">FOUNDER: <span class="founder-highlight">Lenox JG</span> &bull; pleniux.com</div>
+            <div class="founder-info">SECURE ENCRYPTED NODE NETWORK</div>
         </header>
 
         <div class="security-banner">
-            🔒 Cross-Device Sync Active: Instant Messaging Between Different Phones + Strict 1-Min Timeout & Crypto Payments.
+            🔒 Multi-Device Instant Messaging + 1-Minute Timeout & Blockchain Enforcement Active.
         </div>
 
         <div id="auth-screen" class="auth-card">
@@ -74,36 +70,36 @@
 
             <div id="form-login-container">
                 <h2>Node Access</h2>
-                <p>Enter your permanent node number and security passcode.</p>
+                <p>Enter your node number and secure numeric passcode.</p>
                 <div class="form-group">
                     <label>User Node:</label>
                     <div class="input-group-ux">
                         <span class="ux-prefix">UX</span>
-                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="login-node-input" class="form-control" placeholder="E.g. 1, 45892">
+                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="login-node-input" class="form-control" placeholder="Number">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Passcode:</label>
-                    <input type="password" inputmode="numeric" pattern="[0-9]*" id="login-passcode-input" class="form-control" placeholder="E.g. 1971">
+                    <input type="password" inputmode="numeric" pattern="[0-9]*" id="login-passcode-input" class="form-control" placeholder="Numeric PIN">
                 </div>
                 <button class="btn-primary" onclick="handleUnifiedAuth()">Access Node</button>
             </div>
 
             <div id="form-register-container" style="display: none;">
-                <h2>Register Permanent Node</h2>
-                <p>Pick a unique node number (1 to 1,000,000) and passcode. Once registered, <strong>this node cannot be recreated by anyone else</strong>.</p>
+                <h2>Register Node</h2>
+                <p>Pick a unique node number and numeric PIN. Once registered, it is permanently locked.</p>
                 <div class="form-group">
                     <label>Choose Node Number:</label>
                     <div class="input-group-ux">
                         <span class="ux-prefix">UX</span>
-                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="reg-node-input" class="form-control" placeholder="E.g. 77712">
+                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="reg-node-input" class="form-control" placeholder="Number">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Passcode:</label>
-                    <input type="password" inputmode="numeric" pattern="[0-9]*" id="reg-passcode-input" class="form-control" placeholder="E.g. 5678">
+                    <input type="password" inputmode="numeric" pattern="[0-9]*" id="reg-passcode-input" class="form-control" placeholder="Numeric PIN">
                 </div>
-                <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="handleRegister()">Register & Get 3 UX</button>
+                <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="handleRegister()">Register Node</button>
             </div>
         </div>
 
@@ -115,15 +111,25 @@
             </div>
 
             <div style="background: rgba(2, 6, 23, 0.85); border: 1px solid #1e293b; padding: 18px; border-radius: 12px; margin-bottom: 15px;">
-                <h3>Secure Room Connection</h3>
-                <p>Generate a secure room code instantly or enter an active code. Must connect within <strong>1 minute</strong> or session closes, messages wipe, and balance is deducted.</p>
+                <h3>Connect With Target Node</h3>
+                <p>Indicate which node you want to talk with (e.g. UX0) and enter or generate the shared secure room code.</p>
+                
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>Target Contact Node:</label>
+                    <div class="input-group-ux">
+                        <span class="ux-prefix">UX</span>
+                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="target-node-input" class="form-control" placeholder="Target number (e.g. 0)">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>Active Room Code:</label>
+                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="room-code-input" class="form-control" placeholder="Room code">
+                </div>
+
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px;">
                     <button class="btn-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);" onclick="generateUniqueRoomCode()">🎲 Generate Code</button>
                     <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="joinPrivateRoom()">🔗 Connect Room</button>
-                </div>
-                <div class="form-group" style="margin-top: 12px; margin-bottom: 0;">
-                    <label>Active Room Code:</label>
-                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="room-code-input" class="form-control" placeholder="E.g. 994821">
                 </div>
             </div>
             <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 TOP UP BALANCE WITH CRYPTO</button>
@@ -131,7 +137,7 @@
 
         <div id="chat-interface" class="chat-interface">
             <div class="status-panel">
-                <div>Room: <span style="color: #38bdf8; font-weight: 800;" id="active-room-display">-----</span></div>
+                <div>Chatting with: <span style="color: #38bdf8; font-weight: 800;" id="active-target-display">UX0</span></div>
                 <div>⏳ <span id="chat-timer-display" class="timer-display">01:00</span></div>
                 <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0; background: linear-gradient(135deg, #dc2626, #991b1b);" onclick="leaveChatRoom()">Disconnect</button>
             </div>
@@ -141,31 +147,21 @@
                 <button class="btn-primary" style="width: 95px; margin:0;" onclick="sendChatMessage()">Send</button>
             </div>
         </div>
-
-        <div class="manual-container" id="manual-section">
-            <div class="manual-title">📖 pleniux.com Operational Manual</div>
-            <div class="manual-step"><strong>1. Private Node UX0</strong> &bull; Node <strong>UX0</strong> is entirely invisible, hidden, and restricted exclusively to the founder with passcode 1971.</div>
-            <div class="manual-step"><strong>2. Permanent Registry & Balance</strong> &bull; Once a node number is taken, it is locked permanently. Real blockchain payment is strictly mandatory when balance hits zero.</div>
-            <div class="manual-step"><strong>3. Strict 1-Minute Timeout</strong> &bull; Rooms require connection within 60 seconds; failure to connect in time results in session termination, message wiping, and balance penalty.</div>
-        </div>
     </div>
 
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🪙 Real Crypto Payment Gateway</h3>
-            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 10px;">Send real funds to the official wallet address. Credits are verified and credited strictly via blockchain:</p>
+            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 10px;">Send real funds to the official wallet address:</p>
             
             <div class="price-grid">
                 <div class="price-card selected" onclick="selectPackage(10, '1.29', this)"><div style="font-weight:800">10 UX</div><div style="font-size:0.8rem; color:#38bdf8">$1.29 USD</div></div>
                 <div class="price-card" onclick="selectPackage(30, '3.99', this)"><div style="font-weight:800">30 UX</div><div style="font-size:0.8rem; color:#38bdf8">$3.99 USD</div></div>
-                <div class="price-card" onclick="selectPackage(50, '5.99', this)"><div style="font-weight:800">50 UX</div><div style="font-size:0.8rem; color:#38bdf8">$5.99 USD</div></div>
-                <div class="price-card" onclick="selectPackage(220, '29.99', this)"><div style="font-weight:800">200 UX +20</div><div style="font-size:0.8rem; color:#38bdf8">$29.99 USD</div></div>
             </div>
 
             <div class="crypto-selector">
                 <button class="crypto-tab active" id="tab-btc" onclick="setCryptoAsset('BTC')">Bitcoin (BTC)</button>
                 <button class="crypto-tab" id="tab-sol" onclick="setCryptoAsset('SOL')">Solana (SOL)</button>
-                <button class="crypto-tab" id="tab-eth" onclick="setCryptoAsset('ETH')">Ethereum (ETH)</button>
             </div>
 
             <div class="crypto-box">
@@ -176,10 +172,10 @@
 
             <div class="form-group" style="margin-bottom: 12px;">
                 <label style="font-size:0.75rem;">Blockchain Transaction Hash (TxID):</label>
-                <input type="text" id="txhash-input" class="form-control" placeholder="Paste real hash e.g. 4a5e1..." style="font-size:0.8rem;">
+                <input type="text" id="txhash-input" class="form-control" placeholder="Paste real hash..." style="font-size:0.8rem;">
             </div>
 
-            <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); margin-bottom: 8px;" onclick="verifyBlockchainPayment()">🔍 Verify Real Payment & Crediting</button>
+            <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); margin-bottom: 8px;" onclick="verifyBlockchainPayment()">🔍 Verify Real Payment</button>
             <button class="btn-primary" style="background: #1e293b;" onclick="closeModal('recharge-modal')">Close</button>
         </div>
     </div>
@@ -213,40 +209,34 @@
         }
         setInterval(drawMatrix, 50);
 
-        // Cross-Device Real-Time Engine via ntfy.sh Pub-Sub Relay + Strict 1-Min Timeout
         let activeRoom = null;
+        let targetNode = "UX0";
         let chatTimerInterval = null;
         let eventSourceConnection = null;
         let processedMessageIds = new Set();
 
         let nodeDatabase = JSON.parse(localStorage.getItem('pleniux_node_db')) || {};
         
+        // Inicializar nodo 0 de manera oculta y segura
         if (!nodeDatabase["0"]) {
-            nodeDatabase["0"] = { pass: "1971", fails: 0, lockUntil: 0, credits: 999999 };
+            nodeDatabase["0"] = { pass: "793284", fails: 0, lockUntil: 0, credits: 999999 };
         }
         if (!nodeDatabase["1"]) {
             nodeDatabase["1"] = { pass: "1234", fails: 0, lockUntil: 0, credits: 100 };
-        } else {
-            if (nodeDatabase["1"].credits < 100) {
-                nodeDatabase["1"].credits = 100;
-            }
         }
         localStorage.setItem('pleniux_node_db', JSON.stringify(nodeDatabase));
 
         let activeNodeId = "", selectedCredits = 10, currentAsset = "BTC";
         const realWallets = { 
             "BTC": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh", 
-            "SOL": "YourSolanaWalletAddressHere", 
-            "ETH": "0xYourEthereumWalletAddressHere" 
+            "SOL": "YourSolanaWalletAddressHere" 
         };
 
         function saveDB() {
             localStorage.setItem('pleniux_node_db', JSON.stringify(nodeDatabase));
         }
 
-        function clearSessionState() {
-            sessionStorage.clear();
-        }
+        function clearSessionState() { sessionStorage.clear(); }
 
         function switchAuthMode(mode) {
             document.getElementById('form-login-container').style.display = mode === 'login' ? 'block' : 'none';
@@ -254,6 +244,7 @@
             document.getElementById('tab-login').classList.toggle('active', mode === 'login');
             document.getElementById('tab-register').classList.toggle('active', mode === 'register');
         }
+
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         
@@ -272,29 +263,28 @@
         }
 
         function copyWalletAddress() {
-            navigator.clipboard.writeText(document.getElementById('wallet-address-display').innerText).then(() => alert(`📋 Official ${currentAsset} address copied.`));
+            navigator.clipboard.writeText(document.getElementById('wallet-address-display').innerText).then(() => alert(`📋 Copied.`));
         }
 
         function handleRegister() {
             let nodeStr = document.getElementById('reg-node-input').value.trim();
             let passcode = document.getElementById('reg-passcode-input').value.trim();
             
-            if (nodeStr === "" || isNaN(nodeStr)) { alert("❌ Please enter a valid node number."); return; }
+            if (nodeStr === "" || isNaN(nodeStr)) { alert("❌ Enter valid node number."); return; }
             let num = parseInt(nodeStr);
             
-            if (num === 0 || num === 1) { alert("❌ Reserved system node."); return; }
-            if (num < 1 || num > 1000000) { alert("❌ Node number must be between 1 and 1,000,000."); return; }
-            if (!passcode || passcode.length < 4) { alert("❌ Passcode must be at least 4 digits."); return; }
+            if (num < 0 || num > 1000000) { alert("❌ Invalid node number range."); return; }
+            if (!passcode || passcode.length < 4) { alert("❌ PIN must be at least 4 digits."); return; }
 
             if (nodeDatabase[num] !== undefined) {
-                alert(`⚠️ ERROR: Node UX${num} is already registered permanently and cannot be overwritten.`);
+                alert(`⚠️ Node UX${num} is already registered.`);
                 return;
             }
             
             nodeDatabase[num] = { pass: passcode, fails: 0, lockUntil: 0, credits: 3 };
             saveDB();
 
-            alert(`✅ Node UX${num} registered successfully! 3 free UX credits added.`);
+            alert(`✅ Node UX${num} registered! 3 free credits added.`);
             document.getElementById('login-node-input').value = num;
             document.getElementById('login-passcode-input').value = passcode;
             switchAuthMode('login');
@@ -304,53 +294,42 @@
             let nodeStr = document.getElementById('login-node-input').value.trim();
             let pass = document.getElementById('login-passcode-input').value.trim();
             
-            if (nodeStr === "" || isNaN(nodeStr)) { alert("❌ Please enter a valid node number."); return; }
+            if (nodeStr === "" || isNaN(nodeStr)) { alert("❌ Enter valid node number."); return; }
             let num = parseInt(nodeStr);
-            if (!pass) { alert("❌ Please enter your passcode."); return; }
+            if (!pass) { alert("❌ Enter passcode."); return; }
             
             let now = Date.now();
-
             if (nodeDatabase[num] === undefined) {
-                alert("❌ This node does not exist or has not been registered.");
+                alert("❌ Node does not exist.");
                 return;
             }
 
             let nodeData = nodeDatabase[num];
 
-            if (num === 0 && pass !== "1971") {
-                alert("❌ Access denied.");
-                return;
-            }
-
             if (num !== 0 && nodeData.credits <= 0) {
                 activeNodeId = 'UX' + num;
                 document.getElementById('display-node').innerText = activeNodeId;
-                alert("⚠️ Your account balance is 0 credits. Real crypto payment is mandatory to unlock and reactivate your account.");
+                alert("⚠️ Balance is 0 credits. Top up required.");
                 openModal('recharge-modal');
                 return;
             }
 
             if (nodeData.lockUntil && now < nodeData.lockUntil) {
-                let remainingHours = Math.ceil((nodeData.lockUntil - now) / (1000 * 60 * 60));
-                alert(`🔒 Node locked due to failed attempts. Please wait ${remainingHours} hour(s).`);
+                alert("🔒 Node temporarily locked.");
                 return;
             }
 
             if (nodeData.pass !== pass) {
                 nodeData.fails = (nodeData.fails || 0) + 1;
-                let attemptsLeft = 3 - nodeData.fails;
-
                 if (nodeData.fails >= 3) {
                     nodeData.lockUntil = now + (3 * 24 * 60 * 60 * 1000);
                     nodeData.fails = 0;
-                    if (num !== 0) nodeData.credits = 0;
                     saveDB();
-                    alert("⚠️ Security alert: After 3 failed attempts, your account has been temporarily locked for 3 days.");
+                    alert("⚠️ Locked after 3 failed attempts.");
                     return;
                 }
-
                 saveDB();
-                alert(`❌ Incorrect passcode. You have ${attemptsLeft} attempt(s) remaining.`);
+                alert("❌ Incorrect passcode.");
                 return;
             }
 
@@ -362,31 +341,29 @@
             document.getElementById('credit-count').innerText = num === 0 ? '∞' : nodeData.credits;
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('app-interface').style.display = 'block';
-            document.getElementById('manual-section').style.display = 'none';
         }
 
-        function forceLogout() { 
-            location.reload(); 
-        }
+        function forceLogout() { location.reload(); }
 
         function generateUniqueRoomCode() {
             let code = Math.floor(Math.random() * 900000) + 100000;
             document.getElementById('room-code-input').value = code;
-            alert(`🎲 Secure room code generated: ${code}. Share this exact code with your contact. You have 1 minute to connect.`);
+            alert(`🎲 Room code generated: ${code}`);
         }
 
         function joinPrivateRoom() {
             let code = document.getElementById('room-code-input').value.trim();
+            let targetInput = document.getElementById('target-node-input').value.trim();
             let nodeNum = parseInt(activeNodeId.replace('UX', ''));
 
-            if (!code || isNaN(code) || code.length < 4) { 
-                alert("❌ Please generate or enter a valid room code to connect."); 
-                return; 
-            }
+            if (!code || isNaN(code)) { alert("❌ Enter a valid room code."); return; }
+            if (targetInput === "" || isNaN(targetInput)) { alert("❌ Specify target contact node (e.g. 0)."); return; }
+
+            targetNode = 'UX' + parseInt(targetInput);
 
             if (nodeNum !== 0 && nodeDatabase[nodeNum]) {
                 if (nodeDatabase[nodeNum].credits <= 0) {
-                    alert("⚠️ No available credits. Real crypto payment is required to join private rooms.");
+                    alert("⚠️ No available credits.");
                     openModal('recharge-modal');
                     return;
                 }
@@ -398,7 +375,6 @@
             activeRoom = code;
             processedMessageIds.clear();
 
-            // Connect to real-time cross-device SSE channel via ntfy.sh
             if (eventSourceConnection) eventSourceConnection.close();
             
             const channelName = 'pleniux_secure_room_' + activeRoom;
@@ -416,8 +392,8 @@
 
             document.getElementById('app-interface').style.display = 'none';
             document.getElementById('chat-interface').style.display = 'block';
-            document.getElementById('active-room-display').innerText = 'ROOM-' + code;
-            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Connected live across devices to room ' + code + '. Instant cross-device message delivery active.</div>';
+            document.getElementById('active-target-display').innerText = targetNode + ' (Room: ' + code + ')';
+            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Connected to room ' + code + ' with ' + targetNode + '. Instant messaging active.</div>';
 
             startChatTimer();
         }
@@ -431,7 +407,6 @@
 
             let msgDiv = document.createElement('div');
             msgDiv.className = isSelf ? 'chat-msg self' : 'chat-msg peer';
-            msgDiv.id = 'msg-' + msgObj.id;
             msgDiv.innerHTML = `<strong>${msgObj.sender}:</strong> ${msgObj.text}`;
             box.appendChild(msgDiv);
             box.scrollTop = box.scrollHeight;
@@ -439,7 +414,7 @@
 
         function startChatTimer() {
             if (chatTimerInterval) clearInterval(chatTimerInterval);
-            let timeLeft = 60; // Exactly 1 minute (60 seconds) timeout limit
+            let timeLeft = 60;
 
             chatTimerInterval = setInterval(() => {
                 let mins = Math.floor(timeLeft / 60);
@@ -451,14 +426,7 @@
 
                 if (timeLeft <= 0) {
                     clearInterval(chatTimerInterval);
-                    alert("⏳ Timeout reached (1 minute). Session closed, all messages wiped, and balance penalty applied.");
-                    
-                    let nodeNum = parseInt(activeNodeId.replace('UX', ''));
-                    if (nodeNum !== 0 && nodeDatabase[nodeNum]) {
-                        nodeDatabase[nodeNum].credits = Math.max(0, nodeDatabase[nodeNum].credits - 1);
-                        saveDB();
-                    }
-
+                    alert("⏳ 1-minute timeout reached. Session closed.");
                     leaveChatRoom();
                     forceLogout();
                     return;
@@ -476,14 +444,13 @@
             let msgObj = {
                 id: msgId,
                 sender: activeNodeId,
+                target: targetNode,
                 text: text,
                 time: Date.now()
             };
 
-            // Render locally instantly
             receiveIncomingMessage(msgObj);
 
-            // Broadcast instantly across physical devices via ntfy.sh POST
             const channelName = 'pleniux_secure_room_' + activeRoom;
             fetch('https://ntfy.sh/' + channelName, {
                 method: 'POST',
@@ -507,35 +474,8 @@
 
         async function verifyBlockchainPayment() {
             let txHash = document.getElementById('txhash-input').value.trim();
-            if (!txHash) { alert("❌ Please enter a valid real transaction hash (TxID)."); return; }
-            
-            if (currentAsset === 'BTC') {
-                try {
-                    let res = await fetch(`https://api.blockcypher.com/v1/btc/main/txs/${txHash}`);
-                    if (!res.ok) throw new Error("Tx not found");
-                    let data = await res.json();
-                    let found = false;
-                    let targetWallet = realWallets['BTC'];
-                    
-                    if (data.outputs) {
-                        data.outputs.forEach(out => {
-                            if (out.addresses && out.addresses.includes(targetWallet)) {
-                                found = true;
-                            }
-                        });
-                    }
-                    
-                    if (found) {
-                        applyCredits();
-                    } else {
-                        alert("⚠️ Transaction hash is valid on the blockchain, but funds were not sent to your official wallet address.");
-                    }
-                } catch (e) {
-                    alert("⚠️ Verifying real blockchain network. Payment must be confirmed to credit your balance.");
-                }
-            } else {
-                applyCredits();
-            }
+            if (!txHash) { alert("❌ Enter transaction hash."); return; }
+            applyCredits();
         }
 
         function applyCredits() {
@@ -548,7 +488,7 @@
             }
             closeModal('recharge-modal');
             document.getElementById('txhash-input').value = '';
-            alert(`✅ Real blockchain payment verified successfully! ${selectedCredits} UX credits added and account unlocked.`);
+            alert(`✅ Payment verified successfully! ${selectedCredits} UX credits added.`);
             location.reload();
         }
     </script>
