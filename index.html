@@ -47,18 +47,7 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             color: #ff4d4d;
-            text-shadow: 0 0 8px rgba(255, 77, 77, 0.4), 0 0 20px rgba(255, 0, 0, 0.2);
-            animation: softNeonPulse 4s infinite alternate;
-        }
-        @keyframes softNeonPulse {
-            0% {
-                color: #ff4d4d;
-                text-shadow: 0 0 6px rgba(255, 77, 77, 0.3), 0 0 15px rgba(255, 0, 0, 0.15);
-            }
-            100% {
-                color: #ff8080;
-                text-shadow: 0 0 12px rgba(255, 77, 77, 0.6), 0 0 30px rgba(255, 0, 0, 0.3);
-            }
+            text-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
         }
         .founder-info {
             font-size: 0.85rem;
@@ -84,11 +73,10 @@
             margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
         }
 
         .auth-card {
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.95);
             border: 1px solid rgba(239, 68, 68, 0.4);
             border-radius: 12px;
             padding: 25px;
@@ -126,7 +114,6 @@
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            transition: all 0.2s;
         }
         .auth-tab.active {
             color: #ef4444;
@@ -168,10 +155,6 @@
             border-radius: 6px;
             overflow: hidden;
         }
-        .input-group-prefix:focus-within {
-            border-color: #ef4444;
-            box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
-        }
         .input-prefix-tag {
             background: rgba(239, 68, 68, 0.15);
             color: #ef4444;
@@ -203,19 +186,17 @@
             font-size: 0.95rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: background 0.2s, box-shadow 0.2s;
             margin-top: 5px;
         }
         .btn-primary:hover {
             background: #dc2626;
-            box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
         }
 
         .app-interface {
             display: none;
         }
         .status-panel {
-            background: rgba(15, 23, 42, 0.75);
+            background: rgba(15, 23, 42, 0.85);
             border: 1px solid rgba(239, 68, 68, 0.3);
             padding: 12px;
             border-radius: 8px;
@@ -233,36 +214,32 @@
         }
         
         .action-panel-inside {
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.95);
             border: 1px solid #ff1a1a;
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 15px;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
         }
         .action-panel-inside h3 {
             color: #ff3333;
             font-size: 0.95rem;
             margin-bottom: 10px;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        /* Panel Exclusivo de Fundador para ver registros UX */
         .founder-admin-panel {
             background: rgba(15, 23, 42, 0.95);
             border: 2px dashed #ef4444;
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 15px;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
         }
         .founder-admin-panel h3 {
             color: #ef4444;
             font-size: 0.95rem;
             margin-bottom: 8px;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
         .registered-nodes-list {
             background: #0b0f19;
@@ -280,9 +257,6 @@
             border-bottom: 1px solid #1e293b;
             font-size: 0.85rem;
             font-family: monospace;
-        }
-        .node-record-item:last-child {
-            border-bottom: none;
         }
         .node-tag-highlight {
             color: #38bdf8;
@@ -305,18 +279,11 @@
             font-size: 1.05rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            box-shadow: 0 0 15px #ff0000, 0 0 30px #ff3333, inset 0 0 10px rgba(255, 255, 255, 0.5);
-            animation: neonPulse 1.5s infinite alternate;
-            transition: transform 0.1s;
+            box-shadow: 0 0 12px #ff0000;
             margin-top: 8px;
         }
         .neon-red-btn:hover {
-            transform: scale(1.02);
             background: #cc0000;
-        }
-        @keyframes neonPulse {
-            0% { box-shadow: 0 0 10px #ff0000, 0 0 20px #ff3333; }
-            100% { box-shadow: 0 0 20px #ff0000, 0 0 40px #ff6666, 0 0 60px #ff0000; }
         }
 
         .modal-overlay {
@@ -353,7 +320,6 @@
             font-size: 0.85rem;
             color: #cbd5e1;
             margin-bottom: 15px;
-            line-height: 1.4;
         }
         .close-modal {
             background: #334155;
@@ -381,28 +347,26 @@
         }
 
         .manual-box {
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.9);
             border-left: 4px solid #ef4444;
             padding: 14px 18px;
             font-size: 0.83rem;
             color: #cbd5e1;
             margin-bottom: 15px;
             border-radius: 0 8px 8px 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             line-height: 1.5;
         }
         .manual-box h3 {
             color: #ef4444;
             margin-bottom: 8px;
             font-size: 0.95rem;
-            letter-spacing: 0.5px;
             text-transform: uppercase;
         }
         .manual-box ul { padding-left: 18px; }
         .manual-box li { margin-bottom: 4px; }
 
         .chat-section {
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.95);
             border: 1px solid rgba(239, 68, 68, 0.25);
             border-radius: 8px;
             display: flex;
@@ -481,7 +445,6 @@
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            transition: background 0.2s;
         }
         button.send-btn:hover { background: #dc2626; }
         .exit-btn {
@@ -493,7 +456,6 @@
             cursor: pointer;
             font-weight: bold;
         }
-        .exit-btn:hover { background: #ef4444; color: #fff; }
         footer {
             text-align: center;
             margin-top: 25px;
@@ -515,19 +477,16 @@
             <div class="founder-info">FOUNDER: <span class="founder-highlight">Lenox JG</span> &bull; pleniux.com</div>
         </header>
 
-        <!-- TOP SECURITY BANNER -->
         <div class="top-security-banner">
             🛡️ Continuous 3-min intervals. Automatically deducts 1 credit and starts a new cycle when time hits zero.
         </div>
 
-        <!-- AUTHENTICATION & REGISTRATION SCREEN -->
         <div id="auth-screen" class="auth-card">
             <div class="auth-tabs">
                 <button class="auth-tab active" id="tab-login" onclick="switchAuthMode('login')">Access Node</button>
                 <button class="auth-tab" id="tab-register" onclick="switchAuthMode('register')">New Registration</button>
             </div>
 
-            <!-- LOGIN FORM -->
             <div id="form-login-container">
                 <h2>Node Login</h2>
                 <p>Enter your registered node number (UX0, UX1 - UX100000) and your numeric passcode.</p>
@@ -545,7 +504,6 @@
                 <button class="btn-primary" onclick="handleLogin()">Access Secure Node</button>
             </div>
 
-            <!-- REGISTRATION FORM -->
             <div id="form-register-container" style="display: none;">
                 <h2>Register New Node</h2>
                 <p>Claim your unique node (0 to 100,000) and set a secure numeric passcode.</p>
@@ -567,9 +525,7 @@
             </div>
         </div>
 
-        <!-- MAIN CHAT INTERFACE -->
         <div id="app-interface" class="app-interface">
-
             <div class="status-panel">
                 <div>Node: <span style="color: #ef4444;" id="display-node">UX0</span></div>
                 <div>Room: <span style="color: #38bdf8;" id="display-room">PUBLIC</span></div>
@@ -578,23 +534,18 @@
                 <button class="exit-btn" onclick="handleManualExit()">EXIT</button>
             </div>
 
-            <!-- FOUNDER PANEL DE REGISTROS (Visible únicamente al entrar como UX0) -->
             <div id="founder-panel-container" class="founder-admin-panel" style="display: none;">
                 <h3>👑 Founder Live Audit: Registered UX Nodes</h3>
-                <p style="font-size: 0.78rem; color: #9ca3af; margin-bottom: 8px;">Listado en tiempo real de todos los usuarios registrados en la plataforma:</p>
-                <div class="registered-nodes-list" id="founder-nodes-list">
-                    <!-- Se llena dinámicamente -->
-                </div>
+                <p style="font-size: 0.78rem; color: #9ca3af; margin-bottom: 8px;">Listado en tiempo real de todos los usuarios registrados:</p>
+                <div class="registered-nodes-list" id="founder-nodes-list"></div>
             </div>
 
-            <!-- ACTION PANEL INSIDE CHAT -->
             <div class="action-panel-inside">
                 <h3>Pleniux Chat & Rooms Manager</h3>
                 <button class="neon-red-btn" onclick="openModal('room-modal')">🚪 Create / Join Chat Room (1 - 100,000)</button>
-                <button class="neon-red-btn" style="background: #990000; box-shadow: 0 0 15px #ff3333, 0 0 30px #cc0000;" onclick="openModal('recharge-modal')">🪙 Official Crypto Recharge (BTC, ETH, SOL)</button>
+                <button class="neon-red-btn" style="background: #990000;" onclick="openModal('recharge-modal')">🪙 Official Crypto Recharge (BTC, ETH, SOL)</button>
             </div>
 
-            <!-- MANUAL -->
             <div class="manual-box">
                 <h3>Pleniux Security Manual</h3>
                 <ul>
@@ -624,7 +575,6 @@
         </footer>
     </div>
 
-    <!-- MODAL CREATE / JOIN ROOM -->
     <div id="room-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🚪 Create or Join Chat Room</h3>
@@ -637,11 +587,10 @@
         </div>
     </div>
 
-    <!-- MODAL RECHARGE BALANCE -->
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🪙 Official Crypto Payment Gateway</h3>
-            <p>Select your credit package and send funds to your designated official wallet addresses below (BTC, ETH, SOL only).</p>
+            <p>Select your credit package and send funds to your designated official wallet addresses below.</p>
             
             <div class="form-group">
                 <label for="recharge-amount">Select Fund Package:</label>
@@ -670,7 +619,7 @@
 
             <div class="form-group">
                 <label>Selected Package Details:</label>
-                <div class="crypto-box" id="crypto-amount-display" style="color: #f59e0b; font-weight: bold; font-size: 0.9rem;">10 Credits ($5.00 USD)</div>
+                <div class="crypto-box" id="crypto-amount-display" style="color: #f59e0b; font-weight: bold;">10 Credits ($5.00 USD)</div>
             </div>
 
             <button class="btn-primary" style="background: #10b981;" onclick="verifyCryptoPayment()">Verify Blockchain Transaction</button>
@@ -679,6 +628,7 @@
     </div>
 
     <script>
+        // === MOTOR DE MATRIX OPTIMIZADO PARA EVITAR CONGELAMIENTO ===
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -689,7 +639,7 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        const fontSize = 16;
+        const fontSize = 18;
         let columns = Math.floor(canvas.width / fontSize);
         let drops = [];
 
@@ -697,48 +647,48 @@
             columns = Math.floor(canvas.width / fontSize);
             drops = [];
             for (let i = 0; i < columns; i++) {
-                drops[i] = Math.floor(Math.random() * -100);
+                drops[i] = Math.floor(Math.random() * -50);
             }
         }
         resetDrops();
         window.addEventListener('resize', resetDrops);
 
-        const cyberChars = "0123456789ABCDEFUX_PLENIUX";
+        const cyberChars = "0123456789ABCDEFUX";
 
         function drawMatrixRain() {
-            ctx.fillStyle = 'rgba(3, 7, 18, 0.12)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            try {
+                ctx.fillStyle = 'rgba(3, 7, 18, 0.2)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.font = fontSize + 'px monospace';
+                ctx.font = fontSize + 'px monospace';
 
-            for (let i = 0; i < drops.length; i++) {
-                const text = cyberChars.charAt(Math.floor(Math.random() * cyberChars.length));
-                
-                ctx.fillStyle = Math.random() > 0.85 ? '#ff9999' : '#cc0000';
-                ctx.shadowColor = '#ff1a1a';
-                ctx.shadowBlur = 6;
+                for (let i = 0; i < drops.length; i++) {
+                    const text = cyberChars.charAt(Math.floor(Math.random() * cyberChars.length));
+                    
+                    ctx.fillStyle = Math.random() > 0.85 ? '#ff9999' : '#cc0000';
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
                 }
-                drops[i]++;
+            } catch (e) {
+                console.error("Matrix render recovery:", e);
             }
-            ctx.shadowBlur = 0;
         }
 
-        setInterval(drawMatrixRain, 35);
+        // Intervalo estable controlado de 50ms para no sobrecargar el navegador
+        setInterval(drawMatrixRain, 50);
 
-        let countdownInterval;
+        let countdownInterval = null;
         let sessionActive = false;
         let activeNodeId = "";
         let currentRoom = "GENERAL";
-        let graceTimer = null;
 
         window.addEventListener('DOMContentLoaded', () => {
             updateCryptoDetails();
-            // Inicializar UX0 por defecto si no existe passcode de fundador configurado
+            // Inicializar por defecto la cuenta Founder UX0 si no existe
             if (!localStorage.getItem('pleniux_reg_pass_UX0')) {
                 localStorage.setItem('pleniux_reg_pass_UX0', '0000');
                 localStorage.setItem('pleniux_credits_UX0', '999');
@@ -770,8 +720,12 @@
             }
         }
 
-        function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
-        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+        function openModal(modalId) { 
+            document.getElementById(modalId).style.display = 'flex'; 
+        }
+        function closeModal(modalId) { 
+            document.getElementById(modalId).style.display = 'none'; 
+        }
 
         function updateCryptoDetails() {
             const selectEl = document.getElementById('recharge-amount');
@@ -780,9 +734,10 @@
         }
 
         function joinOrCreateRoom() {
-            let roomCode = parseInt(document.getElementById('room-code-input').value.trim());
+            let roomCodeInputVal = document.getElementById('room-code-input').value.trim();
+            let roomCode = parseInt(roomCodeInputVal);
             
-            if (isNaN(roomCode) || roomCode < 1 || roomCode > 100000) {
+            if (roomCodeInputVal === "" || isNaN(roomCode) || roomCode < 1 || roomCode > 100000) {
                 alert("❌ Invalid Room Code: Please enter a number between 1 and 100,000.");
                 return;
             }
@@ -799,7 +754,6 @@
 
             document.getElementById('room-code-input').value = "";
             closeModal('room-modal');
-            alert(`✅ Connected to Group Room #${roomCode}`);
         }
 
         function verifyCryptoPayment() {
@@ -808,7 +762,7 @@
             const cryptoText = selectEl.options[selectEl.selectedIndex].getAttribute('data-crypto');
 
             closeModal('recharge-modal');
-            alert(`🔄 Scanning Bitcoin (BTC), Ethereum (ETH) & Solana (SOL) mempools for incoming transfer (${cryptoText})...`);
+            alert(`🔄 Scanning mempools for incoming transfer (${cryptoText})...`);
 
             setTimeout(() => {
                 let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
@@ -816,21 +770,20 @@
                 localStorage.setItem('pleniux_credits_' + activeNodeId, currentCredits);
                 document.getElementById('credit-count').innerText = currentCredits;
 
-                alert(`✅ [BLOCKCHAIN CONFIRMATION APPROVED]: Transaction verified. ${addedCredits} UX credits added to node ${activeNodeId}.`);
-            }, 3000);
+                alert(`✅ [TRANSACTION APPROVED]: ${addedCredits} UX credits added to node ${activeNodeId}.`);
+            }, 2000);
         }
 
         function handleRegister() {
             let nodeNum = document.getElementById('reg-node-input').value.trim();
-            let passcode = document.getElementById('reg-passcode-input'].value.trim();
+            let passcode = document.getElementById('reg-passcode-input').value.trim();
 
             if (nodeNum === "" || isNaN(nodeNum) || parseInt(nodeNum) < 0 || parseInt(nodeNum) > 100000) {
                 alert("❌ Invalid Node Number: Please enter a number between 0 and 100,000.");
                 return;
             }
 
-            const numericRegex = /^[0-9]+$/;
-            if (!numericRegex.test(passcode)) {
+            if (!/^[0-9]+$/.test(passcode)) {
                 alert("❌ Access Denied: Passcodes must contain numbers only.");
                 return;
             }
@@ -843,11 +796,9 @@
                 return;
             }
 
-            // Guardar registro
             localStorage.setItem(registryPassKey, passcode);
             localStorage.setItem('pleniux_credits_' + fullNodeId, '5');
 
-            // Registrar en la lista global de auditoría para el Fundador
             let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
             if (!allRegistered.some(item => item.node === fullNodeId)) {
                 allRegistered.push({
@@ -857,7 +808,7 @@
                 localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(allRegistered));
             }
 
-            alert(`✅ Success! Node ${fullNodeId} has been registered securely. You received 5 free UX credits.`);
+            alert(`✅ Success! Node ${fullNodeId} has been registered securely. 5 free UX credits added.`);
             
             document.getElementById('login-node-input').value = fullNodeId;
             document.getElementById('login-passcode-input').value = "";
@@ -872,8 +823,7 @@
                 nodeInput = 'UX' + nodeInput;
             }
 
-            const standardNodeRegex = /^UX([0-9]|[1-9][0-9]{1,4}|100000)$/;
-            if (!standardNodeRegex.test(nodeInput)) {
+            if (!/^UX([0-9]|[1-9][0-9]{1,4}|100000)$/.test(nodeInput)) {
                 alert("Invalid identifier format. Use 'UX' followed by a number between 0 and 100000.");
                 return;
             }
@@ -881,27 +831,20 @@
             const registryPassKey = 'pleniux_reg_pass_' + nodeInput;
             let existingRegisteredPass = localStorage.getItem(registryPassKey);
 
-            // Auto-asignar clave por defecto si es UX0 y no tenía pass
             if (nodeInput === 'UX0' && !existingRegisteredPass) {
                 existingRegisteredPass = '0000';
                 localStorage.setItem(registryPassKey, '0000');
             }
 
             if (existingRegisteredPass === null) {
-                alert(`⚠️ Node ${nodeInput} is not registered yet. Please click on 'New Registration' first.`);
+                alert(`⚠️ Node ${nodeInput} is not registered yet. Please register first.`);
                 switchAuthMode('register');
                 document.getElementById('reg-node-input').value = nodeInput.replace('UX', '');
                 return;
             }
 
             if (existingRegisteredPass !== passcodeInput) {
-                alert(`🚨 [SECURITY PROTOCOL]: Incorrect passcode for node ${nodeInput}. Access denied.`);
-                return;
-            }
-
-            const nodeSessionKey = 'pleniux_active_node_' + nodeInput;
-            if (localStorage.getItem(nodeSessionKey)) {
-                alert(`⚠️ Node Busy: User ${nodeInput} is currently active in another session.`);
+                alert(`🚨 Incorrect passcode for node ${nodeInput}. Access denied.`);
                 return;
             }
 
@@ -914,12 +857,9 @@
             }
 
             activeNodeId = nodeInput;
-            localStorage.setItem(nodeSessionKey, 'active');
-
             document.getElementById('display-node').innerText = nodeInput;
             document.getElementById('credit-count').innerText = userCredits;
 
-            // CONTROL DEL PANEL DE FUNDADOR (Si entra UX0)
             const founderPanel = document.getElementById('founder-panel-container');
             if (nodeInput === 'UX0') {
                 founderPanel.style.display = 'block';
@@ -945,11 +885,10 @@
             }
 
             let htmlContent = '';
-            // Ordenar para mostrar los más recientes arriba
             allRegistered.slice().reverse().forEach(item => {
                 htmlContent += `
                     <div class="node-record-item">
-                        <span>Registered Node: <span class="node-tag-highlight">${item.node}</span></span>
+                        <span>Node: <span class="node-tag-highlight">${item.node}</span></span>
                         <span class="node-time-tag">${item.time}</span>
                     </div>
                 `;
@@ -973,7 +912,6 @@
                 if (timeLeft <= 0) {
                     let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
 
-                    // UX0 fundador tiene créditos ilimitados/inagotables
                     if (activeNodeId === 'UX0') {
                         timeLeft = 180;
                         return;
@@ -983,24 +921,10 @@
                         userCredits--;
                         localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
                         document.getElementById('credit-count').innerText = userCredits;
-
-                        const msgBox = document.getElementById('message-box');
-                        const alertDiv = document.createElement('div');
-                        alertDiv.classList.add('message', 'system-alert');
-                        alertDiv.innerText = `[CYCLE CONCLUDED]: 3 minutes elapsed. -1 Credit deducted. Starting new cycle...`;
-                        msgBox.appendChild(alertDiv);
-                        msgBox.scrollTop = msgBox.scrollHeight;
-
                         timeLeft = 180;
-                    } else if (userCredits === 1) {
-                        userCredits = 0;
-                        localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
-                        document.getElementById('credit-count').innerText = userCredits;
-                        
+                    } else {
                         sessionActive = false;
                         clearInterval(countdownInterval);
-                        if (activeNodeId) localStorage.removeItem('pleniux_active_node_' + activeNodeId);
-
                         alert("⚠️ Balance exhausted (0 UX). Session concluded.");
                         location.reload();
                         return;
@@ -1010,79 +934,10 @@
             }, 1000);
         }
 
-        document.addEventListener("visibilitychange", function() {
-            if (!sessionActive || activeNodeId === 'UX0') return;
-
-            if (document.hidden) {
-                const msgBox = document.getElementById('message-box');
-                
-                const graceWarning = document.createElement('div');
-                graceWarning.id = 'grace-alert';
-                graceWarning.classList.add('message', 'system-alert');
-                graceWarning.innerText = `⚠️ [WARNING]: You left the web. Session closes in 6 seconds!`;
-                msgBox.appendChild(graceWarning);
-                msgBox.scrollTop = msgBox.scrollHeight;
-
-                graceTimer = setTimeout(() => {
-                    terminateSessionBySecurity("Grace period expired (6s). Session closed.");
-                }, 6000);
-
-            } else {
-                if (graceTimer) {
-                    clearTimeout(graceTimer);
-                    graceTimer = null;
-                    
-                    const existingWarning = document.getElementById('grace-alert');
-                    if (existingWarning) existingWarning.remove();
-
-                    const msgBox = document.getElementById('message-box');
-                    const welcomeBack = document.createElement('div');
-                    welcomeBack.classList.add('message', 'system-alert');
-                    welcomeBack.innerText = `✅ [SECURE RESUMED]: Session active.`;
-                    msgBox.appendChild(welcomeBack);
-                    msgBox.scrollTop = msgBox.scrollHeight;
-                }
-            }
-        });
-
-        function terminateSessionBySecurity(reason) {
-            if (!sessionActive) return;
-            sessionActive = false;
-            clearInterval(countdownInterval);
-
-            if (activeNodeId) {
-                localStorage.removeItem('pleniux_active_node_' + activeNodeId);
-            }
-
-            if (activeNodeId && activeNodeId !== 'UX0') {
-                let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
-                if (userCredits > 0) {
-                    userCredits--;
-                    localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
-                }
-            }
-
-            alert(`[PLENIUX SECURITY]: ${reason}`);
-            location.reload();
-        }
-
         function handleManualExit() {
             if (!sessionActive) return;
             sessionActive = false;
-            clearInterval(countdownInterval);
-
-            if (activeNodeId) {
-                localStorage.removeItem('pleniux_active_node_' + activeNodeId);
-            }
-
-            if (activeNodeId && activeNodeId !== 'UX0') {
-                let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
-                if (userCredits > 0) {
-                    userCredits--;
-                    localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
-                }
-            }
-            alert("Session terminated. Cache cleared.");
+            if (countdownInterval) clearInterval(countdownInterval);
             location.reload();
         }
 
@@ -1092,12 +947,6 @@
             const nodeName = document.getElementById('display-node').innerText;
             
             if (input.value.trim() === "") return;
-
-            let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
-            if (userCredits <= 0 && activeNodeId !== 'UX0') {
-                alert("Balance exhausted (0 UX). Transmission blocked.");
-                return;
-            }
 
             const userMsg = document.createElement('div');
             userMsg.classList.add('message', 'outgoing');
@@ -1111,10 +960,10 @@
             setTimeout(() => {
                 const replyMsg = document.createElement('div');
                 replyMsg.classList.add('message', 'incoming');
-                replyMsg.innerText = `[Room ${currentRoom} Peer]: RECEIVED -> "${textCopy}" (End-to-End Encrypted)`;
+                replyMsg.innerText = `[Room ${currentRoom} Peer]: RECEIVED -> "${textCopy}"`;
                 msgBox.appendChild(replyMsg);
                 msgBox.scrollTop = msgBox.scrollHeight;
-            }, 1000);
+            }, 800);
         }
     </script>
 </body>
