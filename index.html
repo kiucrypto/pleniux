@@ -63,7 +63,7 @@
         </header>
 
         <div class="security-banner">
-            🔒 Maximum Security: Strict 1-Minute Connection Timeout, Instant Delivery & Real Blockchain Payment Enforcement.
+            🔒 Cross-Device Sync Active: Instant Messaging Between Different Phones + Strict 1-Min Timeout & Crypto Payments.
         </div>
 
         <div id="auth-screen" class="auth-card">
@@ -213,11 +213,10 @@
         }
         setInterval(drawMatrix, 50);
 
-        // Triple-Redundant Real-Time Engine with Strict 1-Minute Timeout Enforcement
+        // Cross-Device Real-Time Engine via ntfy.sh Pub-Sub Relay + Strict 1-Min Timeout
         let activeRoom = null;
         let chatTimerInterval = null;
-        let roomBroadcastChannel = null;
-        let pollingSyncInterval = null;
+        let eventSourceConnection = null;
         let processedMessageIds = new Set();
 
         let nodeDatabase = JSON.parse(localStorage.getItem('pleniux_node_db')) || {};
@@ -399,47 +398,29 @@
             activeRoom = code;
             processedMessageIds.clear();
 
-            // 1. BroadcastChannel for Instant Zero-Delay Sync
-            if (roomBroadcastChannel) roomBroadcastChannel.close();
-            roomBroadcastChannel = new BroadcastChannel('pleniux_channel_' + activeRoom);
-            roomBroadcastChannel.onmessage = (event) => {
-                receiveIncomingMessage(event.data);
-            };
-
-            // 2. High-Speed Polling backup (checks history every 300ms for instant delivery)
-            if (pollingSyncInterval) clearInterval(pollingSyncInterval);
-            pollingSyncInterval = setInterval(() => {
-                if (!activeRoom) return;
+            // Connect to real-time cross-device SSE channel via ntfy.sh
+            if (eventSourceConnection) eventSourceConnection.close();
+            
+            const channelName = 'pleniux_secure_room_' + activeRoom;
+            eventSourceConnection = new EventSource('https://ntfy.sh/' + channelName + '/sse');
+            
+            eventSourceConnection.onmessage = function (event) {
                 try {
-                    let historyJSON = localStorage.getItem('pleniux_room_history_' + activeRoom);
-                    if (historyJSON) {
-                        let messages = JSON.parse(historyJSON);
-                        messages.forEach(msg => {
-                            receiveIncomingMessage(msg);
-                        });
+                    let data = JSON.parse(event.data);
+                    if (data && data.message) {
+                        let msgObj = JSON.parse(data.message);
+                        receiveIncomingMessage(msgObj);
                     }
-                } catch(e) {}
-            }, 300);
+                } catch (e) {}
+            };
 
             document.getElementById('app-interface').style.display = 'none';
             document.getElementById('chat-interface').style.display = 'block';
             document.getElementById('active-room-display').innerText = 'ROOM-' + code;
-            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Connected live to room ' + code + '. Instant message delivery active.</div>';
+            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Connected live across devices to room ' + code + '. Instant cross-device message delivery active.</div>';
 
             startChatTimer();
         }
-
-        // 3. Global Storage Event Listener
-        window.addEventListener('storage', (event) => {
-            if (!activeRoom) return;
-            let targetKey = 'pleniux_sync_packet_' + activeRoom;
-            if (event.key === targetKey && event.newValue) {
-                try {
-                    let msgObj = JSON.parse(event.newValue);
-                    receiveIncomingMessage(msgObj);
-                } catch(e) {}
-            }
-        });
 
         function receiveIncomingMessage(msgObj) {
             if (!msgObj || !msgObj.id || processedMessageIds.has(msgObj.id)) return;
@@ -472,7 +453,6 @@
                     clearInterval(chatTimerInterval);
                     alert("⏳ Timeout reached (1 minute). Session closed, all messages wiped, and balance penalty applied.");
                     
-                    // Penalty: deduct extra credit if node is not founder
                     let nodeNum = parseInt(activeNodeId.replace('UX', ''));
                     if (nodeNum !== 0 && nodeDatabase[nodeNum]) {
                         nodeDatabase[nodeNum].credits = Math.max(0, nodeDatabase[nodeNum].credits - 1);
@@ -503,43 +483,23 @@
             // Render locally instantly
             receiveIncomingMessage(msgObj);
 
-            // Save to room history array for high-speed instant polling pickup
-            try {
-                let historyKey = 'pleniux_room_history_' + activeRoom;
-                let existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
-                existingHistory.push(msgObj);
-                if (existingHistory.length > 100) existingHistory.shift();
-                localStorage.setItem(historyKey, JSON.stringify(existingHistory));
-            } catch(e) {}
-
-            // Broadcast instantly via BroadcastChannel
-            if (roomBroadcastChannel) {
-                roomBroadcastChannel.postMessage(msgObj);
-            }
-
-            // Storage event fallback trigger
-            try {
-                localStorage.setItem('pleniux_sync_packet_' + activeRoom, JSON.stringify(msgObj));
-            } catch(e) {}
+            // Broadcast instantly across physical devices via ntfy.sh POST
+            const channelName = 'pleniux_secure_room_' + activeRoom;
+            fetch('https://ntfy.sh/' + channelName, {
+                method: 'POST',
+                body: JSON.stringify({ message: JSON.stringify(msgObj) })
+            }).catch(e => {});
 
             input.value = '';
         }
 
         function leaveChatRoom() {
             if (chatTimerInterval) clearInterval(chatTimerInterval);
-            if (pollingSyncInterval) {
-                clearInterval(pollingSyncInterval);
-                pollingSyncInterval = null;
+            if (eventSourceConnection) {
+                eventSourceConnection.close();
+                eventSourceConnection = null;
             }
-            if (roomBroadcastChannel) {
-                roomBroadcastChannel.close();
-                roomBroadcastChannel = null;
-            }
-            if (activeRoom) {
-                localStorage.removeItem('pleniux_sync_packet_' + activeRoom);
-                localStorage.removeItem('pleniux_room_history_' + activeRoom);
-                activeRoom = null;
-            }
+            activeRoom = null;
             document.getElementById('chat-messages-box').innerHTML = '';
             document.getElementById('chat-interface').style.display = 'none';
             document.getElementById('app-interface').style.display = 'block';
