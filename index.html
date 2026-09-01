@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pleniux.com — Secure Ephemeral Messaging Network</title>
+    <title>Pleniux.com - Secure Ephemeral Messaging Network</title>
     <style>
         * {
             box-sizing: border-box;
@@ -19,7 +19,6 @@
             overflow-x: hidden;
             position: relative;
         }
-
         /* High-Performance Fluid Neon Background Canvas */
         #bg-canvas {
             position: fixed;
@@ -31,7 +30,6 @@
             background: #030712;
             pointer-events: none;
         }
-
         .app-container {
             max-width: 850px;
             margin: 20px auto;
@@ -39,269 +37,155 @@
             position: relative;
             z-index: 10;
         }
-
         header {
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
             padding-bottom: 12px;
         }
-
-        /* Neon Blinking Effect */
-        header h1 {
+        /* Red Neon Blinking Effect for Title */
+        h1 {
             font-size: 2.5rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            color: #38bdf8;
-            text-shadow: 0 0 5px #38bdf8, 0 0 10px #38bdf8, 0 0 20px #2563eb;
-            animation: neonBlink 3s infinite alternate;
+            color: #ff3333;
+            text-shadow: 0 0 5px #ff3333, 0 0 10px #ff3333, 0 0 20px #800000;
+            animation: redNeonBlink 3s infinite alternate;
         }
-
-        @keyframes neonBlink {
+        @keyframes redNeonBlink {
             0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-                color: #38bdf8;
-                text-shadow: 0 0 5px #38bdf8, 0 0 10px #38bdf8, 0 0 20px #2563eb;
+                color: #ff3333;
+                text-shadow: 0 0 5px #ff3333, 0 0 10px #ff3333, 0 0 20px #800000;
             }
-            20%, 24%, 55% {
-                color: #030712;
+            20%, 22%, 55% {
+                color: #3b0a0a;
                 text-shadow: none;
             }
         }
-
-        .project-desc {
+        .founder-info {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+        .status-panel {
             background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            padding: 12px 15px;
-            border-radius: 8px;
-            font-size: 0.82rem;
-            color: #94a3b8;
-            margin: 15px 0;
-            line-height: 1.4;
-            text-align: center;
-        }
-
-        .founder-tag {
-            color: #38bdf8;
-            font-size: 0.9rem;
-            margin-top: 6px;
-            font-weight: 600;
-        }
-
-        .card {
-            background: rgba(15, 23, 42, 0.88);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-            margin-bottom: 20px;
-        }
-
-        .auth-box, .dashboard {
-            display: none;
-        }
-        .auth-box.active, .dashboard.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.8rem;
-            color: #93c5fd;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 11px;
-            background: rgba(3, 7, 18, 0.95);
-            border: 1px solid #1e3a8a;
-            border-radius: 6px;
-            color: #ffffff;
-            font-size: 0.95rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        input:focus, textarea:focus {
-            border-color: #38bdf8;
-            box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
-        }
-
-        button {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white;
-            border: none;
+            border: 1px solid rgba(239, 68, 68, 0.3);
             padding: 12px;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            letter-spacing: 1px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
-        .user-header {
+            border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(30, 41, 59, 0.7);
-            padding: 12px 15px;
-            border-radius: 8px;
             margin-bottom: 15px;
-            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-size: 0.9rem;
+        }
+        .credits-badge {
+            color: #ef4444;
+            font-weight: bold;
+        }
+        .manual-box {
+            background: rgba(15, 23, 42, 0.6);
+            border-left: 3px solid #ef4444;
+            padding: 10px 15px;
             font-size: 0.85rem;
-        }
-
-        .badge-ux {
-            background: #1e3a8a;
-            color: #93c5fd;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            border: 1px solid #38bdf8;
-        }
-
-        .badge-founder {
-            background: linear-gradient(135deg, #d97706, #b45309);
-            color: #fef08a;
-            border: 1px solid #facc15;
-        }
-
-        .credits-counter {
-            color: #34d399;
-            font-weight: bold;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 6px;
+            color: #d1d5db;
             margin-bottom: 15px;
-            overflow-x: auto;
-            padding-bottom: 4px;
+            border-radius: 0 8px 8px 0;
         }
-
-        .tab-btn {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid #1e3a8a;
-            color: #93c5fd;
-            padding: 8px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            flex: 1;
-            min-width: 75px;
-            text-align: center;
-            transition: 0.2s;
-            font-size: 0.8rem;
-            white-space: nowrap;
+        .manual-box h3 {
+            color: #ef4444;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
         }
-
-        .tab-btn.active {
-            background: #2563eb;
-            color: white;
-            border-color: #38bdf8;
+        .chat-section {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+            overflow: hidden;
+            margin-bottom: 15px;
         }
-
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-
-        .message-item {
-            background: rgba(15, 23, 42, 0.9);
-            border-left: 4px solid #38bdf8;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            position: relative;
-        }
-
-        .message-meta {
-            font-size: 0.72rem;
-            color: #9ca3af;
-            margin-bottom: 5px;
+        .chat-header {
+            padding: 10px 15px;
+            background: rgba(239, 68, 68, 0.1);
+            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+            font-size: 0.85rem;
             display: flex;
             justify-content: space-between;
         }
-
-        .timer {
-            color: #f87171;
-            font-weight: bold;
-        }
-
-        .emoji-picker-bar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            overflow-x: auto;
-            padding-bottom: 4px;
-        }
-
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .price-card {
-            background: rgba(3, 7, 18, 0.9);
-            border: 1px solid #1e3a8a;
-            border-radius: 8px;
-            padding: 12px;
-            text-align: center;
-        }
-
-        .crypto-wallets-box {
-            background: rgba(3, 7, 18, 0.95);
-            border: 1px dashed #38bdf8;
+        .chat-messages {
+            flex: 1;
             padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-
-        .wallet-addr {
-            font-family: monospace;
-            background: #0f172a;
-            padding: 6px;
-            border-radius: 4px;
-            color: #34d399;
-            font-size: 0.72rem;
-            word-break: break-all;
-            margin: 4px 0 10px 0;
+        .message {
+            padding: 8px 12px;
+            border-radius: 6px;
+            max-width: 75%;
+            font-size: 0.9rem;
+            word-break: break-word;
         }
-
-        .directory-box {
-            background: rgba(3, 7, 18, 0.8);
-            border: 1px solid #1e3a8a;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 12px;
+        .message.incoming {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            align-self: flex-start;
         }
-
-        .logout-btn {
-            background: #b91c1c;
-            width: auto;
-            padding: 5px 10px;
-            font-size: 0.75rem;
+        .message.outgoing {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            align-self: flex-end;
+        }
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            background: #0b0f19;
+            border-top: 1px solid rgba(239, 68, 68, 0.2);
+            gap: 8px;
+        }
+        input, select {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        input:focus {
+            border-color: #ef4444;
+        }
+        .target-node {
+            width: 110px;
+        }
+        .msg-input {
+            flex: 1;
+        }
+        button {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #dc2626;
+        }
+        .exit-btn {
+            background: #334155;
+            color: #f87171;
+            border: 1px solid #ef4444;
+        }
+        .exit-btn:hover {
+            background: #ef4444;
+            color: #fff;
         }
     </style>
 </head>
@@ -311,411 +195,149 @@
 
     <div class="app-container">
         <header>
-            <h1>Pleniux.com</h1>
-            <div class="project-desc">
-                <strong>Project Overview:</strong> Pleniux.com is a high-security encrypted ephemeral messaging platform built for absolute confidentiality. Featuring automated <strong>3-minute message self-destruction</strong>, unique anonymous network nodes from <strong>ux1 to ux1000</strong>, crypto credit recharges, and zero system lag across all mobile and desktop devices.
-            </div>
-            <div class="founder-tag">Founder: Jhon Gonzales | Artist Name: Lenox JG (Master Node UX0)</div>
+            <h1>Pleniux</h1>
+            <div class="founder-info">SECURE EPHEMERAL NETWORK &bull; FOUNDER: LENOX JG (NODE UX0)</div>
         </header>
 
-        <!-- AUTH SCREEN -->
-        <div id="authCard" class="card auth-box active">
-            <h2 style="margin-bottom: 12px; color: #60a5fa; font-size: 1.2rem;">Secure Network Authentication</h2>
-            <p style="color: #9ca3af; margin-bottom: 15px; font-size: 0.85rem;">Enter your unique identifier node (<strong>ux1</strong> to <strong>ux1000</strong>) or click "Initialize UX" to start session.</p>
-            
-            <div class="form-group">
-                <label for="customUxInput">Target UX Identifier:</label>
-                <input type="text" id="customUxInput" placeholder="e.g. ux4, ux15..." value="ux4">
-            </div>
-
-            <div class="form-group">
-                <label for="passCode">Network Passcode:</label>
-                <input type="password" id="passCode" placeholder="••••••••" value="pleniux2026">
-            </div>
-
-            <button onclick="loginUser()">Initialize UX</button>
+        <div class="status-panel">
+            <div>Node Active: <span style="color: #ef4444;" id="current-node">ux2</span></div>
+            <div>Credits: <span class="credits-badge" id="credit-count">5</span> UX</div>
+            <div>Self-Destruct Timer: <span id="timer" style="color: #ef4444;">03:00</span></div>
+            <button class="exit-btn" onclick="handleExit()">EXIT</button>
         </div>
 
-        <!-- DASHBOARD -->
-        <div id="dashCard" class="card dashboard">
-            <div class="user-header">
-                <div>
-                    <span id="currentUxLabel" class="badge-ux">ux4</span>
-                    <span id="founderBadgeText" style="display: none; margin-left: 4px;" class="badge-ux badge-founder">👑 Lenox JG / Jhon Gonzales</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div>Credits: <span id="userCredits" class="credits-counter">5</span> UX</div>
-                    <button class="logout-btn" onclick="logoutUser()">Exit</button>
-                </div>
+        <div class="manual-box">
+            <h3>Quick Anonymous Manual:</h3>
+            <p>1. Select target node (e.g., 2ux, 3ux) to direct your encrypted transmission.</p>
+            <p>2. Messages auto-destruct in 3 minutes. Exiting consumes 1 credit.</p>
+        </div>
+
+        <div class="chat-section">
+            <div class="chat-header">
+                <span>ENCRYPTED PIPELINE // SECURE CHAT</span>
+                <span id="connection-status" style="color: #10b981;">● Connected</span>
             </div>
-
-            <div class="tabs">
-                <div class="tab-btn active" onclick="switchTab('inbox')">Inbox</div>
-                <div class="tab-btn" onclick="switchTab('send')">Send ✉️</div>
-                <div class="tab-btn" onclick="switchTab('recharge')">Recharge 🪙</div>
-                <div class="tab-btn" onclick="switchTab('directory')">Find UX 🔍</div>
+            <div class="chat-messages" id="message-box">
+                <div class="message incoming">System: Node initialized securely. Anonymous channel open.</div>
             </div>
-
-            <!-- Inbox Tab -->
-            <div id="tab-inbox" class="tab-content active">
-                <h3 style="margin-bottom: 12px; font-size: 1rem; color: #93c5fd;">Encrypted Inbox</h3>
-                <div id="messageList">
-                    <div class="message-item">
-                        <div class="message-meta">
-                            <span>From: <b>ux0 (Founder Lenox JG / Jhon Gonzales)</b></span>
-                            <span class="timer" data-time="180">Self-destruct: 03:00</span>
-                        </div>
-                        <p style="font-size: 0.95rem;">Welcome to Pleniux.com! 🚀🔒 Communications are secure and vanish in 3 minutes.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Send Message Tab -->
-            <div id="sendTabContent" class="tab-content">
-                <h3 style="margin-bottom: 12px; font-size: 1rem; color: #93c5fd;">Transmit Ephemeral Message (Costs 1 UX)</h3>
-                
-                <div class="form-group">
-                    <label for="recipientUx">Recipient UX (e.g., ux1, ux88):</label>
-                    <input type="text" id="recipientUx" placeholder="ux1" value="ux1">
-                </div>
-
-                <div class="form-group">
-                    <label for="messageText">Encrypted Content:</label>
-                    <div class="emoji-picker-bar">
-                        <span onclick="addEmoji('🔒')">🔒</span>
-                        <span onclick="addEmoji('🚀')">🚀</span>
-                        <span onclick="addEmoji('⚡')">⚡</span>
-                        <span onclick="addEmoji('💎')">💎</span>
-                        <span onclick="addEmoji('🔥')">🔥</span>
-                        <span onclick="addEmoji('🕶️')">🕶️</span>
-                        <span onclick="addEmoji('💬')">💬</span>
-                        <span onclick="addEmoji('⚠️')">⚠️</span>
-                    </div>
-                    <textarea id="messageText" rows="3" placeholder="Type your message... Auto-deletes in 3 minutes."></textarea>
-                </div>
-
-                <button onclick="sendMessage()">Transmit Secure Message</button>
-            </div>
-
-            <!-- Recharge Tab -->
-            <div id="tab-recharge" class="tab-content">
-                <h3 style="margin-bottom: 12px; font-size: 1rem; color: #93c5fd;">Recharge Pleniux Credits</h3>
-                <p style="color: #9ca3af; font-size: 0.8rem; margin-bottom: 12px;">Starting balance: <strong>5 UX</strong>. Select a package, transfer crypto to founder's official wallet, and submit hash to instantly load balance.</p>
-                
-                <div class="pricing-grid">
-                    <div class="price-card">
-                        <h4 style="color: #38bdf8; font-size:0.95rem;">30 UX</h4>
-                        <p style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin: 6px 0;">$3.99 USD</p>
-                        <button onclick="selectPackage(30, 3.99)">Select 30 UX</button>
-                    </div>
-                    <div class="price-card">
-                        <h4 style="color: #38bdf8; font-size:0.95rem;">60 UX</h4>
-                        <p style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin: 6px 0;">$4.99 USD</p>
-                        <button onclick="selectPackage(60, 4.99)">Select 60 UX</button>
-                    </div>
-                    <div class="price-card">
-                        <h4 style="color: #38bdf8; font-size:0.95rem;">100 UX</h4>
-                        <p style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin: 6px 0;">$6.99 USD</p>
-                        <button onclick="selectPackage(100, 6.99)">Select 100 UX</button>
-                    </div>
-                    <div class="price-card">
-                        <h4 style="color: #38bdf8; font-size:0.95rem;">300 UX</h4>
-                        <p style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin: 6px 0;">$8.99 USD</p>
-                        <button onclick="selectPackage(300, 8.99)">Select 300 UX</button>
-                    </div>
-                    <div class="price-card">
-                        <h4 style="color: #38bdf8; font-size:0.95rem;">500 UX</h4>
-                        <p style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin: 6px 0;">$14.99 USD</p>
-                        <button onclick="selectPackage(500, 14.99)">Select 500 UX</button>
-                    </div>
-                    <div class="price-card">
-                        <h4 style="color: #38bdf8; font-size:0.95rem;">1,000 UX</h4>
-                        <p style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin: 6px 0;">$18.99 USD</p>
-                        <button onclick="selectPackage(1000, 18.99)">Select 1,000 UX</button>
-                    </div>
-                    <div class="price-card" style="grid-column: 1 / -1;">
-                        <h4 style="color: #facc15; font-size:0.95rem;">5,000 UX (VIP Elite)</h4>
-                        <p style="font-size: 1.2rem; font-weight: bold; color: #34d399; margin: 6px 0;">$50.99 USD</p>
-                        <button onclick="selectPackage(5000, 50.99)" style="background: linear-gradient(135deg, #d97706, #b45309);">Select 5,000 UX</button>
-                    </div>
-                </div>
-
-                <div id="paymentSection" style="display: none; margin-top: 15px;">
-                    <div class="crypto-wallets-box">
-                        <h4 style="color: #facc15; margin-bottom: 6px; font-size:0.9rem;">Payment for <span id="selectedPkgLabel"></span></h4>
-                        <p style="font-size: 0.78rem; color: #cbd5e1; margin-bottom: 8px;">Transfer equivalent crypto to founder Lenox JG / Jhon Gonzales wallets:</p>
-                        
-                        <label>Bitcoin (BTC):</label>
-                        <div class="wallet-addr">3GgLGjuUo3SpnnfjTcvaTBXqssoonAkUxo</div>
-
-                        <label>Ethereum (ETH):</label>
-                        <div class="wallet-addr">0x530A8AA259877915d80049b59CDF030EB736110b</div>
-
-                        <label>Solana (SOL):</label>
-                        <div class="wallet-addr">EuSPsT2hSNG8DyDNTh1cj7HZY9Ncx7ri8En5hnL1eBPA</div>
-
-                        <div class="form-group" style="margin-top: 10px;">
-                            <label for="txHashInput">Transaction Hash / ID:</label>
-                            <input type="text" id="txHashInput" placeholder="Paste transaction signature hash...">
-                        </div>
-                        <button onclick="verifyAndCredit()" style="background: #059669;">Verify & Load Credits Instantly</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Find UX Name Directory Tab -->
-            <div id="tab-directory" class="tab-content">
-                <h3 style="margin-bottom: 12px; font-size: 1rem; color: #93c5fd;">UX Network Node Directory</h3>
-                <p style="color: #9ca3af; font-size: 0.85rem; margin-bottom: 12px;">Search active nodes on Pleniux.com (ux1 to ux1000):</p>
-                
-                <div class="form-group">
-                    <label for="searchUxQuery">Node Name:</label>
-                    <input type="text" id="searchUxQuery" placeholder="e.g. ux4, ux7...">
-                </div>
-                <button onclick="searchUxNode()">Locate Node</button>
-
-                <div id="directoryResult" class="directory-box" style="display: none;">
-                    <p style="font-size: 0.85rem; color: #38bdf8;" id="searchResultText"></p>
-                </div>
+            <div class="chat-input-area">
+                <select id="target-node-select" class="target-node">
+                    <option value="2ux">Node 2ux</option>
+                    <option value="3ux">Node 3ux</option>
+                    <option value="4ux">Node 4ux</option>
+                    <option value="5ux">Node 5ux</option>
+                </select>
+                <input type="text" id="user-input" class="msg-input" placeholder="Type encrypted message..." autocomplete="off">
+                <button onclick="sendMessage()">SEND</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Optimized Fluid Neon Particle Background (Zero lag on mobile)
+        // Background Neon Particle Effect
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
+        let particles = [];
 
-        window.addEventListener('resize', () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        });
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-        const particles = [];
-        const particleCount = window.innerWidth < 600 ? 25 : 45; // Fewer particles on mobile for ultra performance
-
-        for (let i = 0; i < particleCount; i++) {
+        for (let i = 0; i < 40; i++) {
             particles.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5,
-                radius: Math.random() * 1.8 + 0.8
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.5,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4
             });
         }
 
-        function drawTechBackground() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.strokeStyle = 'rgba(56, 189, 248, 0.05)';
-            ctx.lineWidth = 0.8;
-
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 100) {
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            ctx.fillStyle = 'rgba(56, 189, 248, 0.5)';
+        function animateBg() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.35)';
             particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                 ctx.fill();
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0 || p.x > width) p.vx *= -1;
-                if (p.y < 0 || p.y > height) p.vy *= -1;
             });
-            requestAnimationFrame(drawTechBackground);
+            requestAnimationFrame(animateBg);
         }
-        drawTechBackground();
+        animateBg();
 
-        let currentUser = { id: 'ux4', credits: 5, isFounder: false };
-        let pendingPackage = { amount: 0, price: 0 };
+        // Credits & Session Management
+        let credits = localStorage.getItem('pleniux_credits') !== null ? parseInt(localStorage.getItem('pleniux_credits')) : 5;
+        document.getElementById('credit-count').innerText = credits;
 
-        function loginUser() {
-            let inputVal = document.getElementById('customUxInput').value.trim().toLowerCase();
-
-            // STRICT ERROR RULE FOR UX7
-            if (inputVal === 'ux7') {
-                alert("❌ CRITICAL ERROR: Node 'ux7' is locked, restricted, and blocked from public registration. Access denied.");
-                return;
+        function handleExit() {
+            if (credits > 0) {
+                credits--;
+                localStorage.setItem('pleniux_credits', credits);
+                document.getElementById('credit-count').innerText = credits;
             }
-
-            if (inputVal === 'ux0') {
-                const passCheck = prompt("Restricted Master Node UX0. Enter Founder Passcode for Jhon Gonzales (Lenox JG):");
-                if (passCheck !== "pleniuxfounder0") {
-                    alert("⚠️ ACCESS DENIED: Node UX0 belongs exclusively to founder Jhon Gonzales (Lenox JG).");
-                    return;
-                }
-                currentUser.isFounder = true;
-                currentUser.credits = 99999;
-            } else {
-                currentUser.isFounder = false;
-                currentUser.credits = 5;
-            }
-
-            currentUser.id = inputVal || 'ux4';
-            document.getElementById('currentUxLabel').innerText = currentUser.id;
-            document.getElementById('userCredits').innerText = currentUser.credits;
-
-            if (currentUser.isFounder) {
-                document.getElementById('founderBadgeText').style.display = 'inline-block';
-            } else {
-                document.getElementById('founderBadgeText').style.display = 'none';
-            }
-
-            document.getElementById('authCard').classList.remove('active');
-            document.getElementById('dashCard').classList.add('active');
+            alert("Session closed. 1 credit deducted. Secure cache wiped.");
+            location.reload();
         }
 
-        function logoutUser() {
-            document.getElementById('dashCard').classList.remove('active');
-            document.getElementById('authCard').classList.add('active');
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-            if (tabName === 'inbox') {
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('tab-inbox').classList.add('active');
-            } else if (tabName === 'send') {
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('sendTabContent').classList.add('active');
-            } else if (tabName === 'recharge') {
-                document.querySelectorAll('.tab-btn')[2].classList.add('active');
-                document.getElementById('tab-recharge').classList.add('active');
-            } else if (tabName === 'directory') {
-                document.querySelectorAll('.tab-btn')[3].classList.add('active');
-                document.getElementById('tab-directory').classList.add('active');
-            }
-        }
-
-        function addEmoji(emoji) {
-            const textarea = document.getElementById('messageText');
-            textarea.value += emoji;
-            textarea.focus();
-        }
-
-        function selectPackage(amount, price) {
-            pendingPackage = { amount, price };
-            document.getElementById('selectedPkgLabel').innerText = `${amount} UX ($${price} USD)`;
-            document.getElementById('paymentSection').style.display = 'block';
-            document.getElementById('paymentSection').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function verifyAndCredit() {
-            const txHash = document.getElementById('txHashInput').value.trim();
-            if (!txHash) {
-                alert("Please enter a valid transaction hash/signature to confirm your crypto payment.");
-                return;
-            }
-
-            currentUser.credits += pendingPackage.amount;
-            document.getElementById('userCredits').innerText = currentUser.credits;
+        // Timer countdown (3 minutes)
+        let timeLeft = 180;
+        const timerEl = document.getElementById('timer');
+        
+        const countdown = setInterval(() => {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
-            alert(`✅ Payment Verified! Successfully added ${pendingPackage.amount} UX to your node (${currentUser.id}). Enjoy communicating on Pleniux!`);
-            
-            document.getElementById('txHashInput').value = '';
-            document.getElementById('paymentSection').style.display = 'none';
-            switchTab('inbox');
-        }
-
-        function searchUxNode() {
-            const query = document.getElementById('searchUxQuery').value.trim().toLowerCase();
-            const resBox = document.getElementById('directoryResult');
-            const resText = document.getElementById('searchResultText');
-            
-            resBox.style.display = 'block';
-
-            if (query === 'ux7') {
-                resText.innerHTML = "⚠️ <b>Error:</b> Node 'ux7' is locked and restricted. Unauthorized access prohibited.";
-                resText.style.color = "#f87171";
-            } else if (query === 'ux0') {
-                resText.innerHTML = "👑 <b>Node found:</b> <code>ux0</code> is active and managed exclusively by Founder <b>Jhon Gonzales (Lenox JG)</b>.";
-                resText.style.color = "#facc15";
-            } else if (query.startsWith('ux') && parseInt(query.replace('ux', '')) >= 1 && parseInt(query.replace('ux', '')) <= 1000) {
-                resText.innerHTML = `✅ <b>Node found:</b> <code>${query}</code> is registered and operational within the Pleniux secure network.`;
-                resText.style.color = "#34d399";
-            } else {
-                resText.innerHTML = `⚠️ <b>Notice:</b> Node <code>${query || 'unknown'}</code> not found or out of range (Allowed range: ux1 to ux1000).`;
-                resText.style.color = "#f87171";
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                alert("Session time expired (3 min limit). Messages wiped.");
+                handleExit();
             }
-        }
-
-        function sendMessage() {
-            const recipient = document.getElementById('recipientUx').value || 'ux1';
-            const text = document.getElementById('messageText').value;
-
-            if (!text.trim()) {
-                alert('Please enter a message before transmitting.');
-                return;
-            }
-
-            if (!currentUser.isFounder && currentUser.credits <= 0) {
-                alert('Insufficient Pleniux credits. Please recharge your balance.');
-                switchTab('recharge');
-                return;
-            }
-
-            if (!currentUser.isFounder) {
-                currentUser.credits -= 1;
-                document.getElementById('userCredits').innerText = currentUser.credits;
-            }
-
-            const list = document.getElementById('messageList');
-            const newItem = document.createElement('div');
-            newItem.className = 'message-item';
-            newItem.innerHTML = `
-                <div class="message-meta">
-                    <span>Sent to: <b>${recipient}</b></span>
-                    <span class="timer" data-time="180">Self-destruct: 03:00</span>
-                </div>
-                <p style="font-size: 0.95rem;">${escapeHtml(text)}</p>
-            `;
-            list.prepend(newItem);
-            document.getElementById('messageText').value = '';
-            switchTab('inbox');
-            alert('Encrypted message successfully transmitted! It will self-destruct in 3 minutes.');
-        }
-
-        function escapeHtml(text) {
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
-        // 3-minute self-destruct countdown loop
-        setInterval(() => {
-            const timers = document.querySelectorAll('.timer');
-            timers.forEach(timer => {
-                let timeLeft = parseInt(timer.getAttribute('data-time'));
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    timer.setAttribute('data-time', timeLeft);
-                    const mins = Math.floor(timeLeft / 60);
-                    const secs = timeLeft % 60;
-                    timer.innerText = `Self-destruct: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-                } else {
-                    const msgItem = timer.closest('.message-item');
-                    if (msgItem) {
-                        msgItem.style.opacity = '0';
-                        msgItem.style.transform = 'scale(0.95)';
-                        msgItem.style.transition = 'all 0.5s ease';
-                        setTimeout(() => msgItem.remove(), 500);
-                    }
-                }
-            });
+            timeLeft--;
         }, 1000);
+
+        // Chat functionality
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const targetSelect = document.getElementById('target-node-select');
+            const msgBox = document.getElementById('message-box');
+            
+            if (input.value.trim() === "") return;
+
+            if (credits <= 0) {
+                alert("Zero credits remaining. Please recharge to continue transmission.");
+                return;
+            }
+
+            // Outgoing message
+            const userMsg = document.createElement('div');
+            userMsg.classList.add('message', 'outgoing');
+            userMsg.innerText = `[To ${targetSelect.value}]: ${input.value}`;
+            msgBox.appendChild(userMsg);
+
+            const textCopy = input.value;
+            input.value = "";
+            msgBox.scrollTop = msgBox.scrollHeight;
+
+            // Simulated anonymous reply response for interaction
+            setTimeout(() => {
+                const replyMsg = document.createElement('div');
+                replyMsg.classList.add('message', 'incoming');
+                replyMsg.innerText = `[From ${targetSelect.value}]: ACK -> "${textCopy}" (Encrypted)`;
+                msgBox.appendChild(replyMsg);
+                msgBox.scrollTop = msgBox.scrollHeight;
+            }, 1000);
+        }
     </script>
 </body>
 </html>
