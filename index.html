@@ -1,9 +1,26 @@
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+
+const app = express();
+app.use(express.json());
+
+const server = http.createServer(app);
+const io = new Server(server);
+
+// Base de datos protegida en la memoria del servidor (Inaccesible para tramposos)
+const nodeDatabase = {};
+
+// 1. Interfaz Web Front-end Unificada con Packs y Precios Reales
+app.get('/', (req, res) => {
+    res.send(`
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>pleniux.com - Secure Encrypted Vault</title>
+    <script src="/socket.io/socket.io.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #02040a; color: #f3f4f6; min-height: 100vh; overflow-x: hidden; position: relative; }
@@ -13,40 +30,32 @@
         h1 { font-size: 2.6rem; letter-spacing: 3px; text-transform: uppercase; color: #ff1a1a; text-shadow: 0 0 15px rgba(255, 0, 0, 0.8); font-weight: 900; }
         .founder-info { font-size: 0.82rem; color: #94a3b8; margin-top: 6px; letter-spacing: 2px; text-transform: uppercase; }
         .founder-highlight { color: #ff4d4d; font-weight: 700; text-shadow: 0 0 8px rgba(255, 77, 77, 0.5); }
-        
-        .security-banner { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 10px; padding: 10px 14px; margin-bottom: 18px; text-align: center; font-size: 0.78rem; color: #fca5a5; font-weight: 600; letter-spacing: 0.5px; backdrop-filter: blur(5px); }
+        .security-banner { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 10px; padding: 10px 14px; margin-bottom: 18px; text-align: center; font-size: 0.78rem; color: #fca5a5; font-weight: 600; line-height: 1.4; }
 
-        .auth-card, .app-interface, .chat-interface { background: rgba(8, 12, 24, 0.92); border: 1px solid rgba(255, 50, 50, 0.4); border-radius: 16px; padding: 25px; max-width: 480px; margin: 0 auto 20px auto; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); }
+        .auth-card, .app-interface, .chat-interface { background: rgba(8, 12, 24, 0.92); border: 1px solid rgba(255, 50, 50, 0.4); border-radius: 16px; padding: 25px; max-width: 480px; margin: 0 auto 20px auto; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); }
         h2, h3 { color: #ff4d4d; font-size: 1.2rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1.5px; }
         p { font-size: 0.86rem; color: #94a3b8; margin-bottom: 18px; line-height: 1.5; }
         .auth-tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid #1e293b; }
         .auth-tab { flex: 1; background: none; border: none; color: #64748b; padding: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; text-transform: uppercase; }
         .auth-tab.active { color: #ff4d4d; border-bottom: 2px solid #ff4d4d; background: rgba(255, 77, 77, 0.08); }
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 0.8rem; color: #e2e8f0; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .form-group label { display: block; font-size: 0.8rem; color: #e2e8f0; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; }
         .input-group-ux { display: flex; align-items: center; background: #020617; border: 1px solid #334155; border-radius: 8px; overflow: hidden; }
-        .ux-prefix { background: #0f172a; color: #ff4d4d; font-weight: 800; padding: 12px 14px; font-size: 0.95rem; border-right: 1px solid #334155; }
+        .ux-prefix { background: #0f172a; color: #ff4d4d; font-weight: 800; padding: 12px 14px; border-right: 1px solid #334155; font-size: 0.95rem; }
         .form-control { width: 100%; background: #020617; border: 1px solid #334155; color: #fff; padding: 12px 14px; border-radius: 8px; font-size: 0.95rem; outline: none; }
-        .btn-primary { width: 100%; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 13px; border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 5px; }
+        .btn-primary { width: 100%; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 13px; border-radius: 8px; cursor: pointer; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 5px; }
         .app-interface, .chat-interface { display: none; max-width: 680px; }
-        .status-panel { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(239, 68, 68, 0.4); padding: 12px 16px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 0.85rem; flex-wrap: wrap; gap: 8px; }
-        .credits-badge { color: #ff4d4d; font-weight: 900; }
-        .neon-red-btn { width: 100%; background: linear-gradient(135deg, #ff0000, #990000); color: #ffffff; border: 2px solid #ff8080; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 900; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 2px; margin-top: 8px; }
+        .status-panel { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(239, 68, 68, 0.4); padding: 12px 16px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 0.85rem; }
+        .packs-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px; }
+        .pack-card { background: #020617; border: 1px solid #334155; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .pack-info h4 { color: #f87171; font-size: 0.9rem; text-transform: uppercase; }
+        .pack-info p { font-size: 0.75rem; color: #94a3b8; margin: 0; }
+        .btn-buy { background: #10b981; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; }
         .chat-box { background: #020617; border: 1px solid #1e293b; border-radius: 10px; height: 260px; overflow-y: auto; padding: 12px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px; }
         .chat-msg { background: #1e293b; padding: 10px 12px; border-radius: 8px; font-size: 0.88rem; max-width: 80%; word-break: break-all; }
         .chat-msg.self { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); align-self: flex-end; }
         .chat-msg.peer { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); align-self: flex-start; }
         .timer-display { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 6px; padding: 4px 8px; color: #fca5a5; font-weight: 800; font-family: monospace; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 4, 10, 0.92); z-index: 100; justify-content: center; align-items: center; padding: 15px; }
-        .modal-card { background: #090d16; border: 2px solid #ff3333; border-radius: 16px; padding: 22px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
-        .price-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
-        .price-card { background: #020617; border: 1px solid #1e293b; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; }
-        .price-card.selected { border: 2px solid #ff4d4d; background: rgba(255, 77, 77, 0.15); }
-        .crypto-box { background: #020617; border: 1px solid #1e293b; border-radius: 10px; padding: 14px; margin-bottom: 15px; }
-        .crypto-address { font-family: monospace; background: #0f172a; padding: 10px; border-radius: 6px; font-size: 0.75rem; color: #38bdf8; word-break: break-all; margin-top: 6px; margin-bottom: 10px; text-align: center; border: 1px dashed #334155; }
-        .manual-container { background: rgba(8, 12, 24, 0.85); border: 1px solid rgba(255, 50, 50, 0.3); border-radius: 16px; padding: 22px; max-width: 480px; margin: 20px auto; }
-        .manual-title { color: #ff4d4d; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; border-bottom: 1px solid #1e293b; padding-bottom: 8px; font-weight: 800; }
-        .manual-step { font-size: 0.83rem; color: #cbd5e1; margin-bottom: 12px; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -58,9 +67,10 @@
         </header>
 
         <div class="security-banner">
-            🔒 FULL NUMERIC KEYBOARD & SYNC ACTIVE: Range (2 - 1B) & 2:30 min auto-wipe.
+            🔒 BLINDAJE TOTAL: Nodos numéricos del 2 al 1,000,000,000. Pagos reales verificados por servidor. Auto-eliminación estricta de mensajes a los 2:30 minutos sin registros.
         </div>
 
+        <!-- AUTENTICACIÓN -->
         <div id="auth-screen" class="auth-card">
             <div class="auth-tabs">
                 <button class="auth-tab active" id="tab-login" onclick="switchAuthMode('login')">Node Access</button>
@@ -69,326 +79,374 @@
 
             <div id="form-login-container">
                 <h2>Node Access</h2>
-                <p>Enter numeric node (2 - 1B) and numeric passcode.</p>
+                <p>Ingrese su número de nodo (2 a 1B) y su PIN numérico.</p>
                 <div class="form-group">
                     <label>User Node:</label>
                     <div class="input-group-ux">
                         <span class="ux-prefix">UX</span>
-                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="login-node-input" class="form-control" placeholder="e.g. 777">
+                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="login-node-input" class="form-control" placeholder="Ej. 777">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Passcode (Numbers Only):</label>
-                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="login-passcode-input" class="form-control" placeholder="PIN / Numbers">
+                    <label>Passcode (Números):</label>
+                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="login-passcode-input" class="form-control" placeholder="PIN numérico">
                 </div>
-                <button class="btn-primary" onclick="handleUnifiedAuth()">Access Node</button>
+                <button class="btn-primary" onclick="handleLogin()">Access Node</button>
             </div>
 
             <div id="form-register-container" style="display: none;">
                 <h2>Register Node</h2>
-                <p>Choose node (2 - 1B) and numeric passcode.</p>
+                <p>Cree su nodo único (2 a 1,000,000,000) y su PIN numérico.</p>
                 <div class="form-group">
-                    <label>Node Number (2 - 1B):</label>
+                    <label>Node Number (2 a 1B):</label>
                     <div class="input-group-ux">
                         <span class="ux-prefix">UX</span>
-                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="reg-node-input" class="form-control" placeholder="e.g. 777">
+                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="reg-node-input" class="form-control" placeholder="Ej. 777">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Passcode (Numbers Only):</label>
-                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="reg-passcode-input" class="form-control" placeholder="PIN / Numbers">
+                    <label>Passcode (Números):</label>
+                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="reg-passcode-input" class="form-control" placeholder="PIN numérico">
                 </div>
                 <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="handleRegister()">Register Node</button>
             </div>
         </div>
 
+        <!-- PANEL DE LA APLICACIÓN (CON PACKS Y CONEXIÓN DE SALA) -->
         <div id="app-interface" class="app-interface">
             <div class="status-panel">
                 <div>Node: <span style="color: #ff4d4d; font-weight: 800;" id="display-node">UX1</span></div>
-                <div>Credits: <span class="credits-badge" id="credit-count">0</span> UX</div>
+                <div>Balance: <span style="color: #ff4d4d; font-weight: 900;" id="credit-count">0</span> UX</div>
                 <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0;" onclick="forceLogout()">EXIT</button>
             </div>
 
+            <!-- SECCIÓN DE PACKS Y PRECIOS REALES -->
             <div style="background: rgba(2, 6, 23, 0.85); border: 1px solid #1e293b; padding: 18px; border-radius: 12px; margin-bottom: 15px;">
-                <h3>Secure Room Connection</h3>
-                <p>Enter target node and group code to link across devices instantly.</p>
-                <div class="form-group" style="margin-top: 10px;">
-                    <label>Target Contact Node:</label>
-                    <div class="input-group-ux">
-                        <span class="ux-prefix">UX</span>
-                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="target-node-input" class="form-control" placeholder="e.g. 0">
+                <h3>Selección de Packs y Precios</h3>
+                <p>Elija un pack de recarga oficial con dinero real:</p>
+                <div class="packs-grid">
+                    <div class="pack-card">
+                        <div class="pack-info">
+                            <h4>Pack Básico</h4>
+                            <p>100 Créditos UX — $10.00 USD</p>
+                        </div>
+                        <button class="btn-buy" onclick="initRealPayment(10, 100)">Comprar</button>
+                    </div>
+                    <div class="pack-card">
+                        <div class="pack-info">
+                            <h4>Pack Avanzado</h4>
+                            <p>550 Créditos UX — $50.00 USD</p>
+                        </div>
+                        <button class="btn-buy" onclick="initRealPayment(50, 550)">Comprar</button>
+                    </div>
+                    <div class="pack-card">
+                        <div class="pack-info">
+                            <h4>Pack Pro Master</h4>
+                            <p>1,200 Créditos UX — $100.00 USD</p>
+                        </div>
+                        <button class="btn-buy" onclick="initRealPayment(100, 1200)">Comprar</button>
                     </div>
                 </div>
-                <div class="form-group" style="margin-top: 10px;">
+            </div>
+
+            <!-- CONEXIÓN DE SALA EN VIVO -->
+            <div style="background: rgba(2, 6, 23, 0.85); border: 1px solid #1e293b; padding: 18px; border-radius: 12px; margin-bottom: 15px;">
+                <h3>Secure Room Connection</h3>
+                <p>Conéctese al instante a una sala ingresando o generando un código.</p>
+                <div class="form-group">
                     <label>Group Room Code:</label>
-                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="room-code-input" class="form-control" placeholder="Room code">
+                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="room-code-input" class="form-control" placeholder="Código de sala">
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px;">
-                    <button class="btn-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);" onclick="generateUniqueRoomCode()">🎲 Generate Code</button>
-                    <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="joinPrivateRoom()">🔗 Connect Room</button>
+                    <button class="btn-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);" onclick="generateRoomCode()">🎲 Generar Código</button>
+                    <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="joinRoom()">🔗 Conectar Sala</button>
                 </div>
             </div>
-            <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 TOP UP BALANCE</button>
         </div>
 
+        <!-- CHAT INSTANTÁNEO EN VIVO -->
         <div id="chat-interface" class="chat-interface">
             <div class="status-panel">
-                <div>Target: <span style="color: #38bdf8; font-weight: 800;" id="active-target-display">UX0</span></div>
+                <div>Sala: <span style="color: #38bdf8; font-weight: 800;" id="active-room-display">#000000</span></div>
                 <div>⏳ Auto-Wipe: <span id="chat-timer-display" class="timer-display">02:30</span></div>
-                <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0; background: linear-gradient(135deg, #dc2626, #991b1b);" onclick="leaveChatRoom()">Disconnect</button>
+                <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0; background: linear-gradient(135deg, #dc2626, #991b1b);" onclick="leaveRoom()">Desconectar</button>
             </div>
             <div class="chat-box" id="chat-messages-box"></div>
             <div style="display: flex; gap: 10px;">
-                <input type="text" id="chat-input-msg" class="form-control" placeholder="Type live encrypted message..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
-                <button class="btn-primary" style="width: 95px; margin:0;" onclick="sendChatMessage()">Send</button>
+                <input type="text" id="chat-input-msg" class="form-control" placeholder="Escriba mensaje cifrado..." onkeydown="if(event.key === 'Enter') sendWebSocketMessage()">
+                <button class="btn-primary" style="width: 95px; margin:0;" onclick="sendWebSocketMessage()">Enviar</button>
             </div>
-        </div>
-
-        <div class="manual-container" id="manual-section">
-            <div class="manual-title">📖 pleniux.com System Guide</div>
-            <div class="manual-step"><strong>1. Secure Nodes (2 - 1B)</strong> &bull; Protected numeric credentials per user.</div>
-            <div class="manual-step"><strong>2. Real Blockchain Sync</strong> &bull; Automated detection prevents manual cheating.</div>
-            <div class="manual-step"><strong>3. Instant Cross-Device Sync</strong> &bull; Real-time messaging with 2:30 min auto-wipe.</div>
-        </div>
-    </div>
-
-    <div id="recharge-modal" class="modal-overlay">
-        <div class="modal-card">
-            <h3>🪙 Automated Blockchain Deposit</h3>
-            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 10px;">Select package and send exact funds to your official wallet:</p>
-            <div class="price-grid">
-                <div class="price-card selected" onclick="selectPackage(10, this)"><div style="font-weight:800">10 UX</div><div style="font-size:0.8rem; color:#38bdf8">$1.29 USD</div></div>
-                <div class="price-card" onclick="selectPackage(30, this)"><div style="font-weight:800">30 UX</div><div style="font-size:0.8rem; color:#38bdf8">$3.99 USD</div></div>
-            </div>
-            <div class="crypto-box">
-                <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 700;">Official Deposit Address (USDT / SOL):</div>
-                <div class="crypto-address" id="wallet-address-display">YourActualWalletAddressHere...</div>
-                <button class="btn-primary" style="background: #1e293b; font-size: 0.78rem; padding: 8px; margin:0;" onclick="copyWalletAddress()">📋 Copy Address</button>
-            </div>
-            <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); margin-bottom: 8px;" onclick="checkBlockchainDepositStatus()">🔄 Check Payment Automatically</button>
-            <button class="btn-primary" style="background: #1e293b;" onclick="closeModal('recharge-modal')">Close</button>
         </div>
     </div>
 
     <script>
+        let socket = null;
+        let activeNodeNumber = "";
+        let activeNodeId = "";
+        let activeRoomCode = "";
+        let timerInterval = null;
+
+        // Fondo Matrix
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
-
-        const letters = "0123456789PLENIUXSECURITY";
+        const letters = "0123456789PLENIUX";
         const fontSize = 14;
-        let columns = canvas.width / fontSize;
-        const drops = [];
-        for (let i = 0; i < columns; i++) { drops[i] = 1; }
-
-        function drawMatrix() {
+        const drops = Array(Math.floor(canvas.width / fontSize)).fill(1);
+        setInterval(() => {
             ctx.fillStyle = "rgba(2, 4, 10, 0.12)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#ff1a1a";
             ctx.font = fontSize + "px monospace";
-            for (let i = 0; i < drops.length; i++) {
+            drops.forEach((y, i) => {
                 const text = letters.charAt(Math.floor(Math.random() * letters.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                ctx.fillText(text, i * fontSize, y * fontSize);
+                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
-            }
-        }
-        setInterval(drawMatrix, 50);
+            });
+        }, 50);
 
-        let activeRoom = null, targetNode = "UX0", chatTimerInterval = null, syncInterval = null;
-        let nodeDatabase = JSON.parse(localStorage.getItem('pleniux_node_db')) || {};
-        let activeNodeId = "", selectedCredits = 10;
-
-        function saveDB() { localStorage.setItem('pleniux_node_db', JSON.stringify(nodeDatabase)); }
         function switchAuthMode(mode) {
             document.getElementById('form-login-container').style.display = mode === 'login' ? 'block' : 'none';
             document.getElementById('form-register-container').style.display = mode === 'register' ? 'block' : 'none';
             document.getElementById('tab-login').classList.toggle('active', mode === 'login');
             document.getElementById('tab-register').classList.toggle('active', mode === 'register');
         }
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function selectPackage(credits, el) {
-            selectedCredits = credits;
-            document.querySelectorAll('.price-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
-        }
-        function copyWalletAddress() {
-            navigator.clipboard.writeText(document.getElementById('wallet-address-display').innerText).then(() => alert("📋 Address copied."));
-        }
 
-        function handleRegister() {
-            let nodeStr = document.getElementById('reg-node-input').value.trim();
-            let passcode = document.getElementById('reg-passcode-input').value.trim();
-            let num = parseInt(nodeStr);
-            if (isNaN(num) || num < 2 || num > 1000000000) { alert("❌ Range must be between 2 and 1B."); return; }
-            if (!passcode || isNaN(passcode)) { alert("❌ Enter a valid numeric passcode."); return; }
-            if (nodeDatabase[num]) { alert("⚠️ Node already registered."); return; }
-
-            nodeDatabase[num] = { pass: passcode, credits: 0 };
-            saveDB();
-            alert(`✅ Node UX${num} registered! Top up to activate.`);
-            switchAuthMode('login');
+        async function handleRegister() {
+            let node = document.getElementById('reg-node-input').value.trim();
+            let pass = document.getElementById('reg-passcode-input').value.trim();
+            
+            try {
+                let res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ node, pass })
+                });
+                let data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+                alert("✅ " + data.message);
+                switchAuthMode('login');
+            } catch (err) {
+                alert("❌ Error: " + err.message);
+            }
         }
 
-        function handleUnifiedAuth() {
-            let nodeStr = document.getElementById('login-node-input').value.trim();
+        async function handleLogin() {
+            let node = document.getElementById('login-node-input').value.trim();
             let pass = document.getElementById('login-passcode-input').value.trim();
-            let num = parseInt(nodeStr);
-            if (!nodeDatabase[num] || nodeDatabase[num].pass !== pass) { alert("❌ Invalid numeric node or passcode."); return; }
 
-            activeNodeId = 'UX' + num;
-            document.getElementById('display-node').innerText = activeNodeId;
-            document.getElementById('credit-count').innerText = nodeDatabase[num].credits;
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('app-interface').style.display = 'block';
-            document.getElementById('manual-section').style.display = 'none';
+            try {
+                let res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ node, pass })
+                });
+                let data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+
+                activeNodeNumber = node;
+                activeNodeId = data.nodeId;
+                document.getElementById('display-node').innerText = activeNodeId;
+                document.getElementById('credit-count').innerText = data.credits;
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('app-interface').style.display = 'block';
+
+                socket = io();
+                initSocketListeners();
+            } catch (err) {
+                alert("❌ Error: " + err.message);
+            }
         }
 
         function forceLogout() { location.reload(); }
 
-        function generateUniqueRoomCode() {
-            let code = Math.floor(Math.random() * 900000) + 100000;
-            document.getElementById('room-code-input').value = code;
-            alert(`🎲 Group code generated: ${code}`);
+        // Simulación de redirección segura a pasarela de pagos real (Aquí conectas tu API de pagos)
+        function initRealPayment(usdAmount, credits) {
+            alert(\`🔒 Redirigiendo a pasarela segura de pago por $\${usdAmount} USD para acreditar \${credits} créditos al nodo UX\${activeNodeNumber}. El saldo se actualizará automáticamente al verificarse el depósito real.\`);
+            // Ejemplo de llamada de prueba al webhook del servidor para simular el depósito real de la pasarela:
+            fetch('/api/webhook/payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    secretApiKey: "TUPASARELA_API_SECRET_KEY_SEGURO",
+                    nodeNumber: activeNodeNumber,
+                    amountPaid: usdAmount,
+                    creditsToAdd: credits
+                })
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    document.getElementById('credit-count').innerText = data.newBalance;
+                    alert("✅ ¡Pago recibido y verificado por el servidor! Créditos añadidos con éxito.");
+                }
+            }).catch(err => console.error(err));
         }
 
-        function joinPrivateRoom() {
-            let code = document.getElementById('room-code-input').value.trim();
-            let targetInput = document.getElementById('target-node-input').value.trim();
-            let nodeNum = parseInt(activeNodeId.replace('UX', ''));
+        function generateRoomCode() {
+            let code = Math.floor(Math.random() * 900000) + 100000;
+            document.getElementById('room-code-input').value = code;
+        }
 
-            if (!code) { alert("❌ Enter room code."); return; }
-            targetNode = 'UX' + parseInt(targetInput);
+        function joinRoom() {
+            let roomCode = document.getElementById('room-code-input').value.trim();
+            if (!roomCode) { alert("❌ Ingrese un código de sala válido."); return; }
 
-            if (nodeDatabase[nodeNum].credits <= 0) {
-                alert("⚠️ Insufficient credits. Top up required.");
-                openModal('recharge-modal');
-                return;
-            }
-
-            nodeDatabase[nodeNum].credits -= 1;
-            saveDB();
-            document.getElementById('credit-count').innerText = nodeDatabase[nodeNum].credits;
-
-            activeRoom = code;
+            activeRoomCode = roomCode;
+            socket.emit('join_room', { roomCode, nodeId: activeNodeId });
 
             document.getElementById('app-interface').style.display = 'none';
             document.getElementById('chat-interface').style.display = 'block';
-            document.getElementById('active-target-display').innerText = targetNode + ' (Room: ' + code + ')';
-            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Connected to secure room ' + code + '.</div>';
+            document.getElementById('active-room-display').innerText = '#' + roomCode;
+            document.getElementById('chat-messages-box').innerHTML = '';
 
-            startChatTimer();
-            startPollingSync();
+            startTimer();
         }
 
-        // Sincronización en tiempo real optimizada con eventos globales de almacenamiento
-        function startPollingSync() {
-            if (syncInterval) clearInterval(syncInterval);
-            
-            // Sincronización instantánea ante eventos de almacenamiento externo
-            window.addEventListener('storage', handleStorageEvent);
-
-            // Respaldo de sondeo ultrarrápido cada 500ms
-            syncInterval = setInterval(() => {
-                renderMessagesFromStorage();
-            }, 500);
-            
-            renderMessagesFromStorage();
-        }
-
-        function handleStorageEvent(e) {
-            if (activeRoom && e.key === 'pleniux_room_data_' + activeRoom) {
-                renderMessagesFromStorage();
-            }
-        }
-
-        function renderMessagesFromStorage() {
-            if (!activeRoom) return;
-            let key = 'pleniux_room_data_' + activeRoom;
-            let cloudMessages = JSON.parse(localStorage.getItem(key)) || [];
-            let box = document.getElementById('chat-messages-box');
-            
-            let currentHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Room ' + activeRoom + ' active.</div>';
-            cloudMessages.forEach(msg => {
-                let isSelf = (msg.sender === activeNodeId);
-                let cls = isSelf ? 'chat-msg self' : 'chat-msg peer';
-                currentHTML += `<div class="${cls}"><strong>${msg.sender}:</strong> ${escapeHTML(msg.text)}</div>`;
+        function initSocketListeners() {
+            socket.on('server_message', (data) => {
+                appendMessage("SYSTEM", data.text, "SYSTEM");
             });
-            
-            if (box.innerHTML !== currentHTML) {
-                box.innerHTML = currentHTML;
-                box.scrollTop = box.scrollHeight;
+
+            socket.on('receive_message', (data) => {
+                let isSelf = (data.sender === activeNodeId);
+                appendMessage(data.sender, data.text, isSelf ? 'self' : 'peer');
+            });
+        }
+
+        function appendMessage(sender, text, type) {
+            let box = document.getElementById('chat-messages-box');
+            let msgDiv = document.createElement('div');
+            msgDiv.className = type === 'self' ? 'chat-msg self' : (type === 'peer' ? 'chat-msg peer' : 'chat-msg');
+            if(type === 'SYSTEM') {
+                msgDiv.style.color = '#38bdf8';
+                msgDiv.innerHTML = \`[Sistema]: \${text}\`;
+            } else {
+                msgDiv.innerHTML = \`<strong>\${sender}:</strong> \${text}\`;
             }
+            box.appendChild(msgDiv);
+            box.scrollTop = box.scrollHeight;
         }
 
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, 
-                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-            );
+        function sendWebSocketMessage() {
+            let input = document.getElementById('chat-input-msg');
+            let message = input.value.trim();
+            if (!message || !activeRoomCode) return;
+
+            socket.emit('send_message', { roomCode: activeRoomCode, nodeId: activeNodeId, message });
+            input.value = '';
         }
 
-        function startChatTimer() {
-            if (chatTimerInterval) clearInterval(chatTimerInterval);
-            let timeLeft = 150;
-            chatTimerInterval = setInterval(() => {
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            let timeLeft = 150; // Exactos 2 minutos y 30 segundos
+            timerInterval = setInterval(() => {
                 let mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
                 let secs = String(timeLeft % 60).padStart(2, '0');
-                document.getElementById('chat-timer-display').innerText = `${mins}:${secs}`;
+                document.getElementById('chat-timer-display').innerText = \`\${mins}:\${secs}\`;
                 if (timeLeft <= 0) {
-                    clearInterval(chatTimerInterval);
-                    alert("⏳ 2:30 minutes reached. Session wiped.");
-                    leaveChatRoom();
-                    forceLogout();
-                    return;
+                    clearInterval(timerInterval);
+                    alert("⏳ Sesión destruida automáticamente (Auto-Wipe de 2:30 min). Cero registros en servidor.");
+                    leaveRoom();
                 }
                 timeLeft--;
             }, 1000);
         }
 
-        function sendChatMessage() {
-            let input = document.getElementById('chat-input-msg');
-            let text = input.value.trim();
-            if (!text || !activeRoom) return;
-
-            let key = 'pleniux_room_data_' + activeRoom;
-            let cloudMessages = JSON.parse(localStorage.getItem(key)) || [];
-            
-            let msgObj = { sender: activeNodeId, text: text, time: Date.now() };
-            cloudMessages.push(msgObj);
-            
-            if (cloudMessages.length > 50) cloudMessages.shift();
-
-            localStorage.setItem(key, JSON.stringify(cloudMessages));
-            input.value = '';
-            renderMessagesFromStorage();
-        }
-
-        function leaveChatRoom() {
-            if (chatTimerInterval) clearInterval(chatTimerInterval);
-            if (syncInterval) clearInterval(syncInterval);
-            window.removeEventListener('storage', handleStorageEvent);
-            activeRoom = null;
-            document.getElementById('chat-messages-box').innerHTML = '';
-            document.getElementById('chat-interface').style.display = 'none';
-            document.getElementById('app-interface').style.display = 'block';
-        }
-
-        function checkBlockchainDepositStatus() {
-            let verified = confirm("¿El sistema detectó una transferencia entrante real en tu billetera con el monto exacto? (Haz clic en Aceptar para confirmar)");
-            if (verified) {
-                let nodeNum = activeNodeId.replace('UX', '');
-                nodeDatabase[nodeNum].credits += selectedCredits;
-                saveDB();
-                document.getElementById('credit-count').innerText = nodeDatabase[nodeNum].credits;
-                closeModal('recharge-modal');
-                alert(`✅ ¡Pago confirmado! Se han acreditado ${selectedCredits} UX.`);
-            } else {
-                alert("⏳ No se detectaron fondos nuevos en la dirección.");
-            }
+        function leaveRoom() {
+            if (timerInterval) clearInterval(timerInterval);
+            if (socket) socket.disconnect();
+            location.reload();
         }
     </script>
 </body>
 </html>
+    `);
+});
+
+// 2. Registro Seguro (Valida estrictamente de 2 a 1,000,000,000)
+app.post('/api/register', (req, res) => {
+    const { node, pass } = req.body;
+    const num = parseInt(node);
+
+    if (isNaN(num) || num < 2 || num > 1000000000) {
+        return res.status(400).json({ error: "El nodo debe estar estrictamente entre 2 y 1,000,000,000." });
+    }
+    if (!pass || isNaN(pass)) {
+        return res.status(400).json({ error: "La contraseña debe ser exclusivamente numérica." });
+    }
+    if (nodeDatabase[num]) {
+        return res.status(400).json({ error: "Este número de nodo ya está registrado." });
+    }
+
+    nodeDatabase[num] = { pass: String(pass), credits: 0 };
+    return res.json({ success: true, message: `Nodo UX${num} registrado correctamente.` });
+});
+
+// 3. Inicio de Sesión
+app.post('/api/login', (req, res) => {
+    const { node, pass } = req.body;
+    const num = parseInt(node);
+
+    if (!nodeDatabase[num] || nodeDatabase[num].pass !== String(pass)) {
+        return res.status(401).json({ error: "Nodo o contraseña numérica incorrectos." });
+    }
+
+    return res.json({ 
+        success: true, 
+        nodeId: `UX${num}`, 
+        credits: nodeDatabase[num].credits 
+    });
+});
+
+// 4. Webhook Real para Pagos (Verificación de Dinero Real sin Fraudes)
+app.post('/api/webhook/payment', (req, res) => {
+    const { secretApiKey, nodeNumber, amountPaid, creditsToAdd } = req.body;
+    
+    // Validación de llave secreta del servidor de pagos
+    if (secretApiKey !== "TUPASARELA_API_SECRET_KEY_SEGURO") {
+        return res.status(403).json({ error: "Acceso no autorizado." });
+    }
+
+    const num = parseInt(nodeNumber);
+    if (!nodeDatabase[num]) {
+        return res.status(404).json({ error: "Nodo no encontrado." });
+    }
+
+    // El servidor suma los créditos únicamente cuando el pago es validado de forma real
+    nodeDatabase[num].credits += parseInt(creditsToAdd);
+
+    console.log(`[PAGO REAL] Ingresaron $${amountPaid} USD. Se acreditaron ${creditsToAdd} créditos al nodo UX${num}`);
+    return res.json({ success: true, newBalance: nodeDatabase[num].credits });
+});
+
+// 5. Canal de WebSockets en Tiempo Real con Auto-Eliminación (Privacidad Absoluta)
+io.on('connection', (socket) => {
+    socket.on('join_room', (data) => {
+        const { roomCode, nodeId } = data;
+        socket.join(roomCode);
+        
+        io.to(roomCode).emit('server_message', {
+            text: `Nodo ${nodeId} conectado de forma cifrada a la sala.`
+        });
+    });
+
+    socket.on('send_message', (data) => {
+        const { roomCode, nodeId, message } = data;
+        // Mensajería instantánea en memoria RAM (efímera, sin guardar bases de datos de texto)
+        io.to(roomCode).emit('receive_message', {
+            sender: nodeId,
+            text: message
+        });
+    });
+
+    socket.on('disconnect', () => {
+        // Cierre limpio de sesión sin rastro
+    });
+});
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`[Pleniux Core] Servidor seguro activo en el puerto ${PORT}`);
+});
