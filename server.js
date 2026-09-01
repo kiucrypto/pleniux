@@ -56,12 +56,12 @@ app.get('/', (req, res) => {
                 <header>
                     <h1>PLENIUX</h1>
                     <div class="founder">Encrypted Anonymous Nodes</div>
-                    <div class="domain-badge">Domain Extension: lenoxjg.brave</div>
+                    <div class="domain-badge">Domain Extension: lenoxjg.vx</div>
                     <p style="color: #94a3b8; margin-top: 8px;">Secured VIP Nodes: UX1 and UX0 with 10,000 Credit Balance</p>
                 </header>
 
                 <div class="secure-badge">
-                    🔒 Zero-Knowledge Architecture | Kraken Verified Multi-Crypto Gateway (lenoxjg.brave)
+                    🔒 Zero-Knowledge Architecture | Kraken Verified Multi-Crypto Gateway (lenoxjg.vx)
                 </div>
 
                 <div class="card">
@@ -77,12 +77,12 @@ app.get('/', (req, res) => {
                         </div>
                         <div style="background: rgba(20, 5, 5, 0.5); padding: 12px; border-radius: 8px; border: 1px solid #3f0f0f;">
                             <h3 style="color: #ff2a2a; margin-top: 0; font-size: 1rem;">Access Channel</h3>
-                            <input type="text" id="loginUser" value="UX">
-                            <input type="number" id="loginPass" min="1" max="100000" placeholder="Password (1 - 100,000)">
+                            <input type="text" id="loginUser" value="UX0">
+                            <input type="number" id="loginPass" value="1971" min="1" max="100000" placeholder="Password">
                             <button onclick="accessChannel()">Enter Channel</button>
                         </div>
                     </div>
-                    <input type="text" id="roomCode" inputmode="numeric" placeholder="Numeric channel code (Instant connection)" style="margin-top: 15px;">
+                    <input type="text" id="roomCode" inputmode="numeric" placeholder="Numeric channel code (Instant connection)" style="margin-top: 15px;" value="777">
                 </div>
 
                 <div class="card">
@@ -161,6 +161,7 @@ app.get('/', (req, res) => {
                         alert(data.message);
                         if(data.success) {
                             document.getElementById('loginUser').value = user;
+                            document.getElementById('loginPass').value = pass;
                         }
                     });
                 }
@@ -215,7 +216,7 @@ app.post('/api/login', (req, res) => {
     }
 });
 
-// 2. Kraken-Linked Gateway with lenoxjg.brave and explicit networks
+// 2. Kraken-Linked Gateway with lenoxjg.vx and explicit networks
 app.get('/checkout', (req, res) => {
     const pack = req.query.pack || 'Top-Up';
     const amount = req.query.amount || '0';
@@ -242,7 +243,7 @@ app.get('/checkout', (req, res) => {
         <body>
             <div class="box">
                 <h2>Kraken Secure Gateway</h2>
-                <div class="domain-tag">Domain: lenoxjg.brave</div>
+                <div class="domain-tag">Domain: lenoxjg.vx</div>
                 <p>Package: <b>${pack}</b></p>
                 <div class="amount">$${amount} USD Equivalent</div>
                 <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 15px;">Send from your Kraken account using the exact network below:</p>
@@ -307,7 +308,7 @@ app.get('/chat', (req, res) => {
         </head>
         <body>
             <header>
-                <span id="userInfo">Node: <b style="color: #ff2a2a;">${user}</b> | Balance: <b style="color: #fbbf24;">${currentBalance} Credit</b> | <span style="color:#fbbf24;">lenoxjg.brave</span></span>
+                <span id="userInfo">Node: <b style="color: #ff2a2a;">${user}</b> | Balance: <b style="color: #fbbf24;">${currentBalance} Credit</b> | <span style="color:#fbbf24;">lenoxjg.vx</span></span>
                 <span style="color: #ef4444; font-weight: bold; text-shadow: 0 0 5px rgba(239, 68, 68, 0.5);" id="timer">Zero-Trace Self-Destruct: 02:30</span>
             </header>
             <div id="chat-box"></div>
@@ -341,7 +342,7 @@ app.get('/chat', (req, res) => {
                 });
 
                 function sendMessage() {
-                    const text = document.getElementById('messageInput').value;
+                    const text = document.getElementById('messageInput', '').value;
                     if(!text) return;
                     socket.emit('chat-message', { room, user, text });
                     document.getElementById('messageInput').value = '';
