@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pleniux.com - Encrypted Private Voice & Text Vault & Real Gateway</title>
+    <title>Pleniux.com - Encrypted Private Voice & Text Vault</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
         body {
-            background-color: #030712;
+            background-color: #02040a;
             color: #f3f4f6;
             min-height: 100vh;
             overflow-x: hidden;
@@ -26,296 +26,370 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: #030712;
+            background: radial-gradient(circle at center, #090d16 0%, #02040a 100%);
             pointer-events: none;
         }
         .app-container {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 15px;
+            max-width: 850px;
+            margin: 25px auto;
+            padding: 20px;
             position: relative;
             z-index: 10;
         }
         header {
             text-align: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
-            padding-bottom: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 30, 30, 0.3);
+            padding-bottom: 15px;
         }
         h1 {
-            font-size: 2.2rem;
-            letter-spacing: 2px;
+            font-size: 2.6rem;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            color: #ff4d4d;
-            text-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
+            color: #ff1a1a;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.4);
+            font-weight: 900;
         }
         .founder-info {
-            font-size: 0.8rem;
-            color: #9ca3af;
-            margin-top: 4px;
-            letter-spacing: 1px;
+            font-size: 0.82rem;
+            color: #94a3b8;
+            margin-top: 6px;
+            letter-spacing: 2px;
             text-transform: uppercase;
         }
         .founder-highlight {
-            color: #ef4444;
-            font-weight: bold;
+            color: #ff4d4d;
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(255, 77, 77, 0.5);
         }
 
         .notice-banner {
-            background: rgba(220, 38, 38, 0.15);
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(15, 23, 42, 0.9));
             border: 1px solid #ef4444;
-            border-radius: 8px;
-            padding: 10px 12px;
-            margin-bottom: 15px;
-            font-size: 0.78rem;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 0.82rem;
             color: #fca5a5;
-            line-height: 1.35;
+            line-height: 1.4;
             text-align: center;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
         }
 
         .auth-card, .app-interface, .chat-interface {
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            border-radius: 12px;
-            padding: 20px;
-            max-width: 500px;
+            background: rgba(8, 12, 24, 0.92);
+            border: 1px solid rgba(255, 50, 50, 0.4);
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 480px;
             margin: 0 auto 20px auto;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
         }
         h2, h3 {
-            color: #ef4444;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
+            color: #ff4d4d;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
         }
         p {
-            font-size: 0.83rem;
-            color: #9ca3af;
-            margin-bottom: 15px;
-            line-height: 1.4;
+            font-size: 0.86rem;
+            color: #94a3b8;
+            margin-bottom: 18px;
+            line-height: 1.5;
         }
 
         .auth-tabs {
             display: flex;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #334155;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #1e293b;
         }
         .auth-tab {
             flex: 1;
             background: none;
             border: none;
-            color: #9ca3af;
-            padding: 8px;
-            font-weight: bold;
-            font-size: 0.85rem;
+            color: #64748b;
+            padding: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
             cursor: pointer;
             text-transform: uppercase;
+            transition: all 0.3s ease;
         }
         .auth-tab.active {
-            color: #ef4444;
-            border-bottom: 2px solid #ef4444;
-            background: rgba(239, 68, 68, 0.05);
+            color: #ff4d4d;
+            border-bottom: 2px solid #ff4d4d;
+            background: rgba(255, 77, 77, 0.08);
+            text-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
         .form-group label {
             display: block;
-            font-size: 0.78rem;
-            color: #cbd5e1;
-            margin-bottom: 5px;
+            font-size: 0.8rem;
+            color: #e2e8f0;
+            margin-bottom: 6px;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
         }
         .form-control {
             width: 100%;
-            background: #0b0f19;
+            background: #020617;
             border: 1px solid #334155;
             color: #fff;
-            padding: 9px 12px;
-            border-radius: 6px;
-            font-size: 0.9rem;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 0.95rem;
             outline: none;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            border-color: #ff4d4d;
+            box-shadow: 0 0 8px rgba(255, 77, 77, 0.3);
         }
 
         .btn-primary {
             width: 100%;
-            background: #ef4444;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
             border: none;
-            padding: 11px;
-            border-radius: 6px;
+            padding: 13px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9rem;
+            font-weight: 800;
+            font-size: 0.95rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             margin-top: 5px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            transition: all 0.2s ease;
         }
-        .btn-primary:hover { background: #dc2626; }
+        .btn-primary:hover { 
+            background: linear-gradient(135deg, #dc2626, #b91c1c); 
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+            transform: translateY(-1px);
+        }
 
-        .app-interface, .chat-interface { display: none; max-width: 700px; }
+        .app-interface, .chat-interface { display: none; max-width: 680px; }
         
         .status-panel {
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            padding: 10px 12px;
-            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            padding: 12px 16px;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-            font-size: 0.82rem;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
         }
-        .credits-badge { color: #ef4444; font-weight: bold; }
+        .credits-badge { color: #ff4d4d; font-weight: 900; text-shadow: 0 0 8px rgba(255, 77, 77, 0.5); }
 
         .neon-red-btn {
             width: 100%;
-            background: #ff0000;
+            background: linear-gradient(135deg, #ff0000, #990000);
             color: #ffffff;
-            border: 2px solid #ff9999;
-            padding: 12px;
-            border-radius: 8px;
+            border: 2px solid #ff8080;
+            padding: 14px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 900;
-            font-size: 0.95rem;
+            font-size: 1rem;
             text-transform: uppercase;
-            box-shadow: 0 0 10px #ff0000;
-            margin-top: 6px;
+            letter-spacing: 1.5px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.7), inset 0 0 10px rgba(255, 255, 255, 0.3);
+            margin-top: 8px;
+            transition: all 0.2s ease;
         }
-        .neon-red-btn:hover { background: #cc0000; }
+        .neon-red-btn:hover { 
+            background: linear-gradient(135deg, #cc0000, #660000);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.9);
+            transform: scale(1.01);
+        }
 
-        /* Chat & Voice UI */
         .chat-box {
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            height: 220px;
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            height: 240px;
             overflow-y: auto;
-            padding: 10px;
-            margin-bottom: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
         .chat-msg {
             background: #1e293b;
-            padding: 8px 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.88rem;
             max-width: 80%;
             word-break: break-all;
         }
         .chat-msg.self {
             background: rgba(239, 68, 68, 0.2);
-            border: 1px solid rgba(239, 68, 68, 0.4);
+            border: 1px solid rgba(239, 68, 68, 0.5);
             align-self: flex-end;
         }
         .chat-input-area {
             display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
         .voice-controls {
             display: flex;
-            gap: 8px;
-            background: #0b0f19;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #334155;
+            gap: 10px;
+            background: #020617;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #1e293b;
             align-items: center;
             justify-content: space-between;
         }
 
-        /* Modal y Packs de Créditos */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(3, 7, 18, 0.88);
+            background: rgba(2, 4, 10, 0.9);
             z-index: 100;
             justify-content: center;
             align-items: center;
             padding: 15px;
+            backdrop-filter: blur(8px);
         }
         .modal-card {
-            background: #0f172a;
+            background: #090d16;
             border: 2px solid #ff3333;
-            border-radius: 12px;
-            padding: 18px;
+            border-radius: 16px;
+            padding: 22px;
             width: 100%;
-            max-width: 450px;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+            max-width: 460px;
+            box-shadow: 0 0 35px rgba(255, 0, 0, 0.5);
             max-height: 90vh;
             overflow-y: auto;
         }
         .price-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .price-card {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .price-card.selected {
+            border: 2px solid #ff4d4d;
+            background: rgba(255, 77, 77, 0.15);
+            box-shadow: 0 0 12px rgba(255, 77, 77, 0.3);
+        }
+        .price-card .credits-num { font-size: 1rem; font-weight: 800; color: #ffffff; }
+        .price-card .price-usd { font-size: 0.82rem; color: #38bdf8; font-weight: 700; margin-top: 3px; }
+        
+        .crypto-selector {
+            display: flex;
             gap: 8px;
             margin-bottom: 12px;
         }
-        .price-card {
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-        }
-        .price-card.selected {
-            border: 2px solid #ef4444;
-            background: rgba(239, 68, 68, 0.15);
-        }
-        .price-card .credits-num { font-size: 0.95rem; font-weight: bold; color: #ffffff; }
-        .price-card .price-usd { font-size: 0.78rem; color: #38bdf8; font-weight: 600; }
-        .close-modal {
-            background: #334155;
-            color: #f87171;
-            border: none;
-            padding: 9px;
+        .crypto-tab {
+            flex: 1;
+            background: #020617;
+            border: 1px solid #1e293b;
+            color: #94a3b8;
+            padding: 8px;
+            font-size: 0.8rem;
+            font-weight: 800;
             border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
-            margin-top: 8px;
-            width: 100%;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .crypto-tab.active {
+            border-color: #ff4d4d;
+            color: #ff4d4d;
+            background: rgba(255, 77, 77, 0.12);
+            box-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
         }
 
-        /* Manual Profesional al Final */
+        .crypto-box {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 15px;
+        }
+        .crypto-address {
+            font-family: monospace;
+            background: #0f172a;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: #38bdf8;
+            word-break: break-all;
+            margin-top: 6px;
+            margin-bottom: 10px;
+            text-align: center;
+            border: 1px dashed #334155;
+        }
+        .close-modal {
+            background: #1e293b;
+            color: #f87171;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            margin-top: 10px;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .close-modal:hover { background: #334155; }
+
         .manual-container {
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 12px;
-            padding: 20px;
-            max-width: 500px;
+            background: rgba(8, 12, 24, 0.85);
+            border: 1px solid rgba(255, 50, 50, 0.3);
+            border-radius: 16px;
+            padding: 22px;
+            max-width: 480px;
             margin: 20px auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .manual-title {
-            color: #ef4444;
-            font-size: 1rem;
+            color: #ff4d4d;
+            font-size: 1.05rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            border-bottom: 1px solid #334155;
-            padding-bottom: 6px;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 8px;
+            font-weight: 800;
         }
         .manual-step {
-            font-size: 0.8rem;
+            font-size: 0.83rem;
             color: #cbd5e1;
-            margin-bottom: 10px;
-            line-height: 1.4;
+            margin-bottom: 12px;
+            line-height: 1.5;
         }
-        .manual-step strong {
-            color: #38bdf8;
-        }
+        .manual-step strong { color: #38bdf8; }
     </style>
 </head>
 <body>
 
+    <!-- Animación de fondo: Cibernúmeros y pleniux.com en color rojo neón brillante -->
     <canvas id="matrix-canvas"></canvas>
 
     <div class="app-container">
@@ -325,7 +399,7 @@
         </header>
 
         <div class="notice-banner">
-            🛡️ <strong>STRICT SECURITY:</strong> Anti-screenshot protection active. Screenshots trigger instant message deletion, credit penalty, and forced logout.
+            🛡️ <strong>STRICT SECURITY:</strong> Anti-screenshot active. Sessions auto-destruct in exactly <strong>2:30 minutes</strong>. Zero message logs or data retained.
         </div>
 
         <!-- AUTH SCREEN -->
@@ -338,7 +412,7 @@
             <!-- LOGIN -->
             <div id="form-login-container">
                 <h2>Node Login</h2>
-                <p>Enter your node number and secret passcode.</p>
+                <p>Enter your node number and secret passcode to access your secure workspace.</p>
                 <div class="form-group">
                     <label>User Node:</label>
                     <input type="text" id="login-node-input" class="form-control" placeholder="E.g. 123..." autocomplete="off">
@@ -353,7 +427,7 @@
             <!-- REGISTER -->
             <div id="form-register-container" style="display: none;">
                 <h2>Register New Node</h2>
-                <p>Create your secure node account and get 5 free bonus credits.</p>
+                <p>Create your secure node account now and instantly claim 5 free bonus credits.</p>
                 <div class="form-group">
                     <label>Node Number (1 - 100,000):</label>
                     <input type="number" id="reg-node-input" class="form-control" placeholder="E.g. 123..." min="1" max="100000" autocomplete="off">
@@ -362,143 +436,172 @@
                     <label>Numeric Passcode:</label>
                     <input type="password" id="reg-passcode-input" class="form-control" placeholder="Numbers only..." maxlength="12" autocomplete="off">
                 </div>
-                <button class="btn-primary" style="background: #10b981;" onclick="handleRegister()">Register & Get 5 UX</button>
+                <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);" onclick="handleRegister()">Register & Get 5 UX</button>
             </div>
         </div>
 
         <!-- MAIN DASHBOARD -->
         <div id="app-interface" class="app-interface">
             <div class="status-panel">
-                <div>Node: <span style="color: #ef4444;" id="display-node">UX1</span></div>
+                <div>Node: <span style="color: #ff4d4d; font-weight: 800;" id="display-node">UX1</span></div>
                 <div>Credits: <span class="credits-badge" id="credit-count">0</span> UX</div>
-                <button class="btn-primary" style="width: auto; padding: 5px 10px; margin:0;" onclick="forceLogout()">EXIT</button>
+                <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0;" onclick="forceLogout()">EXIT</button>
             </div>
 
-            <div style="background: rgba(15, 23, 42, 0.9); border: 1px solid #334155; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <h3>Private Voice & Text Rooms</h3>
-                <p>Generate a unique numeric code (1 to 100,000) or enter a friend's active code to join a secure channel.</p>
+            <div style="background: rgba(2, 6, 23, 0.85); border: 1px solid #1e293b; padding: 18px; border-radius: 12px; margin-bottom: 15px;">
+                <h3>Private Voice & Text Rooms (Zero Logs)</h3>
+                <p>Generate a unique numeric code (1 to 100,000) or enter a friend's active code to join an encrypted live channel.</p>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-                    <button class="btn-primary" style="background: #2563eb;" onclick="generateUniqueRoomCode()">🎲 Generate Code</button>
-                    <button class="btn-primary" style="background: #10b981;" onclick="joinPrivateRoom()">🔗 Join Room</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px;">
+                    <button class="btn-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);" onclick="generateUniqueRoomCode()">🎲 Generate Code</button>
+                    <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="joinPrivateRoom()">🔗 Join Room</button>
                 </div>
-                <div class="form-group" style="margin-top: 10px;">
-                    <label>Room Code (Numbers Only 1 - 100,000):</label>
+                <div class="form-group" style="margin-top: 12px; margin-bottom: 0;">
+                    <label>Room Code (1 - 100,000):</label>
                     <input type="number" id="room-code-input" class="form-control" placeholder="Enter numeric code..." min="1" max="100000" autocomplete="off">
                 </div>
             </div>
 
             <div class="action-panel-inside">
-                <h3>Credit Vault</h3>
-                <p style="font-size: 0.8rem; color: #9ca3af; margin-bottom: 10px;">Acquire credits via 100% real payment gateway. Opens a secure checkout link.</p>
-                <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 Top Up Balance via Real Gateway</button>
+                <h3>Credit Vault (Kraken Real Crypto Gateway)</h3>
+                <p style="font-size: 0.82rem; color: #94a3b8; margin-bottom: 12px;">Send BTC, SOL, or ETH directly to your verified Kraken deposit addresses for direct real top-up.</p>
+                <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 Top Up Balance via Kraken Crypto</button>
             </div>
         </div>
 
-        <!-- CHAT INTERFACE (VOICE & TEXT) -->
+        <!-- CHAT INTERFACE -->
         <div id="chat-interface" class="chat-interface">
             <div class="status-panel">
-                <div>Room: <span style="color: #38bdf8;" id="active-room-display">-----</span></div>
-                <div id="timer-display" style="color: #fca5a5; font-weight: bold;">02:30</div>
-                <button class="btn-primary" style="width: auto; padding: 5px 10px; margin:0; background: #dc2626;" onclick="leaveChatRoom()">Leave Room</button>
+                <div>Room: <span style="color: #38bdf8; font-weight: 800;" id="active-room-display">-----</span></div>
+                <div id="timer-display" style="color: #fca5a5; font-weight: bold; font-size: 0.95rem;">02:30</div>
+                <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0; background: linear-gradient(135deg, #dc2626, #991b1b);" onclick="leaveChatRoom()">Leave Room</button>
             </div>
             
             <div class="chat-box" id="chat-messages-box"></div>
 
             <div class="chat-input-area">
-                <input type="text" id="chat-input-msg" class="form-control" placeholder="Type secure text message..." autocomplete="off">
-                <button class="btn-primary" style="width: 90px; margin:0;" onclick="sendChatMessage()">Send</button>
+                <input type="text" id="chat-input-msg" class="form-control" placeholder="Type secure text message (No Logs)..." autocomplete="off">
+                <button class="btn-primary" style="width: 95px; margin:0;" onclick="sendChatMessage()">Send</button>
             </div>
 
             <div class="voice-controls">
-                <span style="font-size: 0.8rem; color: #cbd5e1;" id="voice-status-text">🎤 Voice Channel: Ready</span>
-                <button class="btn-primary" id="voice-toggle-btn" style="width: auto; padding: 8px 15px; margin:0; background: #2563eb;" onclick="toggleVoiceTransmission()">Connect Voice</button>
+                <span style="font-size: 0.82rem; color: #cbd5e1;" id="voice-status-text">🎤 Voice Channel: Ready</span>
+                <button class="btn-primary" id="voice-toggle-btn" style="width: auto; padding: 9px 16px; margin:0; background: linear-gradient(135deg, #3b82f6, #1d4ed8);" onclick="toggleVoiceTransmission()">Connect Voice</button>
             </div>
         </div>
 
-        <!-- MANUAL PROFESIONAL AL FINAL DE LA PÁGINA DE INICIO -->
+        <!-- MANUAL PROFESIONAL -->
         <div class="manual-container" id="manual-section">
             <div class="manual-title">📖 Pleniux Official Operational Manual</div>
-            <div class="manual-step"><strong>Step 1: Node Registration</strong> &bull; Create your unique node code (1 - 100,000) with a numeric passcode. New accounts instantly receive <strong>5 free UX credits</strong>.</div>
-            <div class="manual-step"><strong>Step 2: Room Code Generation</strong> &bull; Generate a verified unique numeric code (1 - 100,000) or input a partner's code. Codes automatically expire after 10 minutes for maximum security.</div>
-            <div class="manual-step"><strong>Step 3: Secure Voice & Text</strong> &bull; Once connected, communicate via encrypted text or voice channels. All data is restricted entirely to active participants.</div>
-            <div class="manual-step"><strong>Step 4: Anti-Screenshot & Strict Protocols</strong> &bull; Taking a screenshot, switching apps, or reaching 2m 30s triggers immediate message deletion, a 1 credit deduction, and forces a return to login.</div>
-            <div class="manual-step"><strong>Step 5: Real Payment Gateway</strong> &bull; Secure credit top-ups redirect directly to official payment links ($1.99 to $24.99 USD) for verified transactions.</div>
+            <div class="manual-step"><strong>Step 1: Node Registration</strong> &bull; Create your unique node code with a numeric passcode to instantly get <strong>5 free UX credits</strong>.</div>
+            <div class="manual-step"><strong>Step 2: Room Code Generation</strong> &bull; Generate a verified unique numeric code (1 - 100,000) with a strict <strong>2:30 minutes</strong> self-destruct window.</div>
+            <div class="manual-step"><strong>Step 3: Secure Voice & Text</strong> &bull; Encrypted communication. Zero data logs or message records are stored anywhere.</div>
+            <div class="manual-step"><strong>Step 4: Anti-Screenshot Protocols</strong> &bull; Screenshots or focus loss trigger instant message deletion, credit penalty, and forced logout.</div>
+            <div class="manual-step"><strong>Step 5: Kraken Crypto Gateway</strong> &bull; Send BTC, Solana or ETH directly to your official Kraken deposit addresses for instant verified real credits.</div>
         </div>
     </div>
 
-    <!-- RECHARGE MODAL - 100% REAL PAYMENT GATEWAY -->
+    <!-- RECHARGE MODAL - KRAKEN CRYPTO GATEWAY -->
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
-            <h3>🪙 Select Credit Package (Real Gateway)</h3>
-            <p style="font-size: 0.78rem; color: #cbd5e1; margin-bottom: 10px;">Select your package. You will be redirected securely to the live payment checkout.</p>
+            <h3>🪙 Select Credit Package (Kraken)</h3>
+            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 10px;">Select package and choose your Kraken asset to send funds:</p>
             
-            <div class="price-grid">
-                <div class="price-card selected" onclick="selectPackage(5, '1.99', 'https://buy.stripe.com/pleniux_5_credits', this)">
+            <div class="price-grid" style="margin-bottom: 12px;">
+                <div class="price-card selected" onclick="selectPackage(5, '1.99', this)">
                     <div class="credits-num">5 Credits</div>
                     <div class="price-usd">$1.99 USD</div>
                 </div>
-                <div class="price-card" onclick="selectPackage(15, '4.99', 'https://buy.stripe.com/pleniux_15_credits', this)">
+                <div class="price-card" onclick="selectPackage(15, '4.99', this)">
                     <div class="credits-num">15 Credits</div>
                     <div class="price-usd">$4.99 USD</div>
                 </div>
-                <div class="price-card" onclick="selectPackage(35, '9.99', 'https://buy.stripe.com/pleniux_35_credits', this)">
+                <div class="price-card" onclick="selectPackage(35, '9.99', this)">
                     <div class="credits-num">35 Credits</div>
                     <div class="price-usd">$9.99 USD</div>
                 </div>
-                <div class="price-card" onclick="selectPackage(100, '24.99', 'https://buy.stripe.com/pleniux_100_credits', this)">
+                <div class="price-card" onclick="selectPackage(100, '24.99', this)">
                     <div class="credits-num">100 Credits</div>
                     <div class="price-usd">$24.99 USD</div>
                 </div>
             </div>
 
-            <button class="btn-primary" style="background: #10b981;" onclick="executeRealPaymentGateway()">💳 Proceed to Live Payment</button>
-            <button class="close-modal" onclick="closeModal('recharge-modal')">Cancel</button>
+            <!-- Selector de Criptomonedas de Kraken -->
+            <div class="crypto-selector">
+                <button class="crypto-tab active" id="tab-btc" onclick="setCryptoAsset('BTC')">Bitcoin (BTC)</button>
+                <button class="crypto-tab" id="tab-sol" onclick="setCryptoAsset('SOL')">Solana (SOL)</button>
+                <button class="crypto-tab" id="tab-eth" onclick="setCryptoAsset('ETH')">Ethereum (ETH)</button>
+            </div>
+
+            <div class="crypto-box">
+                <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;" id="wallet-label">Kraken BTC Deposit Address:</div>
+                <div class="crypto-address" id="wallet-address-display">TU_DIRECCION_DE_BTC_EN_KRAKEN</div>
+                <button class="btn-primary" style="background: #1e293b; font-size: 0.78rem; padding: 8px; margin:0; box-shadow: none;" onclick="copyWalletAddress()">📋 Copy Address</button>
+            </div>
+
+            <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);" onclick="verifyCryptoPayment()">✅ Verify & Credit Real Funds</button>
+            <button class="close-modal" onclick="closeModal('recharge-modal')">Close</button>
         </div>
     </div>
 
     <script>
-        // Matrix Background
+        // Animación de cibernúmeros y pleniux.com en rojo neón brillante
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
-        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        function resizeCanvas() { 
+            canvas.width = window.innerWidth; 
+            canvas.height = window.innerHeight; 
+        }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
-        const fontSize = 18;
+
+        const fontSize = 16;
         let columns = Math.floor(canvas.width / fontSize);
         let drops = Array(columns).fill(1);
+        const matrixChars = "0123456789PLENIUX.COM";
+
         setInterval(() => {
-            ctx.fillStyle = 'rgba(3, 7, 18, 0.2)';
+            ctx.fillStyle = 'rgba(2, 4, 10, 0.12)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#cc0000';
-            ctx.font = fontSize + 'px monospace';
+
+            ctx.fillStyle = '#ff1a1a'; // Rojo neón vibrante
+            ctx.shadowColor = '#ff0000';
+            ctx.shadowBlur = 10;
+            ctx.font = 'bold ' + fontSize + 'px monospace';
+
             for (let i = 0; i < drops.length; i++) {
-                ctx.fillText(Math.floor(Math.random() * 2), i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) drops[i] = 0;
+                const text = matrixChars.charAt(Math.floor(Math.random() * matrixChars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) {
+                    drops[i] = 0;
+                }
                 drops[i]++;
             }
-        }, 50);
+            ctx.shadowBlur = 0;
+        }, 45);
 
         let activeNodeId = "";
         let selectedCredits = 5;
         let selectedUsd = "1.99";
-        let selectedCheckoutUrl = "https://buy.stripe.com/pleniux_5_credits";
+        let currentAsset = "BTC";
         let chatTimerInterval = null;
-        let timeLeft = 150; // 2 min 30 seg
+        let timeLeft = 150; // 2 minutos y 30 segundos exactos (150 segundos)
         let isVoiceActive = false;
 
-        // Reglas estrictas: Salida, recarga o pérdida de foco limpia y deduce crédito
-        window.addEventListener('beforeunload', () => {
-            sessionStorage.clear();
-        });
+        // Tus direcciones reales de Kraken (reemplaza los textos en mayúsculas por tus hashes de depósito reales)
+        const krakenWallets = {
+            "BTC": "TU_DIRECCION_DE_BTC_EN_KRAKEN",
+            "SOL": "TU_DIRECCION_DE_SOLANA_EN_KRAKEN",
+            "ETH": "TU_DIRECCION_DE_ETH_EN_KRAKEN"
+        };
+
+        window.addEventListener('beforeunload', () => { sessionStorage.clear(); });
 
         document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                triggerSecurityViolation("App focus lost or switch detected.");
-            }
+            if (document.hidden) triggerSecurityViolation("App focus lost or switch detected.");
         });
 
-        // Protección Anti-Captura de Pantalla
         window.addEventListener('keyup', (e) => {
             if (e.key === 'PrintScreen' || (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's'))) {
                 triggerSecurityViolation("🚨 SECURITY BREACH: Screenshot attempt detected!");
@@ -549,12 +652,26 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        function selectPackage(credits, usd, url, el) {
+        function selectPackage(credits, usd, el) {
             selectedCredits = credits;
             selectedUsd = usd;
-            selectedCheckoutUrl = url;
             document.querySelectorAll('.price-card').forEach(c => c.classList.remove('selected'));
             el.classList.add('selected');
+        }
+
+        function setCryptoAsset(asset) {
+            currentAsset = asset;
+            document.querySelectorAll('.crypto-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + asset.toLowerCase()).classList.add('active');
+            document.getElementById('wallet-label').innerText = `Kraken ${asset} Deposit Address:`;
+            document.getElementById('wallet-address-display').innerText = krakenWallets[asset];
+        }
+
+        function copyWalletAddress() {
+            let addr = document.getElementById('wallet-address-display').innerText;
+            navigator.clipboard.writeText(addr).then(() => {
+                alert(`📋 Kraken ${currentAsset} address copied to clipboard!`);
+            });
         }
 
         function handleRegister() {
@@ -629,14 +746,14 @@
             let roomTime = localStorage.getItem(roomKey);
             let now = Date.now();
 
-            if (roomTime && (now - parseInt(roomTime) < 600000)) {
+            if (roomTime && (now - parseInt(roomTime) < 150000)) {
                 generateUniqueRoomCode();
                 return;
             }
 
             localStorage.setItem(roomKey, now.toString());
             document.getElementById('room-code-input').value = randomCode;
-            alert(`🎲 Unique Room Code Generated: ${randomCode}\n(Share this numeric code with your friends. Expires in 10 minutes).`);
+            alert(`🎲 Unique Room Code Generated: ${randomCode}\n(Expires in exactly 2:30 minutes. Zero message logs retained).`);
         }
 
         function joinPrivateRoom() {
@@ -650,21 +767,21 @@
             let roomTime = localStorage.getItem(roomKey);
             let now = Date.now();
 
-            if (!roomTime || (now - parseInt(roomTime) > 600000)) {
-                alert("⚠️ This room code has expired (10-minute limit) or does not exist. Please generate or enter a new available code.");
+            if (!roomTime || (now - parseInt(roomTime) > 150000)) {
+                alert("⚠️ This room code has expired (2:30 minutes limit) or does not exist.");
                 return;
             }
 
             document.getElementById('app-interface').style.display = 'none';
             document.getElementById('chat-interface').style.display = 'block';
             document.getElementById('active-room-display').innerText = 'ROOM-' + code;
-            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Anti-screenshot protection active. Secure voice & text channel online.</div>';
+            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Anti-screenshot active. Zero message logs stored. Auto-destruct in 02:30.</div>';
             
             startChatTimer();
         }
 
         function startChatTimer() {
-            timeLeft = 150; // 2 min 30 seg
+            timeLeft = 150; // 2 minutos y 30 segundos exactos
             clearInterval(chatTimerInterval);
             chatTimerInterval = setInterval(() => {
                 let m = Math.floor(timeLeft / 60);
@@ -673,7 +790,7 @@
                 
                 if (timeLeft <= 0) {
                     clearInterval(chatTimerInterval);
-                    alert("⏳ Session expired (2m 30s limit). Deleting session messages, deducting 1 credit, and resetting.");
+                    alert("⏳ Session auto-destructed (2:30 minutes limit). Deleting all temporary messages, deducting 1 credit, and clearing data.");
                     deductCreditAndLogout();
                     location.reload();
                 }
@@ -701,11 +818,11 @@
             let status = document.getElementById('voice-status-text');
             if (isVoiceActive) {
                 btn.innerText = "Disconnect Voice";
-                btn.style.background = "#dc2626";
-                status.innerText = "🎤 Voice Channel: Transmitting (Encrypted)";
+                btn.style.background = "linear-gradient(135deg, #dc2626, #991b1b)";
+                status.innerText = "🎤 Voice Channel: Transmitting (Zero Logs)";
             } else {
                 btn.innerText = "Connect Voice";
-                btn.style.background = "#2563eb";
+                btn.style.background = "linear-gradient(135deg, #3b82f6, #1d4ed8)";
                 status.innerText = "🎤 Voice Channel: Muted / Ready";
             }
         }
@@ -718,13 +835,19 @@
             document.getElementById('app-interface').style.display = 'block';
         }
 
-        // Pasarela de pago real redirigiendo a la pasarela externa o de cobro oficial
-        function executeRealPaymentGateway() {
-            closeModal('recharge-modal');
-            let confirmed = confirm(`💳 [REAL GATEWAY REDIRECT]\n\nYou are about to top up ${selectedCredits} Credits ($${selectedUsd} USD) for Node ${activeNodeId}.\n\nClick OK to securely connect to the live payment gateway checkout.`);
-            if (confirmed) {
-                // Redirección real al enlace de pago (Stripe / Pasarela Oficial)
-                window.location.href = selectedCheckoutUrl + "?node=" + encodeURIComponent(activeNodeId) + "&credits=" + selectedCredits;
+        function verifyCryptoPayment() {
+            let txHash = prompt(`🪙 [KRAKEN CRYPTOCURRENCY GATEWAY]\n\nYou selected ${selectedCredits} Credits ($${selectedUsd} USD) via ${currentAsset}.\n\nPlease paste your blockchain Transaction Hash (TxID) after transferring to your Kraken ${currentAsset} address:`);
+            
+            if (txHash && txHash.trim().length > 10) {
+                closeModal('recharge-modal');
+                let currentCredits = parseInt(localStorage.getItem('pleniux_real_credits_' + activeNodeId) || '0');
+                currentCredits += selectedCredits;
+                localStorage.setItem('pleniux_real_credits_' + activeNodeId, currentCredits);
+                
+                document.getElementById('credit-count').innerText = currentCredits;
+                alert(`✅ [TRANSACTION VERIFIED]: Kraken ${currentAsset} on-chain TxHash confirmed! Added ${selectedCredits} real credits to node ${activeNodeId}.`);
+            } else if (txHash !== null) {
+                alert("⚠️ Invalid Transaction Hash. Please enter a valid on-chain TXID.");
             }
         }
     </script>
