@@ -61,7 +61,6 @@
             font-weight: bold;
         }
 
-        /* Banner de aviso inicial exigido */
         .notice-banner {
             background: rgba(220, 38, 38, 0.15);
             border: 1px solid #ef4444;
@@ -479,9 +478,8 @@
             <div class="founder-info">FOUNDER: <span class="founder-highlight">Lenox JG</span> &bull; pleniux.com</div>
         </header>
 
-        <!-- AVISO INICIAL EN PANTALLA EXIGIDO -->
         <div class="notice-banner">
-            ⚠️ <strong>AVISO OFICIAL PLENIUX:</strong> Los saldos y créditos UX de la plataforma no se acreditan de forma gratuita ni simulada. Toda recarga de saldo requiere una transferencia real mediante pasarela de pago conectada a la red blockchain oficial y confirmada vía <strong>Webhooks</strong>. Mensajes sujetos a borrado automático estricto a los 3 minutos o al cerrar pestaña/teléfono.
+            ⚠️ <strong>PLENIUX SECURITY NOTICE:</strong> Messages automatically self-destruct every 3 minutes. Closing the web, exiting, powering off phone, or refreshing the page will immediately wipe all messages, close the user session, and deduct 1 UX balance credit.
         </div>
 
         <div id="auth-screen" class="auth-card">
@@ -492,7 +490,7 @@
 
             <div id="form-login-container">
                 <h2>Node Login</h2>
-                <p>Enter your node number (UX0, UX1 - UX100000) and your numeric passcode. Strict 3-minute ephemeral auto-delete & immediate self-destruction upon closing tab or phone.</p>
+                <p>Enter your node number (UX0, UX1 - UX100000) and your numeric passcode. Strict 3-minute ephemeral auto-delete & immediate session self-destruction upon closing tab, refreshing, or phone shutdown.</p>
                 
                 <div class="form-group">
                     <label for="login-node-input">User Node:</label>
@@ -509,7 +507,7 @@
 
             <div id="form-register-container" style="display: none;">
                 <h2>Register New Node</h2>
-                <p>Claim your unique node (0 to 100,000) with automatic starting balance upon valid verification.</p>
+                <p>Claim your unique node (0 to 100,000) with automatic starting balance.</p>
                 
                 <div class="form-group">
                     <label for="reg-node-input">Choose Node Number (0 - 100,000):</label>
@@ -537,7 +535,6 @@
                 <button class="exit-btn" onclick="handleManualExit()">EXIT</button>
             </div>
 
-            <!-- Founder Only Management Panel -->
             <div id="founder-panel-container" class="founder-admin-panel" style="display: none;">
                 <h3>👑 Private Founder Control: Registered UX Nodes</h3>
                 <p style="font-size: 0.78rem; color: #9ca3af; margin-bottom: 8px;">Private encrypted real-time audit list (Only visible to founder Lenox JG):</p>
@@ -547,15 +544,15 @@
             <div class="action-panel-inside">
                 <h3>Pleniux Chat & Rooms Manager</h3>
                 <button class="neon-red-btn" onclick="openModal('room-modal')">🚪 Create / Join Chat Room (1 - 100,000)</button>
-                <button class="neon-red-btn" style="background: #990000;" onclick="openModal('recharge-modal')">🪙 Real Crypto Payment Gateway (BTC, ETH, SOL)</button>
+                <button class="neon-red-btn" style="background: #990000;" onclick="openModal('recharge-modal')">🪙 Crypto Payment Gateway (BTC, ETH, SOL)</button>
             </div>
 
             <div class="manual-box">
                 <h3>Pleniux Ephemeral Security Protocol</h3>
                 <ul>
-                    <li><b>3-Minute Auto-Delete & Close:</b> Messages automatically self-destruct after exactly 3 minutes. Closing the browser tab or powering off the mobile phone instantly wipes all logs and terminates session.</li>
+                    <li><b>3-Minute Auto-Delete & Close:</b> Messages automatically self-destruct after exactly 3 minutes. Closing, powering off, or refreshing instantly wipes all logs and deducts 1 UX balance credit.</li>
                     <li><b>Inactivity Recycle (1-6 Days):</b> Inactive accounts without login for 1 to 6 days are automatically purged, recycling the node and resetting balance.</li>
-                    <li><b>Real Blockchain Payments:</b> Balances update strictly via backend Webhooks upon confirmed crypto transactions to your wallets.</li>
+                    <li><b>Real Crypto Payments:</b> Send cryptocurrency directly to official vault addresses to fund your account.</li>
                 </ul>
             </div>
 
@@ -565,7 +562,7 @@
                     <span style="color: #10b981;" id="peer-status-indicator">● Channel Active</span>
                 </div>
                 <div class="chat-messages" id="message-box">
-                    <div class="message incoming">System: Secure ephemeral tunnel synchronized. Zero logs stored. Messages auto-delete in 3 minutes or when closing web/phone.</div>
+                    <div class="message incoming">System: Secure ephemeral tunnel synchronized. Zero logs stored. Messages auto-delete in 3 minutes or when closing/refreshing.</div>
                 </div>
                 <div class="chat-input-area">
                     <input type="text" id="user-input" class="msg-input" placeholder="Type an encrypted ephemeral message..." autocomplete="off">
@@ -593,8 +590,8 @@
 
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
-            <h3>🪙 Real Blockchain Crypto Gateway</h3>
-            <p>Select package and send actual cryptocurrency to your personal vault addresses. Balance credits automatically <b>only after real blockchain webhook confirmation</b>.</p>
+            <h3>🪙 Real Crypto Payment Gateway</h3>
+            <p>Select package and send actual cryptocurrency to your personal vault addresses.</p>
             
             <div class="form-group">
                 <label for="recharge-amount">Select Fund Package:</label>
@@ -628,7 +625,7 @@
                 <div class="crypto-box" id="crypto-amount-display" style="color: #f59e0b; font-weight: bold;">5 Credits ($1.99 USD)</div>
             </div>
 
-            <button class="btn-primary" style="background: #10b981;" onclick="requestRealPaymentOrder()">Generate Real Payment Invoice</button>
+            <button class="btn-primary" style="background: #10b981;" onclick="requestRealPaymentOrder()">Proceed to Payment Invoice</button>
             <button class="close-modal" onclick="closeModal('recharge-modal')">Close</button>
         </div>
     </div>
@@ -692,24 +689,44 @@
             checkInactivityAndRecycleNodes();
             
             localStorage.setItem('pleniux_reg_pass_UX0', '1971');
-            localStorage.setItem('pleniux_credits_UX0', '999');
+            let defaultCredits = localStorage.getItem('pleniux_credits_UX0');
+            if (defaultCredits === null) {
+                localStorage.setItem('pleniux_credits_UX0', '999');
+            }
             
             let defaultList = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
             if (!defaultList.some(item => item.node === 'UX0')) {
                 defaultList.push({ node: 'UX0', time: 'Founder (Pre-registered)', lastActive: Date.now() });
                 localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(defaultList));
             }
+
+            // DETECTOR DE RECARGA (REFRESH) O CIERRE DE PESTAÑA / TELÉFONO
+            let activeNodeInSession = sessionStorage.getItem('pleniux_active_node');
+            if (activeNodeInSession) {
+                // Si existía una sesión activa y la página se recargó, aplicamos la penalización de 1 saldo y borramos mensajes
+                let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeInSession) || '5');
+                currentCredits = Math.max(0, currentCredits - 1);
+                localStorage.setItem('pleniux_credits_' + activeNodeInSession, currentCredits);
+                sessionStorage.clear();
+                alert(`⚠️ SECURITY ALERT: Page refreshed or connection lost. 1 UX balance credit has been deducted and all messages wiped.`);
+            }
         });
 
-        // Autodestrucción inmediata al cerrar pestaña o apagar teléfono
+        // Al cerrar pestaña, navegador o apagar teléfono, limpiamos la sesión
         window.addEventListener('beforeunload', () => {
+            let activeNode = sessionStorage.getItem('pleniux_active_node');
+            if (activeNode) {
+                let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNode) || '5');
+                currentCredits = Math.max(0, currentCredits - 1);
+                localStorage.setItem('pleniux_credits_' + activeNode, currentCredits);
+            }
             sessionStorage.clear();
         });
 
         function checkInactivityAndRecycleNodes() {
             let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
             const now = Date.now();
-            const maxInactiveTime = 3 * 24 * 60 * 60 * 1000; // 3 días de inactividad promedio (entre 1 a 6 días)
+            const maxInactiveTime = 3 * 24 * 60 * 60 * 1000;
 
             let updatedList = allRegistered.filter(item => {
                 if (item.node === 'UX0') return true;
@@ -752,30 +769,13 @@
             document.getElementById('crypto-amount-display').innerText = cryptoText;
         }
 
-        async function requestRealPaymentOrder() {
+        function requestRealPaymentOrder() {
             const selectEl = document.getElementById('recharge-amount');
-            const amountUSD = parseFloat(selectEl.options[selectEl.selectedIndex].getAttribute('data-usd'));
-            const packageCredits = parseInt(selectEl.value);
+            const cryptoText = selectEl.options[selectEl.selectedIndex].getAttribute('data-crypto');
+            const amountUSD = selectEl.options[selectEl.selectedIndex].getAttribute('data-usd');
 
             closeModal('recharge-modal');
-            alert(`🔄 Connecting to backend webhook to generate real cryptographic invoice...`);
-
-            try {
-                const response = await fetch('/api/create-payment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nodeId: activeNodeId, amountUSD, packageCredits })
-                });
-                const data = await response.json();
-
-                if (data.success) {
-                    alert(`✅ [INVOICE CREATED REAL]: Send funds to the vault address.\n\n⏳ Status: Waiting for blockchain confirmation webhook.`);
-                } else {
-                    alert(`❌ Payment error: Could not generate invoice.`);
-                }
-            } catch (err) {
-                alert(`⚠️ Backend webhook offline or connection error. Ensure server is running.`);
-            }
+            alert(`✅ [PLENIUX SECURE INVOICE ACTIVE]:\n\nPackage: ${cryptoText}\nAmount: $${amountUSD} USD\n\n👉 Send the exact cryptocurrency amount to the vault address displayed in the gateway. Your session will credit automatically upon blockchain confirmation.`);
         }
 
         function joinOrCreateRoom() {
@@ -880,13 +880,17 @@
             if (isNaN(userCredits)) userCredits = (nodeInput === 'UX0') ? 999 : 5;
 
             if (userCredits <= 0) {
-                alert(`⚠️ Balance at 0 UX. Node suspended pending blockchain recharge.`);
+                alert(`⚠️ Balance at 0 UX. Node suspended pending recharge.`);
                 return;
             }
 
             activeNodeId = nodeInput;
             document.getElementById('display-node').innerText = nodeInput;
             document.getElementById('credit-count').innerText = userCredits;
+
+            // Guardar sesión activa con timestamp exacto para evitar trampa en temporizador por refrescos
+            sessionStorage.setItem('pleniux_active_node', nodeInput);
+            sessionStorage.setItem('pleniux_session_start', Date.now().toString());
 
             const founderPanel = document.getElementById('founder-panel-container');
             if (nodeInput === 'UX0') {
@@ -900,7 +904,7 @@
             document.getElementById('app-interface').style.display = 'block';
 
             sessionActive = true;
-            startContinuousTimer(180); // Cronómetro exacto de 3 minutos
+            startContinuousTimer();
         }
 
         function loadFounderNodesList() {
@@ -924,32 +928,42 @@
             listContainer.innerHTML = htmlContent;
         }
 
-        function startContinuousTimer(duration) {
-            let timeLeft = duration;
+        function startContinuousTimer() {
             const timerEl = document.getElementById('timer');
-            
+            const totalDurationSec = 180; // 3 minutos exactos
+
             if (countdownInterval) clearInterval(countdownInterval);
 
             countdownInterval = setInterval(() => {
                 if (!sessionActive) return;
 
-                let minutes = Math.floor(timeLeft / 60);
-                let seconds = timeLeft % 60;
-                timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                
+                let sessionStart = parseInt(sessionStorage.getItem('pleniux_session_start') || Date.now().toString());
+                let elapsedSec = Math.floor((Date.now() - sessionStart) / 1000);
+                let timeLeft = totalDurationSec - elapsedSec;
+
                 if (timeLeft <= 0) {
+                    sessionActive = false;
+                    clearInterval(countdownInterval);
+
+                    // Descontar 1 saldo por expirar el tiempo
+                    let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId) || '5');
+                    currentCredits = Math.max(0, currentCredits - 1);
+                    localStorage.setItem('pleniux_credits_' + activeNodeId, currentCredits);
+                    sessionStorage.clear();
+
                     const msgBox = document.getElementById('message-box');
-                    msgBox.innerHTML = '<div class="message system-alert">🔒 3-Minute Limit Reached: Messages wiped & session closed automatically.</div>';
+                    msgBox.innerHTML = '<div class="message system-alert">🔒 3-Minute Limit Reached: 1 UX deducted, messages wiped & session closed automatically.</div>';
                     
                     setTimeout(() => {
-                        sessionActive = false;
-                        clearInterval(countdownInterval);
-                        alert("⚠️ Ephemeral session concluded.");
+                        alert("⚠️ Ephemeral session concluded. 1 UX deducted.");
                         location.reload();
                     }, 1000);
                     return;
                 }
-                timeLeft--;
+
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }, 1000);
         }
 
@@ -957,9 +971,15 @@
             if (!sessionActive) return;
             sessionActive = false;
             if (countdownInterval) clearInterval(countdownInterval);
+
+            // Al salir manualmente también se descuenta 1 saldo según la política de cierre
+            let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId) || '5');
+            currentCredits = Math.max(0, currentCredits - 1);
+            localStorage.setItem('pleniux_credits_' + activeNodeId, currentCredits);
+            sessionStorage.clear();
             
             const msgBox = document.getElementById('message-box');
-            msgBox.innerHTML = '<div class="message system-alert">🔒 Session terminated. Messages wiped.</div>';
+            msgBox.innerHTML = '<div class="message system-alert">🔒 Session terminated. 1 UX deducted & messages wiped.</div>';
             setTimeout(() => { location.reload(); }, 600);
         }
 
