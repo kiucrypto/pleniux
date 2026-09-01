@@ -257,9 +257,9 @@ app.get('/chat', (req, res) => {
                 });
 
                 function sendMessage() {
-                    const text = document.getElementById('messageInput').value;
-                    if(!text) return;
-                    socket.emit('chat-message', { room, user, text });
+                    const iconText = document.getElementById('messageInput').value;
+                    if(!iconText) return;
+                    socket.emit('chat-message', { room, user, text: iconText });
                     document.getElementById('messageInput').value = '';
                 }
 
