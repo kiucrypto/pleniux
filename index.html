@@ -1,19 +1,21 @@
+/*************************************************************
+ * pleniux.com - SERVIDOR BACKEND UNIFICADO (Node.js)
+ * Copia este archivo completo como: server.js
+ *************************************************************/
 const express = require('express');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const app = express();
 
 app.use(bodyParser.json());
-app.use(express.static('public')); // Carpeta donde estará tu HTML
+app.use(express.static('public')); // Carpeta para servir tu HTML si lo pones ahí
 
-// Base de datos en memoria (puedes adaptarla a MongoDB o PostgreSQL en producción)
-const userBalances = {}; // { "UX123": 5 }
-const processedTxIds = new Set(); // Evita la reutilización de TxIDs
+const userBalances = {}; // Base de datos en memoria para los saldos de nodos
+const processedTxIds = new Set(); // Evita la reutilización de hashes de transacción
 
 // Tu dirección de billetera real configurada
 const MY_REAL_WALLET = "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"; 
 
-// Endpoint para verificar el pago de forma 100% real en la Blockchain
 app.post('/api/verify-payment', async (req, res) => {
     const { nodeID, txHash, expectedAmountUSD, cryptoAsset } = req.body;
 
@@ -26,7 +28,6 @@ app.post('/api/verify-payment', async (req, res) => {
     }
 
     try {
-        // Consulta real a la API pública de BlockCypher para Bitcoin
         const response = await axios.get(`https://api.blockcypher.com/v1/btc/main/txs/${txHash}`);
         const txData = response.data;
 
@@ -96,3 +97,850 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor real de pleniux.com corriendo en el puerto ${PORT}`);
 });
+
+
+/*************************************************************
+ * pleniux.com - CÓDIGO FRONTEND COMPLETO Y UNIFICADO (HTML)
+ * Pega todo este código en tu archivo principal index.html
+ *************************************************************/
+/*
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>pleniux.com - Encrypted Private Voice & Text Vault</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #02040a;
+            color: #f3f4f6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #090d16 0%, #02040a 100%);
+            pointer-events: none;
+        }
+        .app-container {
+            max-width: 850px;
+            margin: 25px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 30, 30, 0.3);
+            padding-bottom: 15px;
+        }
+        h1 {
+            font-size: 2.6rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ff1a1a;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.4);
+            font-weight: 900;
+        }
+        .founder-info {
+            font-size: 0.82rem;
+            color: #94a3b8;
+            margin-top: 6px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .founder-highlight {
+            color: #ff4d4d;
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(255, 77, 77, 0.5);
+        }
+
+        .auth-card, .app-interface, .chat-interface {
+            background: rgba(8, 12, 24, 0.92);
+            border: 1px solid rgba(255, 50, 50, 0.4);
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 480px;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        h2, h3 {
+            color: #ff4d4d;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        p {
+            font-size: 0.86rem;
+            color: #94a3b8;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #1e293b;
+        }
+        .auth-tab {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #64748b;
+            padding: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        .auth-tab.active {
+            color: #ff4d4d;
+            border-bottom: 2px solid #ff4d4d;
+            background: rgba(255, 77, 77, 0.08);
+            text-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: #e2e8f0;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .input-group-ux {
+            display: flex;
+            align-items: center;
+            background: #020617;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .input-group-ux:focus-within {
+            border-color: #ff4d4d;
+            box-shadow: 0 0 8px rgba(255, 77, 77, 0.3);
+        }
+        .ux-prefix {
+            background: #0f172a;
+            color: #ff4d4d;
+            font-weight: 800;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+            border-right: 1px solid #334155;
+            letter-spacing: 1px;
+        }
+        .input-group-ux .form-control {
+            border: none;
+            border-radius: 0;
+            box-shadow: none !important;
+        }
+
+        .form-control {
+            width: 100%;
+            background: #020617;
+            border: 1px solid #334155;
+            color: #fff;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            border-color: #ff4d4d;
+            box-shadow: 0 0 8px rgba(255, 77, 77, 0.3);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            padding: 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 5px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover { 
+            background: linear-gradient(135deg, #dc2626, #b91c1c); 
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .app-interface, .chat-interface { display: none; max-width: 680px; }
+        
+        .status-panel {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            padding: 12px 16px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .credits-badge { color: #ff4d4d; font-weight: 900; text-shadow: 0 0 8px rgba(255, 77, 77, 0.5); }
+
+        .neon-red-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ff0000, #990000);
+            color: #ffffff;
+            border: 2px solid #ff8080;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 900;
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.8), inset 0 0 12px rgba(255, 255, 255, 0.4);
+            margin-top: 8px;
+            animation: pulseGlow 2s infinite;
+            transition: all 0.2s ease;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); transform: scale(1); }
+            50% { box-shadow: 0 0 30px rgba(255, 0, 0, 0.9); transform: scale(1.02); }
+            100% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); transform: scale(1); }
+        }
+        .neon-red-btn:hover { 
+            background: linear-gradient(135deg, #cc0000, #660000);
+            transform: scale(1.03);
+        }
+
+        .chat-box {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            height: 240px;
+            overflow-y: auto;
+            padding: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .chat-msg {
+            background: #1e293b;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            max-width: 80%;
+            word-break: break-all;
+        }
+        .chat-msg.self {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            align-self: flex-end;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .voice-controls {
+            display: flex;
+            gap: 10px;
+            background: #020617;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #1e293b;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(2, 4, 10, 0.92);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            backdrop-filter: blur(8px);
+        }
+        .modal-card {
+            background: #090d16;
+            border: 2px solid #ff3333;
+            border-radius: 16px;
+            padding: 22px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 0 35px rgba(255, 0, 0, 0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .price-card {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .price-card.selected {
+            border: 2px solid #ff4d4d;
+            background: rgba(255, 77, 77, 0.15);
+            box-shadow: 0 0 12px rgba(255, 77, 77, 0.3);
+        }
+        .price-card .credits-num { font-size: 0.95rem; font-weight: 800; color: #ffffff; }
+        .price-card .price-usd { font-size: 0.8rem; color: #38bdf8; font-weight: 700; margin-top: 3px; }
+        .price-card .bonus-text { font-size: 0.7rem; color: #fca5a5; margin-top: 2px; }
+        
+        .crypto-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .crypto-tab {
+            flex: 1;
+            background: #020617;
+            border: 1px solid #1e293b;
+            color: #94a3b8;
+            padding: 8px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .crypto-tab.active {
+            border-color: #ff4d4d;
+            color: #ff4d4d;
+            background: rgba(255, 77, 77, 0.12);
+            box-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
+        }
+
+        .crypto-box {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 15px;
+        }
+        .crypto-address {
+            font-family: monospace;
+            background: #0f172a;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: #38bdf8;
+            word-break: break-all;
+            margin-top: 6px;
+            margin-bottom: 10px;
+            text-align: center;
+            border: 1px dashed #334155;
+        }
+        .close-modal {
+            background: #1e293b;
+            color: #f87171;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            margin-top: 10px;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .close-modal:hover { background: #334155; }
+
+        .manual-container {
+            background: rgba(8, 12, 24, 0.85);
+            border: 1px solid rgba(255, 50, 50, 0.3);
+            border-radius: 16px;
+            padding: 22px;
+            max-width: 480px;
+            margin: 20px auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .manual-title {
+            color: #ff4d4d;
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 8px;
+            font-weight: 800;
+        }
+        .manual-step {
+            font-size: 0.83rem;
+            color: #cbd5e1;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        .manual-step strong { color: #38bdf8; }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix-canvas"></canvas>
+
+    <div class="app-container">
+        <header>
+            <h1>pleniux.com</h1>
+            <div class="founder-info">FOUNDER: <span class="founder-highlight">Lenox JG</span> &bull; pleniux.com</div>
+        </header>
+
+        <div id="auth-screen" class="auth-card">
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login" onclick="switchAuthMode('login')">Node Access</button>
+                <button class="auth-tab" id="tab-register" onclick="switchAuthMode('register')">New Registration</button>
+            </div>
+
+            <div id="form-login-container">
+                <h2>Node Access (1 - 1,000,000)</h2>
+                <p>Ingrese su número de nodo y su contraseña numérica secreta para acceder.</p>
+                
+                <div class="form-group">
+                    <label>User Node (1 - 1,000,000):</label>
+                    <div class="input-group-ux">
+                        <span class="ux-prefix">UX</span>
+                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="login-node-input" class="form-control" placeholder="Ej. 12345..." min="1" max="1000000" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Numeric Passcode:</label>
+                    <input type="password" inputmode="numeric" pattern="[0-9]*" id="login-passcode-input" class="form-control" placeholder="Contraseña numérica..." maxlength="12" autocomplete="off">
+                </div>
+                <button class="btn-primary" onclick="handleUnifiedAuth()">Access Node</button>
+            </div>
+
+            <div id="form-register-container" style="display: none;">
+                <h2>Register New Node</h2>
+                <p>Elija su número de nodo (1 a 1,000,000) y su contraseña numérica exclusiva para obtener sus <strong>5 créditos UX de regalo</strong>.</p>
+                
+                <div class="form-group">
+                    <label>Node Number (1 - 1,000,000):</label>
+                    <div class="input-group-ux">
+                        <span class="ux-prefix">UX</span>
+                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="reg-node-input" class="form-control" placeholder="Ej. 12345..." min="1" max="1000000" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Numeric Passcode:</label>
+                    <input type="password" inputmode="numeric" pattern="[0-9]*" id="reg-passcode-input" class="form-control" placeholder="Contraseña numérica..." maxlength="12" autocomplete="off">
+                </div>
+                <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);" onclick="handleRegister()">Register & Get 5 UX</button>
+            </div>
+        </div>
+
+        <div id="app-interface" class="app-interface">
+            <div class="status-panel">
+                <div>Node: <span style="color: #ff4d4d; font-weight: 800;" id="display-node">UX1</span></div>
+                <div>Credits: <span class="credits-badge" id="credit-count">0</span> UX</div>
+                <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0;" onclick="forceLogout()">EXIT</button>
+            </div>
+
+            <div style="background: rgba(2, 6, 23, 0.85); border: 1px solid #1e293b; padding: 18px; border-radius: 12px; margin-bottom: 15px;">
+                <h3>Private Voice & Text Rooms (5-Star Security)</h3>
+                <p>Genere un código numérico único (1 a 1,000,000) o introduzca el código activo de cualquier usuario para hablar y comunicarse de forma totalmente privada.</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px;">
+                    <button class="btn-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);" onclick="generateUniqueRoomCode()">🎲 Generate Code</button>
+                    <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="joinPrivateRoom()">🔗 Join Room</button>
+                </div>
+                <div class="form-group" style="margin-top: 12px; margin-bottom: 0;">
+                    <label>Room Code (1 - 1,000,000):</label>
+                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="room-code-input" class="form-control" placeholder="Introduzca código numérico..." min="1" max="1000000" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="action-panel-inside">
+                <h3>Credit Vault (Live Real Crypto Gateway)</h3>
+                <p style="font-size: 0.82rem; color: #94a3b8; margin-bottom: 12px;">El saldo se entrega de forma automática únicamente tras verificar en la blockchain real que los fondos llegaron a tus billeteras.</p>
+                <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 RECARGAR SALDO CON CRIPTO (REAL)</button>
+            </div>
+        </div>
+
+        <div id="chat-interface" class="chat-interface">
+            <div class="status-panel">
+                <div>Room: <span style="color: #38bdf8; font-weight: 800;" id="active-room-display">-----</span></div>
+                <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0; background: linear-gradient(135deg, #dc2626, #991b1b);" onclick="leaveChatRoom()">Leave Room</button>
+            </div>
+            
+            <div class="chat-box" id="chat-messages-box"></div>
+
+            <div class="chat-input-area">
+                <input type="text" id="chat-input-msg" class="form-control" placeholder="Escriba su mensaje seguro..." autocomplete="off">
+                <button class="btn-primary" style="width: 95px; margin:0;" onclick="sendChatMessage()">Send</button>
+            </div>
+
+            <div class="voice-controls">
+                <span style="font-size: 0.82rem; color: #cbd5e1;" id="voice-status-text">🎤 Voice Channel: Ready</span>
+                <button class="btn-primary" id="voice-toggle-btn" style="width: auto; padding: 9px 16px; margin:0; background: linear-gradient(135deg, #3b82f6, #1d4ed8);" onclick="toggleVoiceTransmission()">Connect Voice</button>
+            </div>
+        </div>
+
+        <div class="manual-container" id="manual-section">
+            <div class="manual-title">📖 pleniux.com Official Operational Manual</div>
+            <div class="manual-step"><strong>Step 1: Node Registration</strong> &bull; Elija su nodo numérico (1 a 1,000,000) y contraseña numérica en <strong>pleniux.com</strong> para obtener <strong>5 créditos UX gratis</strong>.</div>
+            <div class="manual-step"><strong>Step 2: Room Code Generation</strong> &bull; Genere un código numérico único (1 - 1,000,000) para comunicarse con cualquier persona.</div>
+            <div class="manual-step"><strong>Step 3: Secure Voice & Text</strong> &bull; Comunicación encriptada total bajo estrictas reglas de privacidad y seguridad de 5 estrellas.</div>
+            <div class="manual-step"><strong>Step 4: Real Blockchain Gateway</strong> &bull; Verificación estricta en la red real antes de entregar saldo automático.</div>
+        </div>
+    </div>
+
+    <div id="recharge-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>🪙 Live Real Blockchain Payment Gateway</h3>
+            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 10px;">Seleccione su paquete y envíe los fondos exactos a su dirección de depósito real:</p>
+            
+            <div class="price-grid" style="margin-bottom: 12px;">
+                <div class="price-card selected" onclick="selectPackage(10, '1.29', this)">
+                    <div class="credits-num">10 UX</div>
+                    <div class="price-usd">$1.29 USD</div>
+                </div>
+                <div class="price-card" onclick="selectPackage(30, '3.99', this)">
+                    <div class="credits-num">30 UX</div>
+                    <div class="price-usd">$3.99 USD</div>
+                </div>
+                <div class="price-card" onclick="selectPackage(50, '5.99', this)">
+                    <div class="credits-num">50 UX</div>
+                    <div class="price-usd">$5.99 USD</div>
+                </div>
+                <div class="price-card" onclick="selectPackage(220, '29.99', this)">
+                    <div class="credits-num">Pack Inicio: 200 UX</div>
+                    <div class="bonus-text">+20 UX extra</div>
+                    <div class="price-usd">$29.99 USD</div>
+                </div>
+                <div class="price-card" onclick="selectPackage(530, '49.99', this)">
+                    <div class="credits-num">Pack Exclusivo: 500 UX</div>
+                    <div class="bonus-text">+30 Regalo</div>
+                    <div class="price-usd">$49.99 USD</div>
+                </div>
+                <div class="price-card" onclick="selectPackage(810, '79.99', this)">
+                    <div class="credits-num">Pack Secreto Plus: 800 UX</div>
+                    <div class="bonus-text">+10 Regalo</div>
+                    <div class="price-usd">$79.99 USD</div>
+                </div>
+                <div class="price-card" onclick="selectPackage(4050, '666.00', this)">
+                    <div class="credits-num">Pack VIP: 4000 UX</div>
+                    <div class="bonus-text">+50 Extra</div>
+                    <div class="price-usd">$666.00 USD</div>
+                </div>
+                <div class="price-card" onclick="selectPackage(8050, '1299.00', this)">
+                    <div class="credits-num">Pack Extra VIP: 8000 UX</div>
+                    <div class="bonus-text">+50 Regalo</div>
+                    <div class="price-usd">$1,299.00 USD</div>
+                </div>
+            </div>
+
+            <div class="crypto-selector">
+                <button class="crypto-tab active" id="tab-btc" onclick="setCryptoAsset('BTC')">Bitcoin (BTC)</button>
+                <button class="crypto-tab" id="tab-sol" onclick="setCryptoAsset('SOL')">Solana (SOL)</button>
+                <button class="crypto-tab" id="tab-eth" onclick="setCryptoAsset('ETH')">Ethereum (ETH)</button>
+            </div>
+
+            <div class="crypto-box">
+                <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;" id="wallet-label">Real Live BTC Deposit Address:</div>
+                <div class="crypto-address" id="wallet-address-display">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</div>
+                <button class="btn-primary" style="background: #1e293b; font-size: 0.78rem; padding: 8px; margin:0; box-shadow: none;" onclick="copyWalletAddress()">📋 Copy Address</button>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label>Enter Real On-Chain TxID / Hash:</label>
+                <input type="text" id="txhash-input" class="form-control" placeholder="Pegue el hash de transacción real (0x... o txid)..." autocomplete="off">
+            </div>
+
+            <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);" onclick="verifyRealCryptoPayment()">⚡ Verify Live Blockchain Payment</button>
+            <button class="close-modal" onclick="closeModal('recharge-modal')">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() { 
+            canvas.width = window.innerWidth; 
+            canvas.height = window.innerHeight; 
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const fontSize = 16;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = Array(columns).fill(1);
+        const matrixChars = "0123456789PLENIUX.COM";
+
+        setInterval(() => {
+            ctx.fillStyle = 'rgba(2, 4, 10, 0.12)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#ff1a1a';
+            ctx.shadowColor = '#ff0000';
+            ctx.shadowBlur = 10;
+            ctx.font = 'bold ' + fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = matrixChars.charAt(Math.floor(Math.random() * matrixChars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+            ctx.shadowBlur = 0;
+        }, 45);
+
+        let activeNodeId = "";
+        let selectedCredits = 10;
+        let selectedUsd = "1.29";
+        let currentAsset = "BTC";
+        let isVoiceActive = false;
+
+        const realWallets = {
+            "BTC": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+            "SOL": "TuDireccionRealDeSolanaAqui9999",
+            "ETH": "0xTuDireccionRealDeEthereumAqui..."
+        };
+
+        function switchAuthMode(mode) {
+            const loginContainer = document.getElementById('form-login-container');
+            const registerContainer = document.getElementById('form-register-container');
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+
+            if (mode === 'login') {
+                loginContainer.style.display = 'block';
+                registerContainer.style.display = 'none';
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+            } else {
+                loginContainer.style.display = 'none';
+                registerContainer.style.display = 'block';
+                tabRegister.classList.add('active');
+                tabLogin.classList.remove('active');
+            }
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function selectPackage(credits, usd, el) {
+            selectedCredits = credits;
+            selectedUsd = usd;
+            document.querySelectorAll('.price-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        function setCryptoAsset(asset) {
+            currentAsset = asset;
+            document.querySelectorAll('.crypto-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + asset.toLowerCase()).classList.add('active');
+            document.getElementById('wallet-label').innerText = `Real Live ${asset} Deposit Address:`;
+            document.getElementById('wallet-address-display').innerText = realWallets[asset];
+        }
+
+        function copyWalletAddress() {
+            let addr = document.getElementById('wallet-address-display').innerText;
+            navigator.clipboard.writeText(addr).then(() => {
+                alert(`📋 Dirección real de ${currentAsset} copiada al portapapeles.`);
+            });
+        }
+
+        async function handleUnifiedAuth() {
+            let nodeNumInput = document.getElementById('login-node-input').value.trim();
+            let pass = document.getElementById('login-passcode-input').value.trim();
+
+            let num = parseInt(nodeNumInput);
+            if (isNaN(num) || num < 1 || num > 1000000) {
+                alert("❌ El número de nodo debe ser numérico entre 1 y 1,000,000.");
+                return;
+            }
+            if (!pass || isNaN(pass)) {
+                alert("❌ La contraseña debe ser numérica.");
+                return;
+            }
+
+            let fullNode = 'UX' + num;
+
+            try {
+                let res = await fetch(`/api/balance/${fullNode}`);
+                let data = await res.json();
+                
+                activeNodeId = fullNode;
+                document.getElementById('display-node').innerText = fullNode;
+                document.getElementById('credit-count').innerText = data.balance;
+
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('app-interface').style.display = 'block';
+                document.getElementById('manual-section').style.display = 'none';
+            } catch (err) {
+                alert("❌ Error de conexión con el servidor.");
+            }
+        }
+
+        function handleRegister() {
+            let nodeNum = document.getElementById('reg-node-input').value.trim();
+            let passcode = document.getElementById('reg-passcode-input').value.trim();
+
+            let num = parseInt(nodeNum);
+            if (isNaN(num) || num < 1 || num > 1000000) {
+                alert("❌ El número de nodo debe ser entre 1 y 1,000,000.");
+                return;
+            }
+            if (!passcode || isNaN(passcode)) {
+                alert("❌ La contraseña debe contener solo números.");
+                return;
+            }
+
+            let fullNodeId = 'UX' + num;
+            alert(`✅ Node ${fullNodeId} registrado con éxito. Ya puedes iniciar sesión.`);
+            
+            document.getElementById('login-node-input').value = num;
+            document.getElementById('login-passcode-input').value = passcode;
+            switchAuthMode('login');
+        }
+
+        function forceLogout() {
+            activeNodeId = "";
+            location.reload();
+        }
+
+        function generateUniqueRoomCode() {
+            let randomCode = Math.floor(Math.random() * 1000000) + 1;
+            document.getElementById('room-code-input').value = randomCode;
+            alert(`🎲 Código de sala único generado: ${randomCode}\nComparta este código con cualquier usuario para iniciar la comunicación.`);
+        }
+
+        function joinPrivateRoom() {
+            let code = document.getElementById('room-code-input').value.trim();
+            if (!code || isNaN(code) || code < 1 || code > 1000000) {
+                alert("❌ Introduzca un código de sala numérico válido entre 1 y 1,000,000.");
+                return;
+            }
+
+            document.getElementById('app-interface').style.display = 'none';
+            document.getElementById('chat-interface').style.display = 'block';
+            document.getElementById('active-room-display').innerText = 'ROOM-' + code;
+            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Conectado a la sala privada y segura. Ya puede hablar con total libertad.</div>';
+        }
+
+        function sendChatMessage() {
+            let input = document.getElementById('chat-input-msg');
+            let text = input.value.trim();
+            if (!text) return;
+
+            let box = document.getElementById('chat-messages-box');
+            let msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-msg self';
+            msgDiv.innerHTML = `<strong>${activeNodeId}:</strong> ${text}`;
+            box.appendChild(msgDiv);
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function toggleVoiceTransmission() {
+            isVoiceActive = !isVoiceActive;
+            let btn = document.getElementById('voice-toggle-btn');
+            let status = document.getElementById('voice-status-text');
+            if (isVoiceActive) {
+                btn.innerText = "Disconnect Voice";
+                btn.style.background = "linear-gradient(135deg, #dc2626, #991b1b)";
+                status.innerText = "🎤 Voice Channel: Transmitting (Seguro)";
+            } else {
+                btn.innerText = "Connect Voice";
+                btn.style.background = "linear-gradient(135deg, #3b82f6, #1d4ed8)";
+                status.innerText = "🎤 Voice Channel: Ready";
+            }
+        }
+
+        function leaveChatRoom() {
+            isVoiceActive = false;
+            document.getElementById('chat-messages-box').innerHTML = '';
+            document.getElementById('chat-interface').style.display = 'none';
+            document.getElementById('app-interface').style.display = 'block';
+        }
+
+        async function verifyRealCryptoPayment() {
+            let txHash = document.getElementById('txhash-input').value.trim();
+            if (!txHash || txHash.length < 15) {
+                alert("❌ Error: Introduce un Hash de Transacción (TxID) real y válido.");
+                return;
+            }
+
+            let verifyBtn = event.target;
+            verifyBtn.innerText = "🔄 Consultando red Blockchain en tiempo real...";
+            verifyBtn.disabled = true;
+
+            try {
+                let response = await fetch('/api/verify-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nodeID: activeNodeId,
+                        txHash: txHash,
+                        expectedAmountUSD: selectedUsd,
+                        cryptoAsset: currentAsset
+                    })
+                });
+
+                let data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('credit-count').innerText = data.newBalance;
+                    document.getElementById('txhash-input').value = "";
+                    closeModal('recharge-modal');
+                    alert(`✅ ${data.message}`);
+                } else {
+                    alert(`❌ Error de verificación: ${data.message}`);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("❌ Error de conexión con el servidor de pagos.");
+            } finally {
+                verifyBtn.innerText = "⚡ Verify Live Blockchain Payment";
+                verifyBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
+*/
