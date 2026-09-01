@@ -157,7 +157,7 @@
             font-weight: bold;
         }
         
-        /* Professional Manual */
+        /* Professional Manuals */
         .manual-box {
             background: rgba(15, 23, 42, 0.8);
             border-left: 4px solid #ef4444;
@@ -283,6 +283,15 @@
             background: #ef4444;
             color: #fff;
         }
+        footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(239, 68, 68, 0.2);
+            font-size: 0.8rem;
+            color: #9ca3af;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
@@ -292,64 +301,79 @@
     <div class="app-container">
         <header>
             <h1>Pleniux</h1>
-            <div class="founder-info">SECURE ANONYMOUS NETWORK &bull; FOUNDER: LENOX JG (NODE UX0)</div>
+            <div class="founder-info">SECURE ANONYMOUS NETWORK &bull; FOUNDER: LENOX JG</div>
         </header>
 
         <!-- AUTHENTICATION SCREEN -->
         <div id="auth-screen" class="auth-card">
             <h2>Secure Node Verification</h2>
-            <p>Conecta con amigos o desconocidos de forma privada. Selecciona tu identificador <b>ux1 a ux1000</b> e ingresa el <b>código de acceso compartido (0 a 10000)</b> creado para unirse al canal cifrado.</p>
+            <p>Connect privately with friends or strangers. Select your identifier from <b>ux1 to ux1000</b> and enter the shared <b>passcode (0 to 10000)</b> created to join the encrypted channel.</p>
             
             <div class="form-group">
-                <label for="node-input">Tu Identificador UX (ux1 - ux1000):</label>
-                <input type="text" id="node-input" class="form-control" placeholder="Ej. ux4" autocomplete="off">
+                <label for="node-input">Your UX Identifier (ux1 - ux1000):</label>
+                <input type="text" id="node-input" class="form-control" placeholder="E.g. ux4" autocomplete="off">
             </div>
 
             <div class="form-group">
-                <label for="passcode-input">Código Privado Compartido (0 - 10000):</label>
-                <input type="password" id="passcode-input" class="form-control" placeholder="Ej. 777" maxlength="5" autocomplete="off">
+                <label for="passcode-input">Shared Private Passcode (0 - 10000):</label>
+                <input type="password" id="passcode-input" class="form-control" placeholder="E.g. 777" maxlength="5" autocomplete="off">
             </div>
 
-            <button class="btn-primary" onclick="initializeSession()">Iniciar Canal Cifrado</button>
+            <button class="btn-primary" onclick="initializeSession()">Initialize Encrypted Channel</button>
         </div>
 
         <!-- MAIN CHAT INTERFACE -->
         <div id="app-interface" class="app-interface">
             <div class="status-panel">
-                <div>Nodo: <span style="color: #ef4444;" id="display-node">ux1</span></div>
-                <div>Canal Passcode: <span style="color: #ef4444;" id="display-passcode">0</span></div>
-                <div>Saldo: <span class="credits-badge" id="credit-count">5</span> UX</div>
-                <div>Destrucción: <span id="timer" style="color: #ef4444;">03:00</span></div>
-                <button class="exit-btn" onclick="handleManualExit()">SALIR</button>
+                <div>Node: <span style="color: #ef4444;" id="display-node">ux1</span></div>
+                <div>Passcode: <span style="color: #ef4444;" id="display-passcode">0</span></div>
+                <div>Balance: <span class="credits-badge" id="credit-count">5</span> UX</div>
+                <div>Destruction: <span id="timer" style="color: #ef4444;">03:00</span></div>
+                <button class="exit-btn" onclick="handleManualExit()">EXIT</button>
             </div>
 
+            <!-- ENGLISH MANUAL -->
             <div class="manual-box">
-                <h3>Manual Profesional de Seguridad Pleniux</h3>
+                <h3>Pleniux Professional Security Manual (English)</h3>
+                <ul>
+                    <li><b>Privacy with Peers:</b> Share or enter the numerical passcode (0-10000) to join the exact private channel with your contact.</li>
+                    <li><b>Refresh Persistence:</b> If you reload or update the web page, the countdown timer <b>does not reset or increase</b>; it precisely resumes from the exact second where it left off.</li>
+                    <li><b>Screen Lock Protection:</b> If you lock your phone, turn off the screen, or leave the app, the system instantly purges all messages and deducts 1 credit, displaying a security alert in the chat.</li>
+                </ul>
+            </div>
+
+            <!-- MANUAL EN ESPAÑOL -->
+            <div class="manual-box">
+                <h3>Manual Profesional de Seguridad Pleniux (Español)</h3>
                 <ul>
                     <li><b>Privacidad con Amigos o Desconocidos:</b> Comparte o introduce el código numérico (0-10000) para unirte al mismo canal cerrado con tu contacto.</li>
-                    <li><b>Persistencia de Sesión ante Actualizaciones (Refresh):</b> Si recargas o actualizas la página web, el temporizador de cuenta regresiva <b>no se reinicia ni se incrementa</b>; continúa exactamente en el segundo donde ibas.</li>
+                    <li><b>Persistencia de Sesión ante Actualizaciones:</b> Si recargas o actualizas la página web, el temporizador de cuenta regresiva <b>no se reinicia ni se incrementa</b>; continúa exactamente en el segundo donde ibas.</li>
                     <li><b>Protección por Pantalla Apagada o Bloqueo:</b> Si bloqueas el teléfono, apagas la pantalla o sales de la app, el sistema purga los mensajes al instante y descuenta 1 crédito de saldo, informándolo en el chat.</li>
                 </ul>
             </div>
 
             <div class="chat-section">
                 <div class="chat-header">
-                    <span id="pipeline-title">TUNEL SEGURO // CHAT ANÓNIMO EN VIVO</span>
-                    <span style="color: #10b981;">● Activo</span>
+                    <span id="pipeline-title">SECURE TUNNEL // LIVE ANONYMOUS CHAT</span>
+                    <span style="color: #10b981;">● Active</span>
                 </div>
                 <div class="chat-messages" id="message-box">
-                    <div class="message incoming">Sistema: Canal seguro sincronizado por passcode. Cero logs guardados.</div>
+                    <div class="message incoming">System: Secure channel synchronized by passcode. Zero logs stored.</div>
                 </div>
                 <div class="chat-input-area">
-                    <input type="text" id="user-input" class="msg-input" placeholder="Escribe mensaje cifrado..." autocomplete="off">
-                    <button class="send-btn" onclick="sendMessage()">ENVIAR</button>
+                    <input type="text" id="user-input" class="msg-input" placeholder="Type encrypted message..." autocomplete="off">
+                    <button class="send-btn" onclick="sendMessage()">SEND</button>
                 </div>
             </div>
         </div>
+
+        <footer>
+            FOUNDER: LENOX JG &bull; 31-08-26 &bull; 11:51 PM
+        </footer>
     </div>
 
     <script>
-        // Background Neon Particle Effect
+        // Red Glowing Background Particles
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -361,19 +385,19 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        for (let i = 0; i < 40; i++) {
+        for (let i = 0; i < 50; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                radius: Math.random() * 1.5,
-                vx: (Math.random() - 0.5) * 0.4,
-                vy: (Math.random() - 0.5) * 0.4
+                radius: Math.random() * 2,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5
             });
         }
 
         function animateBg() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(239, 68, 68, 0.35)';
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.45)';
             particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
@@ -404,7 +428,6 @@
             const savedTime = sessionStorage.getItem('pleniux_time');
 
             if (savedNode && savedPass && savedTime !== null) {
-                // Resume session seamlessly without resetting the timer
                 document.getElementById('display-node').innerText = savedNode;
                 document.getElementById('display-passcode').innerText = savedPass;
                 document.getElementById('auth-screen').style.display = 'none';
@@ -421,25 +444,24 @@
 
             const nodeRegex = /^ux([1-9][0-9]{0,2}|1000)$/;
             if (!nodeRegex.test(nodeInput)) {
-                alert("¡Identificador inválido! Usa 'ux' seguido de un número del 1 al 1000 (Ej. ux4, ux125).");
+                alert("Invalid identifier! Use 'ux' followed by a number from 1 to 1000 (E.g. ux4, ux125).");
                 return;
             }
 
             const passNum = parseInt(passcodeInput);
             if (isNaN(passNum) || passNum < 0 || passNum > 10000) {
-                alert("¡Código de acceso inválido! Ingresa un número entre 0 y 10000.");
+                alert("Invalid passcode! Enter a number between 0 and 10000.");
                 return;
             }
 
             if (credits <= 0) {
-                alert("Saldo en 0 créditos. Recarga para iniciar una nueva sesión.");
+                alert("Balance is 0 credits. Recharge to start a new session.");
                 return;
             }
 
-            // Save state to sessionStorage for persistence across web page refreshes
             sessionStorage.setItem('pleniux_node', nodeInput);
             sessionStorage.setItem('pleniux_pass', passNum);
-            sessionStorage.setItem('pleniux_time', 180); // 3 minutes total
+            sessionStorage.setItem('pleniux_time', 180);
 
             document.getElementById('display-node').innerText = nodeInput;
             document.getElementById('display-passcode').innerText = passNum;
@@ -460,7 +482,6 @@
                 let seconds = timeLeft % 60;
                 timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 
-                // Update time in sessionStorage so if they refresh, it keeps the exact remaining seconds
                 sessionStorage.setItem('pleniux_time', timeLeft);
                 
                 if (timeLeft <= 0) {
@@ -468,7 +489,7 @@
                     sessionStorage.removeItem('pleniux_node');
                     sessionStorage.removeItem('pleniux_pass');
                     sessionStorage.removeItem('pleniux_time');
-                    terminateSessionBySecurity("Tiempo límite expirado. Mensajes destruidos.");
+                    terminateSessionBySecurity("Time limit expired. Messages destroyed.");
                 }
                 timeLeft--;
             }, 1000);
@@ -478,7 +499,7 @@
         document.addEventListener("visibilitychange", function() {
             if (sessionActive && document.hidden) {
                 clearInterval(countdownInterval);
-                terminateSessionBySecurity("¡Pantalla apagada o dispositivo bloqueado! Mensajes eliminados y 1 crédito descontado.");
+                terminateSessionBySecurity("Screen turned off or device locked! Messages deleted and 1 credit deducted.");
             }
         });
 
@@ -498,12 +519,12 @@
             const msgBox = document.getElementById('message-box');
             const alertDiv = document.createElement('div');
             alertDiv.classList.add('message', 'system-alert');
-            alertDiv.innerText = `[ALERTA DE SEGURIDAD]: ${reason} (-1 Crédito aplicado).`;
+            alertDiv.innerText = `[SECURITY ALERT]: ${reason} (-1 Credit applied).`;
             msgBox.appendChild(alertDiv);
             msgBox.scrollTop = msgBox.scrollHeight;
 
             setTimeout(() => {
-                alert(`[PLENIUX SEGURIDAD]: ${reason}\nSe ha descontado 1 crédito y la memoria caché ha sido purgada.`);
+                alert(`[PLENIUX SECURITY]: ${reason}\n1 credit has been deducted and cache has been purged.`);
                 location.reload();
             }, 1200);
         }
@@ -518,7 +539,7 @@
                 credits--;
                 localStorage.setItem('pleniux_credits', credits);
             }
-            alert("Sesión finalizada manualmente. 1 crédito descontado. Caché limpiada.");
+            alert("Session ended manually. 1 credit deducted. Cache cleaned.");
             location.reload();
         }
 
@@ -530,7 +551,7 @@
             if (input.value.trim() === "") return;
 
             if (credits <= 0) {
-                alert("Saldo agotado. Transmisión bloqueada.");
+                alert("Balance depleted. Transmission blocked.");
                 return;
             }
 
@@ -546,7 +567,7 @@
             setTimeout(() => {
                 const replyMsg = document.createElement('div');
                 replyMsg.classList.add('message', 'incoming');
-                replyMsg.innerText = `[Peer]: RECIBIDO -> "${textCopy}" (Canal Cifrado)`;
+                replyMsg.innerText = `[Peer]: RECEIVED -> "${textCopy}" (Encrypted Channel)`;
                 msgBox.appendChild(replyMsg);
                 msgBox.scrollTop = msgBox.scrollHeight;
             }, 1000);
