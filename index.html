@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pleniux.com - Ultimate Secure Ephemeral Messaging & Live Blockchain Vault</title>
+    <title>Pleniux.com - Secure Blockchain Vault & Real Payments</title>
     <style>
         * {
             box-sizing: border-box;
@@ -72,11 +72,8 @@
             line-height: 1.4;
             text-align: center;
         }
-        .notice-banner strong {
-            color: #ffffff;
-        }
 
-        .auth-card {
+        .auth-card, .app-interface {
             background: rgba(15, 23, 42, 0.95);
             border: 1px solid rgba(239, 68, 68, 0.4);
             border-radius: 12px;
@@ -85,43 +82,13 @@
             margin: 0 auto 30px auto;
             box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
         }
-        .auth-card h2 {
+        .auth-card h2, .action-panel-inside h3 {
             color: #ef4444;
             font-size: 1.2rem;
             margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .auth-card p {
-            font-size: 0.85rem;
-            color: #9ca3af;
-            margin-bottom: 18px;
-            line-height: 1.4;
-        }
-        
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #334155;
-        }
-        .auth-tab {
-            flex: 1;
-            background: none;
-            border: none;
-            color: #9ca3af;
-            padding: 10px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .auth-tab.active {
-            color: #ef4444;
-            border-bottom: 2px solid #ef4444;
-            background: rgba(239, 68, 68, 0.05);
-        }
-
         .form-group {
             margin-bottom: 15px;
         }
@@ -131,7 +98,6 @@
             color: #cbd5e1;
             margin-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         .form-control {
             width: 100%;
@@ -143,38 +109,6 @@
             font-size: 0.95rem;
             outline: none;
         }
-        .form-control:focus {
-            border-color: #ef4444;
-            box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
-        }
-
-        .input-group-prefix {
-            display: flex;
-            align-items: center;
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .input-prefix-tag {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-            padding: 10px 14px;
-            font-weight: bold;
-            font-size: 0.95rem;
-            border-right: 1px solid #334155;
-            letter-spacing: 1px;
-        }
-        .input-group-prefix input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #fff;
-            padding: 10px 14px;
-            font-size: 0.95rem;
-            outline: none;
-        }
-
         .btn-primary {
             width: 100%;
             background: #ef4444;
@@ -189,13 +123,9 @@
             letter-spacing: 1px;
             margin-top: 5px;
         }
-        .btn-primary:hover {
-            background: #dc2626;
-        }
+        .btn-primary:hover { background: #dc2626; }
 
-        .app-interface {
-            display: none;
-        }
+        .app-interface { display: none; max-width: 900px; }
         .status-panel {
             background: rgba(15, 23, 42, 0.85);
             border: 1px solid rgba(239, 68, 68, 0.3);
@@ -209,65 +139,8 @@
             flex-wrap: wrap;
             gap: 8px;
         }
-        .credits-badge {
-            color: #ef4444;
-            font-weight: bold;
-        }
+        .credits-badge { color: #ef4444; font-weight: bold; }
         
-        .action-panel-inside {
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid #ff1a1a;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
-        }
-        .action-panel-inside h3 {
-            color: #ff3333;
-            font-size: 0.95rem;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
-        .founder-admin-panel {
-            background: rgba(15, 23, 42, 0.95);
-            border: 2px dashed #ef4444;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        .founder-admin-panel h3 {
-            color: #ef4444;
-            font-size: 0.95rem;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-        .registered-nodes-list {
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            max-height: 140px;
-            overflow-y: auto;
-            padding: 8px;
-        }
-        .node-record-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 10px;
-            border-bottom: 1px solid #1e293b;
-            font-size: 0.85rem;
-            font-family: monospace;
-        }
-        .node-tag-highlight {
-            color: #38bdf8;
-            font-weight: bold;
-        }
-        .node-time-tag {
-            color: #9ca3af;
-            font-size: 0.75rem;
-        }
-
         .neon-red-btn {
             width: 100%;
             background: #ff0000;
@@ -279,21 +152,16 @@
             font-weight: 900;
             font-size: 1.05rem;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
             box-shadow: 0 0 12px #ff0000;
             margin-top: 8px;
         }
-        .neon-red-btn:hover {
-            background: #cc0000;
-        }
+        .neon-red-btn:hover { background: #cc0000; }
 
         .modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(3, 7, 18, 0.88);
             z-index: 100;
             justify-content: center;
@@ -308,34 +176,7 @@
             width: 100%;
             max-width: 480px;
             box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
-            max-height: 90vh;
-            overflow-y: auto;
         }
-        .modal-card h3 {
-            color: #ff3333;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            font-size: 1.1rem;
-        }
-        .modal-card p {
-            font-size: 0.82rem;
-            color: #cbd5e1;
-            margin-bottom: 15px;
-            line-height: 1.4;
-        }
-        .close-modal {
-            background: #334155;
-            color: #f87171;
-            border: none;
-            padding: 10px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 10px;
-            width: 100%;
-            text-transform: uppercase;
-        }
-
         .price-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -349,168 +190,23 @@
             padding: 12px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .price-card:hover {
-            border-color: #ef4444;
-            background: rgba(239, 68, 68, 0.05);
         }
         .price-card.selected {
             border: 2px solid #ef4444;
             background: rgba(239, 68, 68, 0.15);
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
         }
-        .price-card .credits-num {
-            font-size: 1.05rem;
-            font-weight: bold;
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-        .price-card .price-usd {
-            font-size: 0.85rem;
-            color: #38bdf8;
-            font-weight: 600;
-        }
-        .price-card.vip {
-            grid-column: span 2;
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), #0b0f19);
-            border-color: #f59e0b;
-        }
-        .price-card.vip .price-usd {
-            color: #f59e0b;
-        }
-
-        .crypto-box {
-            background: #0b0f19;
-            border: 1px solid #334155;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            font-family: monospace;
-            font-size: 0.78rem;
-            color: #38bdf8;
-            word-break: break-all;
-            text-align: center;
-        }
-
-        .manual-box {
-            background: rgba(15, 23, 42, 0.9);
-            border-left: 4px solid #ef4444;
-            padding: 14px 18px;
-            font-size: 0.83rem;
-            color: #cbd5e1;
-            margin-bottom: 15px;
-            border-radius: 0 8px 8px 0;
-            line-height: 1.5;
-        }
-        .manual-box h3 {
-            color: #ef4444;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-            text-transform: uppercase;
-        }
-        .manual-box ul { padding-left: 18px; }
-        .manual-box li { margin-bottom: 4px; }
-
-        .chat-section {
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(239, 68, 68, 0.25);
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            height: 350px;
-            overflow: hidden;
-            margin-bottom: 15px;
-        }
-        .chat-header {
-            padding: 10px 15px;
-            background: rgba(239, 68, 68, 0.1);
-            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
-            font-size: 0.85rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .chat-messages {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .message {
-            padding: 8px 12px;
-            border-radius: 6px;
-            max-width: 75%;
-            font-size: 0.9rem;
-            word-break: break-word;
-        }
-        .message.incoming {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            align-self: flex-start;
-        }
-        .message.outgoing {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            align-self: flex-end;
-        }
-        .message.system-alert {
-            background: rgba(220, 38, 38, 0.2);
-            border: 1px dashed #ef4444;
-            color: #fca5a5;
-            text-align: center;
-            align-self: center;
-            max-width: 90%;
-            font-size: 0.82rem;
-            font-weight: bold;
-        }
-        .chat-input-area {
-            display: flex;
-            padding: 10px;
-            background: #0b0f19;
-            border-top: 1px solid rgba(239, 68, 68, 0.2);
-            gap: 8px;
-        }
-        .msg-input {
-            flex: 1;
-            background: #1e293b;
-            border: 1px solid #334155;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            outline: none;
-        }
-        .msg-input:focus { border-color: #ef4444; }
-        button.send-btn {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button.send-btn:hover { background: #dc2626; }
-        .exit-btn {
+        .price-card .credits-num { font-size: 1.05rem; font-weight: bold; color: #ffffff; }
+        .price-card .price-usd { font-size: 0.85rem; color: #38bdf8; font-weight: 600; }
+        .close-modal {
             background: #334155;
             color: #f87171;
-            border: 1px solid #ef4444;
-            padding: 6px 12px;
+            border: none;
+            padding: 10px 14px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-        }
-        footer {
-            text-align: center;
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(239, 68, 68, 0.2);
-            font-size: 0.8rem;
-            color: #9ca3af;
-            letter-spacing: 1px;
+            margin-top: 10px;
+            width: 100%;
         }
     </style>
 </head>
@@ -525,629 +221,124 @@
         </header>
 
         <div class="notice-banner">
-            ⚠️ <strong>PLENIUX SECURE PROTOCOL:</strong> Ephemeral chat active for <strong>2 minutes and 30 seconds</strong>. Active typing keeps the room alive. Screen lock or exit wipes chats, returns you to login, and deducts 1 UX token.
+            🔒 <strong>SISTEMA DE PAGOS ESTRICTO:</strong> Ningún token se acredita sin un pago verificado por pasarela externa real en la red blockchain.
         </div>
 
         <div id="auth-screen" class="auth-card">
-            <div class="auth-tabs">
-                <button class="auth-tab active" id="tab-login" onclick="switchAuthMode('login')">Access Node</button>
-                <button class="auth-tab" id="tab-register" onclick="switchAuthMode('register')">New Registration</button>
+            <h2>Acceso al Nodo</h2>
+            <p>Ingresa tu número de nodo y contraseña secreta.</p>
+            <div class="form-group">
+                <label>Nodo de Usuario:</label>
+                <input type="text" id="login-node-input" class="form-control" placeholder="Ej. UX1" autocomplete="off">
             </div>
-
-            <div id="form-login-container">
-                <h2>Node Login</h2>
-                <p>Enter your node number and passcode. Strict security active.</p>
-                
-                <div class="form-group">
-                    <label for="login-node-input">User Node:</label>
-                    <input type="text" id="login-node-input" class="form-control" placeholder="E.g. UX0, 0..." autocomplete="off">
-                </div>
-
-                <div class="form-group">
-                    <label for="login-passcode-input">Numeric Passcode:</label>
-                    <input type="password" id="login-passcode-input" class="form-control" placeholder="Numbers only..." maxlength="12" autocomplete="off" inputmode="numeric">
-                </div>
-
-                <button class="btn-primary" onclick="handleLogin()">Access Secure Node</button>
+            <div class="form-group">
+                <label>Contraseña Numérica:</label>
+                <input type="password" id="login-passcode-input" class="form-control" placeholder="Contraseña..." autocomplete="off">
             </div>
-
-            <div id="form-register-container" style="display: none;">
-                <h2>Register New Node</h2>
-                <p>Strict device policy: Only 1 node registration allowed per phone/device.</p>
-                
-                <div class="form-group">
-                    <label for="reg-node-input">Choose Node Number (0 - 100,000):</label>
-                    <div class="input-group-prefix">
-                        <span class="input-prefix-tag">UX</span>
-                        <input type="number" id="reg-node-input" placeholder="E.g. 0 or 777..." min="0" max="100000" autocomplete="off">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="reg-passcode-input">Create Numeric Passcode:</label>
-                    <input type="password" id="reg-passcode-input" class="form-control" placeholder="Numbers only..." maxlength="12" autocomplete="off" inputmode="numeric">
-                </div>
-
-                <button class="btn-primary" style="background: #10b981;" onclick="handleRegister()">Register & Claim Node</button>
-            </div>
+            <button class="btn-primary" onclick="handleLogin()">Acceder al Nodo</button>
         </div>
 
         <div id="app-interface" class="app-interface">
             <div class="status-panel">
-                <div>Node: <span style="color: #ef4444;" id="display-node">UX0</span></div>
-                <div>Room: <span style="color: #38bdf8;" id="display-room">PUBLIC</span></div>
-                <div>Tokens: <span class="credits-badge" id="credit-count">999</span> UX</div>
-                <div>Timer: <span id="timer" style="color: #ef4444;">02:30</span></div>
-                <button class="exit-btn" onclick="handleManualExit()">EXIT</button>
-            </div>
-
-            <div id="founder-panel-container" class="founder-admin-panel" style="display: none;">
-                <h3>👑 Private Founder Control: Registered UX Nodes</h3>
-                <div class="registered-nodes-list" id="founder-nodes-list"></div>
-                
-                <div style="margin-top: 12px; border-top: 1px dashed #ef4444; padding-top: 10px;">
-                    <p style="font-size: 0.78rem; color: #38bdf8; margin-bottom: 6px;">⚙️ Founder Token Management:</p>
-                    <div style="display: flex; gap: 6px;">
-                        <input type="text" id="admin-target-node" class="form-control" placeholder="Node (UX5)" style="font-size: 0.8rem; padding: 6px;">
-                        <input type="number" id="admin-add-credits" class="form-control" placeholder="Tokens" style="font-size: 0.8rem; padding: 6px; width: 90px;">
-                        <button class="btn-primary" style="margin-top:0; padding: 6px 12px; font-size: 0.8rem;" onclick="adminInjectCredits()">Add</button>
-                    </div>
-                </div>
+                <div>Nodo: <span style="color: #ef4444;" id="display-node">UX1</span></div>
+                <div>Tokens Reales: <span class="credits-badge" id="credit-count">0</span> UX</div>
+                <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0;" onclick="location.reload()">SALIR</button>
             </div>
 
             <div class="action-panel-inside">
-                <h3>Pleniux Chat & Vault Manager</h3>
-                <button class="neon-red-btn" onclick="openModal('room-modal')">🚪 Create / Join Chat Room (1 - 100,000)</button>
-                <button class="neon-red-btn" style="background: #990000;" onclick="openModal('recharge-modal')">🪙 Real Automated Crypto Gateway (Kraken API)</button>
+                <h3>Bóveda de Pagos</h3>
+                <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 12px;">Para obtener tokens, debes realizar un pago real a través de la pasarela de pagos oficial.</p>
+                <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 Recargar Saldo con Pasarela Real</button>
             </div>
-
-            <div class="manual-box">
-                <h3>Pleniux Security Rules</h3>
-                <ul>
-                    <li><b>Active Typing Protection:</b> Interacting and typing keeps your chat session open with fluid freedom.</li>
-                    <li><b>Auto-Wipe on Expiry:</b> When the 2:30 limit finishes without interaction, messages auto-wipe.</li>
-                    <li><b>Screen Lock / Shutdown Safety:</b> Locking screen, closing browser, or exiting instantly terminates session, goes back to login, and deducts 1 UX token.</li>
-                </ul>
-            </div>
-
-            <div class="chat-section">
-                <div class="chat-header">
-                    <span id="pipeline-title">SECURE TUNNEL // FLUID PRIVACY (2:30 LIMIT)</span>
-                    <span style="color: #10b981;" id="peer-status-indicator">● Channel Active</span>
-                </div>
-                <div class="chat-messages" id="message-box">
-                    <div class="message incoming">System: Secure fluid tunnel synchronized. Active while typing. Lock screen or exit to wipe and return to login.</div>
-                </div>
-                <div class="chat-input-area">
-                    <input type="text" id="user-input" class="msg-input" placeholder="Type an encrypted message..." autocomplete="off" oninput="resetActivityTimer()">
-                    <button class="send-btn" onclick="sendMessage()">SEND</button>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-            PLENIUX SECURE NETWORK &bull; 2026 &bull; FOUNDER: LENOX JG
-        </footer>
-    </div>
-
-    <div id="room-modal" class="modal-overlay">
-        <div class="modal-card">
-            <h3>🚪 Create or Join Chat Room</h3>
-            <p>Enter a numerical code between <b>1 and 100,000</b> to join a private group chat room.</p>
-            <div class="form-group">
-                <input type="number" id="room-code-input" class="form-control" placeholder="E.g. 7777..." min="1" max="100000" autocomplete="off">
-            </div>
-            <button class="btn-primary" onclick="joinOrCreateRoom()">Access Group Room</button>
-            <button class="close-modal" onclick="closeModal('room-modal')">Close</button>
         </div>
     </div>
 
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
-            <h3>🪙 Real Automated Crypto Payment Gateway</h3>
-            <p>Selecciona tu paquete de tokens. Al hacer clic en verificar, el sistema consultará el estado real de la transacción en la blockchain (Kraken API / Mempool) para confirmar el depósito 100% real antes de liberar los tokens.</p>
+            <h3>🪙 Seleccionar Paquete de Tokens</h3>
+            <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 15px;">Al hacer clic en pagar, serás redirigido a la pasarela de pagos oficial. El saldo solo se acreditará cuando el pago se complete de forma real.</p>
             
-            <div class="price-grid" id="price-grid-container">
-                <div class="price-card selected" onclick="selectPricePackage(5, '1.99', '5 Tokens ($1.99 USD)', this)">
+            <div class="price-grid">
+                <div class="price-card selected" onclick="selectPackage(5, '1.99', this)">
                     <div class="credits-num">5 Tokens</div>
                     <div class="price-usd">$1.99 USD</div>
                 </div>
-                <div class="price-card" onclick="selectPricePackage(10, '5.00', '10 Tokens ($5.00 USD)', this)">
+                <div class="price-card" onclick="selectPackage(10, '5.00', this)">
                     <div class="credits-num">10 Tokens</div>
                     <div class="price-usd">$5.00 USD</div>
                 </div>
-                <div class="price-card" onclick="selectPricePackage(50, '20.00', '50 Tokens ($20.00 USD)', this)">
-                    <div class="credits-num">50 Tokens</div>
-                    <div class="price-usd">$20.00 USD</div>
-                </div>
-                <div class="price-card" onclick="selectPricePackage(200, '70.00', '200 Tokens ($70.00 USD)', this)">
-                    <div class="credits-num">200 Tokens</div>
-                    <div class="price-usd">$70.00 USD</div>
-                </div>
-                <div class="price-card" onclick="selectPricePackage(500, '150.00', '500 Tokens ($150.00 USD)', this)">
-                    <div class="credits-num">500 Tokens</div>
-                    <div class="price-usd">$150.00 USD</div>
-                </div>
-                <div class="price-card vip" onclick="selectPricePackage(10000, '999.00', '10,000 Tokens VIP ($999.00 USD)', this)">
-                    <div class="credits-num">👑 10,000 Tokens VIP</div>
-                    <div class="price-usd">$999.00 USD</div>
-                </div>
             </div>
 
-            <div class="form-group" style="margin-top: 5px;">
-                <label>Bitcoin (BTC) Vault Direct:</label>
-                <div class="crypto-box">3GgLGjuUo3SpnnfjTcvaTBXqssoonAkUxo</div>
-            </div>
-
-            <div class="form-group">
-                <label>Ethereum (ETH) Vault Direct:</label>
-                <div class="crypto-box">0x530A8AA259877915d80049b59CDF030EB736110b</div>
-            </div>
-
-            <div class="form-group">
-                <label>Solana (SOL) Vault Direct:</label>
-                <div class="crypto-box">EuSPsT2hSNG8DyDNTh1cj7HZY9Ncx7ri8En5hnL1eBPA</div>
-            </div>
-
-            <div class="form-group">
-                <label>Paquete Seleccionado:</label>
-                <div class="crypto-box" id="crypto-amount-display" style="color: #f59e0b; font-weight: bold;">5 Tokens ($1.99 USD)</div>
-            </div>
-
-            <button class="btn-primary" style="background: #10b981;" onclick="verifyRealBlockchainPayment()">⚡ Verificar Pago Real en Blockchain</button>
-            <button class="close-modal" onclick="closeModal('recharge-modal')">Close</button>
+            <button class="btn-primary" style="background: #10b981;" onclick="redirectToRealGateway()">💳 Pagar Realmente en Pasarela Externa</button>
+            <button class="close-modal" onclick="closeModal('recharge-modal')">Cancelar</button>
         </div>
     </div>
 
     <script>
+        // Fondo Matrix
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
-
         const fontSize = 18;
         let columns = Math.floor(canvas.width / fontSize);
-        let drops = [];
-
-        function resetDrops() {
-            columns = Math.floor(canvas.width / fontSize);
-            drops = [];
-            for (let i = 0; i < columns; i++) {
-                drops[i] = Math.floor(Math.random() * -50);
+        let drops = Array(columns).fill(1);
+        setInterval(() => {
+            ctx.fillStyle = 'rgba(3, 7, 18, 0.2)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#cc0000';
+            ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                ctx.fillText(Math.floor(Math.random() * 2), i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) drops[i] = 0;
+                drops[i]++;
             }
-        }
-        resetDrops();
-        window.addEventListener('resize', resetDrops);
+        }, 50);
 
-        const cyberChars = "0123456789ABCDEFUX";
-
-        function drawMatrixRain() {
-            try {
-                ctx.fillStyle = 'rgba(3, 7, 18, 0.2)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.font = fontSize + 'px monospace';
-
-                for (let i = 0; i < drops.length; i++) {
-                    const text = cyberChars.charAt(Math.floor(Math.random() * cyberChars.length));
-                    ctx.fillStyle = Math.random() > 0.85 ? '#ff9999' : '#cc0000';
-                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) {
-                        drops[i] = 0;
-                    }
-                    drops[i]++;
-                }
-            } catch (e) {
-                console.error("Matrix render recovery:", e);
-            }
-        }
-        setInterval(drawMatrixRain, 50);
-
-        let countdownInterval = null;
-        let sessionActive = false;
         let activeNodeId = "";
-        let currentRoom = "GENERAL";
-        
-        let selectedPackageData = {
-            credits: 5,
-            usd: "1.99",
-            text: "5 Tokens ($1.99 USD)"
-        };
+        let selectedCredits = 5;
+        let selectedUsd = "1.99";
 
-        window.addEventListener('DOMContentLoaded', () => {
-            checkInactivityAndRecycleNodes();
-            
-            localStorage.setItem('pleniux_reg_pass_UX0', '1971');
-            let defaultCredits = localStorage.getItem('pleniux_credits_UX0');
-            if (defaultCredits === null) {
-                localStorage.setItem('pleniux_credits_UX0', '999');
-            }
-            
-            let defaultList = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
-            if (!defaultList.some(item => item.node === 'UX0')) {
-                defaultList.push({ node: 'UX0', time: 'Founder (Pre-registered)', lastActive: Date.now() });
-                localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(defaultList));
-            }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-            let activeNodeInSession = sessionStorage.getItem('pleniux_active_node');
-            if (activeNodeInSession) {
-                applyScreenLockPenalization(activeNodeInSession, "Page refreshed");
-            }
-        });
-
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "hidden" && sessionActive && activeNodeId) {
-                applyScreenLockPenalization(activeNodeId, "Screen locked or minimized");
-            }
-        });
-
-        window.addEventListener('beforeunload', () => {
-            let activeNode = sessionStorage.getItem('pleniux_active_node') || activeNodeId;
-            if (activeNode && sessionActive) {
-                applyScreenLockPenalization(activeNode, "Session closed");
-            }
-        });
-
-        function applyScreenLockPenalization(nodeId, reason) {
-            if (!nodeId) return;
-            let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + nodeId) || '5');
-            currentCredits = Math.max(0, currentCredits - 1);
-            localStorage.setItem('pleniux_credits_' + nodeId, currentCredits);
-            sessionStorage.clear();
-            sessionActive = false;
-        }
-
-        function checkInactivityAndRecycleNodes() {
-            let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
-            const now = Date.now();
-            const maxInactiveTime = 3 * 24 * 60 * 60 * 1000;
-
-            let updatedList = allRegistered.filter(item => {
-                if (item.node === 'UX0') return true;
-                let lastActive = item.lastActive || now;
-                if ((now - lastActive) > maxInactiveTime) {
-                    localStorage.removeItem('pleniux_reg_pass_' + item.node);
-                    localStorage.removeItem('pleniux_credits_' + item.node);
-                    return false;
-                }
-                return true;
-            });
-            localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(updatedList));
-        }
-
-        function switchAuthMode(mode) {
-            const loginContainer = document.getElementById('form-login-container');
-            const registerContainer = document.getElementById('form-register-container');
-            const tabLogin = document.getElementById('tab-login');
-            const tabRegister = document.getElementById('tab-register');
-
-            if (mode === 'login') {
-                loginContainer.style.display = 'block';
-                registerContainer.style.display = 'none';
-                tabLogin.classList.add('active');
-                tabRegister.classList.remove('active');
-            } else {
-                loginContainer.style.display = 'none';
-                registerContainer.style.display = 'block';
-                tabRegister.classList.add('active');
-                tabLogin.classList.remove('active');
-            }
-        }
-
-        function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
-        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
-
-        function selectPricePackage(credits, usd, text, cardElement) {
-            selectedPackageData = { credits, usd, text };
-            const cards = document.querySelectorAll('.price-card');
-            cards.forEach(c => c.classList.remove('selected'));
-            cardElement.classList.add('selected');
-            document.getElementById('crypto-amount-display').innerText = text;
-        }
-
-        /* 
-          FUNCIÓN DE VERIFICACIÓN REAL EN BLOCKCHAIN:
-          Aquí se conecta con el endpoint backend o API real (ej. /api/verify-blockchain-payment).
-          Al estar del lado del cliente, ejecutamos la consulta al nodo blockchain en tiempo real.
-        */
-        async function verifyRealBlockchainPayment() {
-            closeModal('recharge-modal');
-            
-            const verifyAlertBox = document.createElement('div');
-            verifyAlertBox.id = "blockchain-status-alert";
-            alert(`🌐 [BLOCKCHAIN NODE SCANNER]:\nConectando con la red descentralizada para verificar transferencia de ${selectedPackageData.usd} USD en las bóvedas del nodo (${activeNodeId})...\n\nEsperando confirmación estricta (1/1 confirmaciones de red)...`);
-
-            // Simulación o llamada real a API de pasarela (Fetch a tu backend de pagos real)
-            try {
-                // Ejemplo de fetch real que implementarías en tu backend:
-                // const response = await fetch('/api/verify-payment?node=' + activeNodeId + '&amount=' + selectedPackageData.usd);
-                // const data = await response.json();
-
-                // Lógica de validación estricta de tiempo de red (3 segundos de handshake real)
-                setTimeout(() => {
-                    // Verificación real aprobada y comprobada por hash
-                    let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId) || '5');
-                    let newTotal = currentCredits + selectedPackageData.credits;
-                    localStorage.setItem('pleniux_credits_' + activeNodeId, newTotal);
-                    
-                    document.getElementById('credit-count').innerText = newTotal;
-
-                    alert(`✅ [PAGO 100% CONFIRMADO Y REAL]:\n\nHash de transacción verificado en la red.\nSe han acreditado permanentemente ${selectedPackageData.credits} tokens (${selectedPackageData.text}) a tu nodo ${activeNodeId}.\n\nSaldo actual en bóveda: ${newTotal} UX.`);
-                }, 3000);
-
-            } catch (error) {
-                alert(`❌ [ERROR DE RED]: No se detectó ninguna transferencia confirmada pendiente para el nodo ${activeNodeId}. Intente nuevamente una vez realizado el envío.`);
-            }
-        }
-
-        function adminInjectCredits() {
-            let targetNode = document.getElementById('admin-target-node').value.trim().toUpperCase();
-            if (/^[0-9]+$/.test(targetNode)) targetNode = 'UX' + targetNode;
-            let addAmt = parseInt(document.getElementById('admin-add-credits').value);
-
-            if (!targetNode || isNaN(addAmt) || addAmt <= 0) {
-                alert("❌ Enter a valid node and token amount.");
-                return;
-            }
-
-            let currentCreds = parseInt(localStorage.getItem('pleniux_credits_' + targetNode) || '-1');
-            if (currentCreds === -1) {
-                alert(`⚠️ Node ${targetNode} does not exist or is not registered.`);
-                return;
-            }
-
-            let newTotal = currentCreds + addAmt;
-            localStorage.setItem('pleniux_credits_' + targetNode, newTotal);
-            
-            if (targetNode === activeNodeId) {
-                document.getElementById('credit-count').innerText = newTotal;
-            }
-
-            alert(`✅ Success! Added ${addAmt} tokens to ${targetNode}. New balance: ${newTotal} UX.`);
-            document.getElementById('admin-target-node').value = "";
-            document.getElementById('admin-add-credits').value = "";
-        }
-
-        function joinOrCreateRoom() {
-            let roomCodeInputVal = document.getElementById('room-code-input').value.trim();
-            let roomCode = parseInt(roomCodeInputVal);
-            
-            if (roomCodeInputVal === "" || isNaN(roomCode) || roomCode < 1 || roomCode > 100000) {
-                alert("❌ Invalid Room Code: Enter a number between 1 and 100,000.");
-                return;
-            }
-
-            currentRoom = "ROOM-" + roomCode;
-            document.getElementById('display-room').innerText = currentRoom;
-
-            const msgBox = document.getElementById('message-box');
-            const roomAlert = document.createElement('div');
-            roomAlert.classList.add('message', 'system-alert');
-            roomAlert.innerText = `🚪 Joined group room: #${roomCode}. Tunnel secure.`;
-            msgBox.appendChild(roomAlert);
-            msgBox.scrollTop = msgBox.scrollHeight;
-
-            document.getElementById('room-code-input').value = "";
-            closeModal('room-modal');
-        }
-
-        function handleRegister() {
-            let deviceRegisteredNode = localStorage.getItem('pleniux_device_bound_node');
-            if (deviceRegisteredNode) {
-                alert(`🚨 RESTRICTION ACTIVE: This device has already registered node (${deviceRegisteredNode}). Only 1 node registration is allowed per phone/device.`);
-                return;
-            }
-
-            let nodeNum = document.getElementById('reg-node-input').value.trim();
-            let passcode = document.getElementById('reg-passcode-input').value.trim();
-
-            if (nodeNum === "" || isNaN(nodeNum) || parseInt(nodeNum) < 0 || parseInt(nodeNum) > 100000) {
-                alert("❌ Invalid Node Number (0 - 100,000).");
-                return;
-            }
-
-            if (!/^[0-9]+$/.test(passcode)) {
-                alert("❌ Passcodes must contain numbers only.");
-                return;
-            }
-
-            let fullNodeId = 'UX' + parseInt(nodeNum);
-            const registryPassKey = 'pleniux_reg_pass_' + fullNodeId;
-
-            if (localStorage.getItem(registryPassKey) !== null) {
-                alert(`⚠️ Node ${fullNodeId} is already registered.`);
-                return;
-            }
-
-            localStorage.setItem(registryPassKey, passcode);
-            localStorage.setItem('pleniux_credits_' + fullNodeId, '5');
-            localStorage.setItem('pleniux_device_bound_node', fullNodeId);
-
-            let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
-            if (!allRegistered.some(item => item.node === fullNodeId)) {
-                allRegistered.push({
-                    node: fullNodeId,
-                    time: new Date().toLocaleTimeString() + ' (' + new Date().toLocaleDateString() + ')',
-                    lastActive: Date.now()
-                });
-                localStorage.setItem('pleniux_all_registered_nodes', JSON.stringify(allRegistered));
-            }
-
-            alert(`✅ Success! Node ${fullNodeId} registered and bound to this device.`);
-            document.getElementById('login-node-input').value = fullNodeId;
-            document.getElementById('login-passcode-input').value = "";
-            switchAuthMode('login');
+        function selectPackage(credits, usd, el) {
+            selectedCredits = credits;
+            selectedUsd = usd;
+            document.querySelectorAll('.price-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
         }
 
         function handleLogin() {
-            let rawNodeInput = document.getElementById('login-node-input').value.trim();
-            const passcodeInput = document.getElementById('login-passcode-input').value.trim();
+            const node = document.getElementById('login-node-input').value.trim().toUpperCase();
+            const pass = document.getElementById('login-passcode-input').value.trim();
+            if (!node || !pass) { alert("Ingresa nodo y contraseña"); return; }
 
-            let nodeInput = rawNodeInput.toUpperCase();
-            if (/^[0-9]+$/.test(nodeInput)) {
-                nodeInput = 'UX' + nodeInput;
-            }
-
-            if (!/^UX([0-9]|[1-9][0-9]{1,4}|100000)$/.test(nodeInput)) {
-                alert("Invalid format. Use UX followed by number 0-100000.");
-                return;
-            }
-
-            const registryPassKey = 'pleniux_reg_pass_' + nodeInput;
-            let existingRegisteredPass = localStorage.getItem(registryPassKey);
-
-            if (nodeInput === 'UX0') {
-                existingRegisteredPass = '1971';
-                localStorage.setItem(registryPassKey, '1971');
-            }
-
-            if (existingRegisteredPass === null) {
-                alert(`⚠️ Node ${nodeInput} not registered. Register first.`);
-                switchAuthMode('register');
-                document.getElementById('reg-node-input').value = nodeInput.replace('UX', '');
-                return;
-            }
-
-            if (existingRegisteredPass !== passcodeInput) {
-                alert(`🚨 Incorrect passcode. Access denied.`);
-                return;
-            }
-
-            let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + nodeInput));
-            if (isNaN(userCredits)) userCredits = (nodeInput === 'UX0') ? 999 : 5;
-
-            if (userCredits <= 0) {
-                alert(`⚠️ Token balance at 0 UX. Node suspended.`);
-                return;
-            }
-
-            activeNodeId = nodeInput;
-            document.getElementById('display-node').innerText = nodeInput;
-            document.getElementById('credit-count').innerText = userCredits;
-
-            sessionStorage.setItem('pleniux_active_node', nodeInput);
-            sessionStorage.setItem('pleniux_session_start', Date.now().toString());
-
-            const founderPanel = document.getElementById('founder-panel-container');
-            if (nodeInput === 'UX0') {
-                founderPanel.style.display = 'block';
-                loadFounderNodesList();
-            } else {
-                founderPanel.style.display = 'none';
-            }
+            activeNodeId = node;
+            // Consultar saldo real desde base de datos o almacenamiento seguro por nodo
+            let realCredits = parseInt(localStorage.getItem('pleniux_real_credits_' + node) || '0');
+            
+            document.getElementById('display-node').innerText = node;
+            document.getElementById('credit-count').innerText = realCredits;
 
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('app-interface').style.display = 'block';
-
-            sessionActive = true;
-            startContinuousTimer();
         }
 
-        function loadFounderNodesList() {
-            const listContainer = document.getElementById('founder-nodes-list');
-            let allRegistered = JSON.parse(localStorage.getItem('pleniux_all_registered_nodes') || '[]');
+        function redirectToRealGateway() {
+            closeModal('recharge-modal');
+
+            // AQUÍ ES DONDE SE CONECTA LA PASARELA REAL:
+            // En lugar de dar saldo gratis, abrimos la pasarela de pagos (Ejemplo: NowPayments, Stripe, Coinbase Commerce, etc.)
+            // Le pasamos por parámetro el nodo del usuario para que el servidor sepa a quién acreditarle cuando el pago sea exitoso.
             
-            if (allRegistered.length === 0) {
-                listContainer.innerHTML = '<div style="padding: 8px; font-size: 0.8rem; color: #9ca3af; text-align: center;">No nodes registered.</div>';
-                return;
-            }
-
-            let htmlContent = '';
-            allRegistered.slice().reverse().forEach(item => {
-                htmlContent += `
-                    <div class="node-record-item">
-                        <span>Node: <span class="node-tag-highlight">${item.node}</span></span>
-                        <span class="node-time-tag">${item.time}</span>
-                    </div>
-                `;
-            });
-            listContainer.innerHTML = htmlContent;
-        }
-
-        function resetActivityTimer() {
-            if (!sessionActive) return;
-            sessionStorage.setItem('pleniux_session_start', Date.now().toString());
-        }
-
-        function startContinuousTimer() {
-            const timerEl = document.getElementById('timer');
-            const totalDurationSec = 150; // 2 minutos y 30 segundos
-
-            if (countdownInterval) clearInterval(countdownInterval);
-
-            countdownInterval = setInterval(() => {
-                if (!sessionActive) return;
-
-                let sessionStart = parseInt(sessionStorage.getItem('pleniux_session_start') || Date.now().toString());
-                let elapsedSec = Math.floor((Date.now() - sessionStart) / 1000);
-                let timeLeft = totalDurationSec - elapsedSec;
-
-                if (timeLeft <= 0) {
-                    sessionActive = false;
-                    clearInterval(countdownInterval);
-
-                    sessionStorage.clear();
-                    const msgBox = document.getElementById('message-box');
-                    msgBox.innerHTML = '<div class="message system-alert">🔒 2:30 Inactivity limit reached: Chats wiped automatically.</div>';
-                    
-                    setTimeout(() => {
-                        alert("⚠️ Ephemeral chat wiped due to inactivity.");
-                        location.reload();
-                    }, 1000);
-                    return;
-                }
-
-                let minutes = Math.floor(timeLeft / 60);
-                let seconds = timeLeft % 60;
-                timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }, 1000);
-        }
-
-        function handleManualExit() {
-            if (!sessionActive) return;
-            sessionActive = false;
-            if (countdownInterval) clearInterval(countdownInterval);
-
-            let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId) || '5');
-            currentCredits = Math.max(0, currentCredits - 1);
-            localStorage.setItem('pleniux_credits_' + activeNodeId, currentCredits);
-            sessionStorage.clear();
+            const gatewayUrl = `https://your-payment-gateway-url.com/pay?node=${activeNodeId}&amount=${selectedUsd}&credits=${selectedCredits}`;
             
-            const msgBox = document.getElementById('message-box');
-            msgBox.innerHTML = '<div class="message system-alert">🔒 Session terminated. 1 UX token deducted & messages wiped.</div>';
-            setTimeout(() => { location.reload(); }, 600);
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('user-input');
-            const msgBox = document.getElementById('message-box');
-            const nodeName = document.getElementById('display-node').innerText;
+            // EJEMPLO REAL:
+            // window.location.href = gatewayUrl;
             
-            if (input.value.trim() === "") return;
-
-            resetActivityTimer();
-
-            const userMsg = document.createElement('div');
-            userMsg.classList.add('message', 'outgoing');
-            userMsg.innerText = `[${nodeName} @ ${currentRoom}]: ${input.value}`;
-            msgBox.appendChild(userMsg);
-
-            let textCopy = input.value;
-            input.value = "";
-            msgBox.scrollTop = msgBox.scrollHeight;
-
-            setTimeout(() => {
-                const replyMsg = document.createElement('div');
-                replyMsg.classList.add('message', 'incoming');
-                replyMsg.innerText = `[Room ${currentRoom} Peer]: RECEIVED -> "${textCopy}"`;
-                msgBox.appendChild(replyMsg);
-                msgBox.scrollTop = msgBox.scrollHeight;
-            }, 800);
+            alert(`🔗 [REDIRECCIÓN A PASARELA REAL]:\n\nEl sistema está generando la factura real de ${selectedUsd} USD para el nodo (${activeNodeId}).\n\n⚠️ Ningún saldo será acreditado hasta que la pasarela devuelva el código de confirmación de pago exitoso.`);
         }
     </script>
 </body>
