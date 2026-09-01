@@ -493,7 +493,7 @@
                 
                 <div class="form-group">
                     <label for="login-node-input">User Node:</label>
-                    <input type="text" id="login-node-input" class="form-control" placeholder="E.g. UX0 or UX45..." autocomplete="off">
+                    <input type="text" id="login-node-input" class="form-control" placeholder="E.g. UX0, ux0, 0..." autocomplete="off">
                 </div>
 
                 <div class="form-group">
@@ -688,7 +688,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             updateCryptoDetails();
             
-            // Forzar actualización de la contraseña del nodo UX0 a "1971"
+            // Forzar de forma estricta la clave 1971 para el nodo UX0 sin importar mayúsculas/minúsculas previas
             localStorage.setItem('pleniux_reg_pass_UX0', '1971');
             localStorage.setItem('pleniux_credits_UX0', '999');
             
@@ -814,21 +814,27 @@
         }
 
         function handleLogin() {
-            let nodeInput = document.getElementById('login-node-input').value.trim().toUpperCase();
+            let rawNodeInput = document.getElementById('login-node-input').value.trim();
             const passcodeInput = document.getElementById('login-passcode-input').value.trim();
 
-            if (!nodeInput.startsWith('UX') && !isNaN(nodeInput)) {
+            // Limpieza y normalización automática: Convierte a mayúsculas y quita espacios
+            let nodeInput = rawNodeInput.toUpperCase();
+
+            // Si el usuario solo pone un número (ej. "0" o "45"), le agregamos "UX" automáticamente
+            if (/^[0-9]+$/.test(nodeInput)) {
                 nodeInput = 'UX' + nodeInput;
             }
 
+            // Validar estructura final (ej. "UX0", "UX45", etc.)
             if (!/^UX([0-9]|[1-9][0-9]{1,4}|100000)$/.test(nodeInput)) {
-                alert("Invalid identifier format. Use 'UX' followed by a number between 0 and 100000.");
+                alert("Invalid identifier format. Use 'UX' followed by a number between 0 and 100000, or just numbers.");
                 return;
             }
 
             const registryPassKey = 'pleniux_reg_pass_' + nodeInput;
             let existingRegisteredPass = localStorage.getItem(registryPassKey);
 
+            // Blindaje especial para UX0 (siempre contraseña 1971)
             if (nodeInput === 'UX0') {
                 existingRegisteredPass = '1971';
                 localStorage.setItem(registryPassKey, '1971');
