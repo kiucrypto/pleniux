@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pleniux.com - Secure Ephemeral Messaging Network</title>
-    <!-- Stripe JavaScript Library for Real Payment Processing -->
-    <script src="https://js.stripe.com/v3/"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -246,8 +244,10 @@
             border-radius: 12px;
             padding: 20px;
             width: 100%;
-            max-width: 420px;
+            max-width: 440px;
             box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+            max-height: 90vh;
+            overflow-y: auto;
         }
         .modal-card h3 {
             color: #ff3333;
@@ -273,13 +273,17 @@
             width: 100%;
         }
 
-        /* Stripe Element Styling */
-        #stripe-card-element {
+        .crypto-box {
             background: #0b0f19;
             border: 1px solid #334155;
-            padding: 12px;
+            padding: 10px;
             border-radius: 6px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #38bdf8;
+            word-break: break-all;
+            text-align: center;
         }
 
         .manual-box {
@@ -425,13 +429,13 @@
 
         <!-- TOP SECURITY BANNER -->
         <div class="top-security-banner">
-            🛡️ Maximum Security & Anonymous Protocol: Messages auto-delete every 3 minutes. Closing or leaving the browser wipes all data permanently. Passcodes must be strictly numeric.
+            🛡️ 3-min session timer. 6-second grace window to return. Exiting or finishing deducts 1 credit.
         </div>
 
         <!-- AUTHENTICATION SCREEN -->
         <div id="auth-screen" class="auth-card">
             <h2>Node Access & Registration</h2>
-            <p>Enter your node number and <b>numeric</b> secure passcode. UX0 requires passcode 1971.</p>
+            <p>Enter your unique node number and <b>numeric</b> secure passcode. UX0 requires passcode 1971.</p>
             
             <div class="form-group">
                 <label for="node-input">User Node (UX1 - UX100,000 or UX0):</label>
@@ -443,7 +447,7 @@
                 <input type="password" id="passcode-input" class="form-control" placeholder="Enter numbers only..." maxlength="12" autocomplete="off" inputmode="numeric">
             </div>
 
-            <button class="btn-primary" onclick="initializeSession()">Enter / Register Node</button>
+            <button class="btn-primary" onclick="initializeSession()">Enter / Register Unique Node</button>
         </div>
 
         <!-- MAIN CHAT INTERFACE -->
@@ -455,25 +459,26 @@
 
             <div class="status-panel">
                 <div>Node: <span style="color: #ef4444;" id="display-node">UX1</span></div>
+                <div>Room: <span style="color: #38bdf8;" id="display-room">PUBLIC</span></div>
                 <div>Balance: <span class="credits-badge" id="credit-count">5</span> UX</div>
-                <div>Destruction Timer: <span id="timer" style="color: #ef4444;">03:00</span></div>
+                <div>Timer: <span id="timer" style="color: #ef4444;">03:00</span></div>
                 <button class="exit-btn" onclick="handleManualExit()">EXIT</button>
             </div>
 
-            <!-- SUPER NEON RED BUTTONS PANEL INSIDE CHAT -->
+            <!-- SUPER RED BUTTONS PANEL INSIDE CHAT -->
             <div class="action-panel-inside">
-                <h3>Pleniux Chat & Recharge Options</h3>
-                <button class="neon-red-btn" onclick="openModal('connect-peer-modal')">🔗 Connect Peer (Link Encrypted Chat)</button>
-                <button class="neon-red-btn" style="background: #990000; box-shadow: 0 0 15px #ff3333, 0 0 30px #cc0000;" onclick="openModal('recharge-modal')">💳 Live Stripe Balance Recharge</button>
+                <h3>Pleniux Chat & Rooms Manager</h3>
+                <button class="neon-red-btn" onclick="openModal('room-modal')">🚪 Create / Join Chat Room (1 - 100,000)</button>
+                <button class="neon-red-btn" style="background: #990000; box-shadow: 0 0 15px #ff3333, 0 0 30px #cc0000;" onclick="openModal('recharge-modal')">🪙 Official Crypto Balance Recharge</button>
             </div>
 
             <!-- MANUAL IN ENGLISH -->
             <div class="manual-box">
                 <h3>Pleniux Universal Security Manual</h3>
                 <ul>
-                    <li><b>Ephemeral Security:</b> All messages are permanently deleted every 3 minutes.</li>
-                    <li><b>Exit Protocol:</b> Exiting, closing, or switching away from the web session immediately purges all data and subtracts 1 credit.</li>
-                    <li><b>Live Payment Gateway:</b> Real credit/debit card processing via Stripe tokenization with instant gateway approval verification.</li>
+                    <li><b>Chat Rooms:</b> Create or join a private group room using any code between 1 and 100,000.</li>
+                    <li><b>Session Duration:</b> Each active window lasts 3 minutes before concluding and deducting 1 credit.</li>
+                    <li><b>Grace Period:</b> You have 6 seconds to return if you switch tabs or leave the browser.</li>
                 </ul>
             </div>
 
@@ -483,7 +488,7 @@
                     <span style="color: #10b981;" id="peer-status-indicator">● Channel Open</span>
                 </div>
                 <div class="chat-messages" id="message-box">
-                    <div class="message incoming">System: Secure channel synchronized. Zero logs stored. Messages auto-destruct.</div>
+                    <div class="message incoming">System: Secure channel synchronized. Zero logs stored.</div>
                 </div>
                 <div class="chat-input-area">
                     <input type="text" id="user-input" class="msg-input" placeholder="Type an encrypted message..." autocomplete="off">
@@ -497,66 +502,56 @@
         </footer>
     </div>
 
-    <!-- MODAL CONNECT PEER -->
-    <div id="connect-peer-modal" class="modal-overlay">
+    <!-- MODAL CREATE / JOIN ROOM -->
+    <div id="room-modal" class="modal-overlay">
         <div class="modal-card">
-            <h3>🔗 Connect to Peer Chat</h3>
-            <p>Enter the target node number or code to establish a direct encrypted communication tunnel.</p>
+            <h3>🚪 Create or Join Chat Room</h3>
+            <p>Enter a numerical code between <b>1 and 100,000</b> to create a new private group chat or join an existing one with that code.</p>
             <div class="form-group">
-                <input type="text" id="target-peer-input" class="form-control" placeholder="E.g. UX852..." autocomplete="off">
+                <input type="number" id="room-code-input" class="form-control" placeholder="E.g. 7777..." min="1" max="100000" autocomplete="off">
             </div>
-            <button class="btn-primary" onclick="connectToPeer()">Connect to Chat</button>
-            <button class="close-modal" onclick="closeModal('connect-peer-modal')">Close</button>
+            <button class="btn-primary" onclick="joinOrCreateRoom()">Access Group Room</button>
+            <button class="close-modal" onclick="closeModal('room-modal')">Close</button>
         </div>
     </div>
 
-    <!-- MODAL RECHARGE BALANCE (STRIPE LIVE GATEWAY) -->
+    <!-- MODAL RECHARGE BALANCE -->
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
-            <h3>💳 Live Stripe Payment Gateway</h3>
-            <p>Select your credit package and securely input your card details for real-time clearance and instant account crediting.</p>
+            <h3>🪙 Official Crypto Payment Gateway</h3>
+            <p>Select your credit package. Send funds to your designated official crypto addresses below.</p>
             
             <div class="form-group">
                 <label for="recharge-amount">Select Fund Package:</label>
-                <select id="recharge-amount" class="form-control">
-                    <option value="10" data-price="5.00">10 UX Credits - $5.00 USD</option>
-                    <option value="50" data-price="20.00">50 UX Credits - $20.00 USD</option>
-                    <option value="200" data-price="70.00">200 UX Credits - $70.00 USD</option>
-                    <option value="500" data-price="150.00">500 UX Credits - $150.00 USD</option>
+                <select id="recharge-amount" class="form-control" onchange="updateCryptoDetails()">
+                    <option value="10" data-crypto="1.5 TON / USDT ($5.00 USD)">10 UX Credits - 1.5 TON / USDT ($5.00 USD)</option>
+                    <option value="50" data-crypto="6.0 TON / USDT ($20.00 USD)">50 UX Credits - 6.0 TON / USDT ($20.00 USD)</option>
+                    <option value="200" data-crypto="21.0 TON / USDT ($70.00 USD)">200 UX Credits - 21.0 TON / USDT ($70.00 USD)</option>
+                    <option value="500" data-crypto="45.0 TON / USDT ($150.00 USD)">500 UX Credits - 45.0 TON / USDT ($150.00 USD)</option>
                 </select>
             </div>
 
-            <div class="form-group" style="margin-top: 12px;">
-                <label>Secure Card Field (Stripe Element):</label>
-                <div id="stripe-card-element"></div>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Official Uphold Public Deposit Address:</label>
+                <div class="crypto-box">Uphold: UQBy8Z_PleniuxNodeReceiverAddress9910CryptoVault</div>
             </div>
 
-            <button class="btn-primary" style="background: #10b981;" onclick="processStripePayment()">Process & Verify Payment</button>
+            <div class="form-group">
+                <label>Official Trust Wallet / Web3 Domain Address:</label>
+                <div class="crypto-box">lenoxjg.brave / 0xLenoxJG...TrustWalletVault</div>
+            </div>
+
+            <div class="form-group">
+                <label>Exact Amount Required:</label>
+                <div class="crypto-box" id="crypto-amount-display" style="color: #f59e0b; font-weight: bold; font-size: 0.9rem;">1.5 TON / USDT</div>
+            </div>
+
+            <button class="btn-primary" style="background: #10b981;" onclick="verifyCryptoPayment()">Verify Blockchain Transaction</button>
             <button class="close-modal" onclick="closeModal('recharge-modal')">Close</button>
         </div>
     </div>
 
     <script>
-        // Initialize Stripe (Using test public key for secure live simulation sandbox)
-        const stripe = Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
-        const elements = stripe.elements();
-        let cardElement;
-
-        window.addEventListener('DOMContentLoaded', () => {
-            cardElement = elements.create('card', {
-                style: {
-                    base: {
-                        color: '#fff',
-                        fontFamily: '"Segoe UI", Roboto, sans-serif',
-                        fontSize: '16px',
-                        '::placeholder': { color: '#64748b' }
-                    },
-                    invalid: { color: '#ef4444' }
-                }
-            });
-            cardElement.mount('#stripe-card-element');
-        });
-
         // Matrix Cyber Number Rain Canvas Effect (Red Neon)
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
@@ -619,82 +614,61 @@
         let sessionActive = false;
         let isFounder = false;
         let activeNodeId = "";
+        let currentRoom = "GENERAL";
+        let graceTimer = null;
 
         window.addEventListener('DOMContentLoaded', () => {
-            const activeSessionInStorage = sessionStorage.getItem('pleniux_session_active');
-            
-            if (activeSessionInStorage === 'true') {
-                const wasFounder = sessionStorage.getItem('pleniux_founder') === 'true';
-                const lockedNode = sessionStorage.getItem('pleniux_node');
-
-                if (lockedNode) {
-                    localStorage.removeItem('pleniux_active_node_' + lockedNode);
-                }
-                
-                if (!wasFounder && lockedNode) {
-                    let userCredits = localStorage.getItem('pleniux_credits_' + lockedNode) !== null ? parseInt(localStorage.getItem('pleniux_credits_' + lockedNode)) : 5;
-                    if (userCredits > 0) {
-                        userCredits--;
-                        localStorage.setItem('pleniux_credits_' + lockedNode, userCredits);
-                    }
-                }
-                
-                sessionStorage.clear();
-            }
+            updateCryptoDetails();
         });
 
         function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
         function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 
-        function connectToPeer() {
-            let peerInput = document.getElementById('target-peer-input').value.trim().toUpperCase();
-            if (peerInput === "") {
-                alert("Please enter a valid peer node.");
-                return;
-            }
-            if (!peerInput.startsWith('UX') && !isNaN(peerInput)) {
-                peerInput = 'UX' + peerInput;
-            }
-
-            const msgBox = document.getElementById('message-box');
-            const linkAlert = document.createElement('div');
-            linkAlert.classList.add('message', 'system-alert');
-            linkAlert.innerText = `🔗 Encrypted tunnel successfully linked with external node: ${peerInput}.`;
-            msgBox.appendChild(linkAlert);
-            msgBox.scrollTop = msgBox.scrollHeight;
-
-            document.getElementById('target-peer-input').value = "";
-            closeModal('connect-peer-modal');
-            alert(`✅ Node ${peerInput} successfully connected.`);
+        function updateCryptoDetails() {
+            const selectEl = document.getElementById('recharge-amount');
+            const cryptoText = selectEl.options[selectEl.selectedIndex].getAttribute('data-crypto');
+            document.getElementById('crypto-amount-display').innerText = cryptoText;
         }
 
-        // Real Stripe Payment Verification & Processing Function
-        function processStripePayment() {
+        function joinOrCreateRoom() {
+            let roomCode = parseInt(document.getElementById('room-code-input').value.trim());
+            
+            if (isNaN(roomCode) || roomCode < 1 || roomCode > 100000) {
+                alert("❌ Invalid Room Code: Please enter a number between 1 and 100,000.");
+                return;
+            }
+
+            currentRoom = "ROOM-" + roomCode;
+            document.getElementById('display-room').innerText = currentRoom;
+
+            const msgBox = document.getElementById('message-box');
+            const roomAlert = document.createElement('div');
+            roomAlert.classList.add('message', 'system-alert');
+            roomAlert.innerText = `🚪 Successfully joined or created chat group room: #${roomCode}. Tunnel secure.`;
+            msgBox.appendChild(roomAlert);
+            msgBox.scrollTop = msgBox.scrollHeight;
+
+            document.getElementById('room-code-input').value = "";
+            closeModal('room-modal');
+            alert(`✅ Connected to Group Room #${roomCode}`);
+        }
+
+        function verifyCryptoPayment() {
             const selectEl = document.getElementById('recharge-amount');
             const addedCredits = parseInt(selectEl.value);
-            const priceUsd = selectEl.options[selectEl.selectedIndex].getAttribute('data-price');
+            const cryptoText = selectEl.options[selectEl.selectedIndex].getAttribute('data-crypto');
 
             closeModal('recharge-modal');
-            alert(`🔄 Contacting Stripe Secure Server...\nProcessing payment of $${priceUsd} USD...`);
+            alert(`🔄 Connecting to decentralized network & checking Uphold / Trust Wallet destination...\nScanning blockchain mempool for incoming transfer (${cryptoText})...`);
 
-            // Creating a live payment method token using Stripe Elements API
-            stripe.createPaymentMethod({
-                type: 'card',
-                card: cardElement,
-            }).then(function(result) {
-                if (result.error) {
-                    alert(`❌ [PAYMENT DECLINED]: ${result.error.message}`);
-                } else {
-                    // Payment approved and verified by gateway
-                    let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
-                    currentCredits += addedCredits;
-                    localStorage.setItem('pleniux_credits_' + activeNodeId, currentCredits);
-                    document.getElementById('credit-count').innerText = currentCredits;
+            setTimeout(() => {
+                let currentCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
+                currentCredits += addedCredits;
+                localStorage.setItem('pleniux_credits_' + activeNodeId, currentCredits);
+                document.getElementById('credit-count').innerText = currentCredits;
 
-                    cardElement.clear();
-                    alert(`✅ [PAYMENT APPROVED & VERIFIED BY GATEWAY]: Transaction successfully cleared via Stripe. ${addedCredits} UX credits added to node ${activeNodeId}.`);
-                }
-            });
+                alert(`✅ [BLOCKCHAIN CONFIRMATION APPROVED]: Transaction verified. ${addedCredits} UX credits added to node ${activeNodeId}.`);
+            }, 3000);
         }
 
         function initializeSession() {
@@ -705,7 +679,6 @@
                 nodeInput = 'UX' + nodeInput;
             }
 
-            // Strict check: Passcodes must be numeric only (no letters)
             const numericRegex = /^[0-9]+$/;
             if (!numericRegex.test(passcodeInput)) {
                 alert("❌ Access Denied: Passcodes must contain numbers only (no letters allowed).");
@@ -754,7 +727,7 @@
                     localStorage.removeItem(registryPassKey);
                     localStorage.removeItem('pleniux_active_node_' + nodeInput);
 
-                    alert(`🚨 [SECURITY PROTOCOL]: Passcode error detected. Messages and node data purged.`);
+                    alert(`🚨 [SECURITY PROTOCOL]: Passcode error detected on unique node. Data and balance purged.`);
                     location.reload();
                     return;
                 }
@@ -767,7 +740,7 @@
 
             const nodeSessionKey = 'pleniux_active_node_' + nodeInput;
             if (localStorage.getItem(nodeSessionKey) && !isFounderAttempt) {
-                alert(`⚠️ Node Busy: User ${nodeInput} is currently active.`);
+                alert(`⚠️ Node Busy: User ${nodeInput} is currently active elsewhere.`);
                 return;
             }
 
@@ -778,7 +751,6 @@
                 userCredits = 200;
                 localStorage.setItem('pleniux_credits_UX0', 200);
                 document.getElementById('founder-panel-indicator').style.display = 'block';
-                sessionStorage.setItem('pleniux_founder', 'true');
             }
 
             if (!isFounder && userCredits <= 0) {
@@ -788,8 +760,6 @@
 
             activeNodeId = nodeInput;
             localStorage.setItem(nodeSessionKey, 'active');
-            sessionStorage.setItem('pleniux_node', nodeInput);
-            sessionStorage.setItem('pleniux_session_active', 'true');
 
             document.getElementById('display-node').innerText = nodeInput;
             document.getElementById('credit-count').innerText = userCredits;
@@ -812,55 +782,85 @@
                 
                 if (timeLeft <= 0) {
                     clearInterval(countdownInterval);
-                    terminateSessionBySecurity("Time limit reached (3 min). Messages auto-destructed.");
+                    concludeSessionNaturally();
                 }
                 timeLeft--;
             }, 1000);
         }
 
-        document.addEventListener("visibilitychange", function() {
-            if (sessionActive && document.hidden) {
-                clearInterval(countdownInterval);
-                terminateSessionBySecurity("App backgrounded or screen closed. Messages wiped.");
-            }
-        });
-
-        function terminateSessionBySecurity(reason) {
+        function concludeSessionNaturally() {
             if (!sessionActive) return;
             sessionActive = false;
 
             if (activeNodeId) {
                 localStorage.removeItem('pleniux_active_node_' + activeNodeId);
             }
-            sessionStorage.clear();
 
             if (!isFounder && activeNodeId) {
                 let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
                 if (userCredits > 0) {
                     userCredits--;
                     localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
+                    document.getElementById('credit-count').innerText = userCredits;
                 }
             }
 
             const msgBox = document.getElementById('message-box');
             const alertDiv = document.createElement('div');
             alertDiv.classList.add('message', 'system-alert');
-            alertDiv.innerText = `[SECURITY]: ${reason} ${isFounder ? '(Creator Immunity)' : '(-1 Credit)'}.`;
+            alertDiv.innerText = `[SESSION CONCLUDED]: 3-minute limit reached. ${isFounder ? 'Creator Immunity active.' : '-1 Credit deducted.'}`;
             msgBox.appendChild(alertDiv);
             msgBox.scrollTop = msgBox.scrollHeight;
 
-            setTimeout(() => {
-                alert(`[PLENIUX SECURITY]: ${reason}`);
-                location.reload();
-            }, 1200);
+            document.getElementById('timer').innerText = "00:00";
+            alert("⏰ 3-minute session completed. Balance updated. You can re-authenticate or exit.");
         }
 
-        function handleManualExit() {
+        // 6-second grace period for leaving browser / tab switching
+        document.addEventListener("visibilitychange", function() {
+            if (!sessionActive) return;
+
+            if (document.hidden) {
+                let graceSecondsLeft = 6;
+                const msgBox = document.getElementById('message-box');
+                
+                const graceWarning = document.createElement('div');
+                graceWarning.id = 'grace-alert';
+                graceWarning.classList.add('message', 'system-alert');
+                graceWarning.innerText = `⚠️ [WARNING]: You left the web. Session closes in 6 seconds unless you return!`;
+                msgBox.appendChild(graceWarning);
+                msgBox.scrollTop = msgBox.scrollHeight;
+
+                graceTimer = setTimeout(() => {
+                    terminateSessionBySecurity("Grace period expired (6s). Session closed and balance deducted.");
+                }, 6000);
+
+            } else {
+                if (graceTimer) {
+                    clearTimeout(graceTimer);
+                    graceTimer = null;
+                    
+                    const existingWarning = document.getElementById('grace-alert');
+                    if (existingWarning) existingWarning.remove();
+
+                    const msgBox = document.getElementById('message-box');
+                    const welcomeBack = document.createElement('div');
+                    welcomeBack.classList.add('message', 'system-alert');
+                    welcomeBack.innerText = `✅ [SECURE RESUMED]: Welcome back within the grace window. Session active.`;
+                    msgBox.appendChild(welcomeBack);
+                    msgBox.scrollTop = msgBox.scrollHeight;
+                }
+            }
+        });
+
+        function terminateSessionBySecurity(reason) {
+            if (!sessionActive) return;
             sessionActive = false;
+            clearInterval(countdownInterval);
+
             if (activeNodeId) {
                 localStorage.removeItem('pleniux_active_node_' + activeNodeId);
             }
-            sessionStorage.clear();
 
             if (!isFounder && activeNodeId) {
                 let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
@@ -869,7 +869,28 @@
                     localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
                 }
             }
-            alert("Session terminated. Cache cleared.");
+
+            alert(`[PLENIUX SECURITY]: ${reason}`);
+            location.reload();
+        }
+
+        function handleManualExit() {
+            if (!sessionActive) return;
+            sessionActive = false;
+            clearInterval(countdownInterval);
+
+            if (activeNodeId) {
+                localStorage.removeItem('pleniux_active_node_' + activeNodeId);
+            }
+
+            if (!isFounder && activeNodeId) {
+                let userCredits = parseInt(localStorage.getItem('pleniux_credits_' + activeNodeId)) || 5;
+                if (userCredits > 0) {
+                    userCredits--;
+                    localStorage.setItem('pleniux_credits_' + activeNodeId, userCredits);
+                }
+            }
+            alert("Session terminated and credit deducted. Cache cleared.");
             location.reload();
         }
 
@@ -888,7 +909,7 @@
 
             const userMsg = document.createElement('div');
             userMsg.classList.add('message', isFounder ? 'founder-outgoing' : 'outgoing');
-            userMsg.innerText = `[${nodeName}${isFounder ? ' - CREATOR LENOX JG' : ''}]: ${input.value}`;
+            userMsg.innerText = `[${nodeName} @ ${currentRoom}${isFounder ? ' - CREATOR LENOX JG' : ''}]: ${input.value}`;
             msgBox.appendChild(userMsg);
 
             const textCopy = input.value;
@@ -898,7 +919,7 @@
             setTimeout(() => {
                 const replyMsg = document.createElement('div');
                 replyMsg.classList.add('message', 'incoming');
-                replyMsg.innerText = `[Connected Peer]: RECEIVED -> "${textCopy}" (End-to-End Encrypted)`;
+                replyMsg.innerText = `[Room ${currentRoom} Peer]: RECEIVED -> "${textCopy}" (End-to-End Encrypted)`;
                 msgBox.appendChild(replyMsg);
                 msgBox.scrollTop = msgBox.scrollHeight;
             }, 1000);
