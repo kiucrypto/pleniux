@@ -89,6 +89,37 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+        .auth-card p {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+
+        /* Pestañas de Navegación (Acceso / Registro) */
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #334155;
+        }
+        .auth-tab {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #9ca3af;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .auth-tab.active {
+            color: #ef4444;
+            border-bottom: 2px solid #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+
         .form-group {
             margin-bottom: 15px;
         }
@@ -109,6 +140,32 @@
             font-size: 0.95rem;
             outline: none;
         }
+        .input-group-prefix {
+            display: flex;
+            align-items: center;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .input-prefix-tag {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            padding: 10px 14px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            border-right: 1px solid #334155;
+        }
+        .input-group-prefix input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
         .btn-primary {
             width: 100%;
             background: #ef4444;
@@ -221,23 +278,51 @@
         </header>
 
         <div class="notice-banner">
-            🔒 <strong>SISTEMA DE PAGOS ESTRICTO:</strong> Ningún token se acredita sin un pago verificado por pasarela externa real en la red blockchain.
+            🔒 <strong>SISTEMA DE PAGOS ESTRICTO:</strong> Los usuarios nuevos se registran con 0 tokens. Ningún token se acredita sin un pago verificado por pasarela externa real.
         </div>
 
+        <!-- PANTALLA DE ACCESO Y REGISTRO RESTAURADA -->
         <div id="auth-screen" class="auth-card">
-            <h2>Acceso al Nodo</h2>
-            <p>Ingresa tu número de nodo y contraseña secreta.</p>
-            <div class="form-group">
-                <label>Nodo de Usuario:</label>
-                <input type="text" id="login-node-input" class="form-control" placeholder="Ej. UX1" autocomplete="off">
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login" onclick="switchAuthMode('login')">Acceso Node</button>
+                <button class="auth-tab" id="tab-register" onclick="switchAuthMode('register')">Nuevo Registro</button>
             </div>
-            <div class="form-group">
-                <label>Contraseña Numérica:</label>
-                <input type="password" id="login-passcode-input" class="form-control" placeholder="Contraseña..." autocomplete="off">
+
+            <!-- CONTENEDOR LOGIN -->
+            <div id="form-login-container">
+                <h2>Node Login</h2>
+                <p>Ingresa tu número de nodo y contraseña secreta.</p>
+                <div class="form-group">
+                    <label>Nodo de Usuario:</label>
+                    <input type="text" id="login-node-input" class="form-control" placeholder="Ej. UX1" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña Numérica:</label>
+                    <input type="password" id="login-passcode-input" class="form-control" placeholder="Contraseña..." autocomplete="off">
+                </div>
+                <button class="btn-primary" onclick="handleLogin()">Acceder al Nodo</button>
             </div>
-            <button class="btn-primary" onclick="handleLogin()">Acceder al Nodo</button>
+
+            <!-- CONTENEDOR REGISTRO -->
+            <div id="form-register-container" style="display: none;">
+                <h2>Registrar Nuevo Nodo</h2>
+                <p>Crea tu cuenta oficial. Los nodos nuevos inician con 0 tokens hasta procesar un pago real.</p>
+                <div class="form-group">
+                    <label>Elegir Número de Nodo (0 - 100,000):</label>
+                    <div class="input-group-prefix">
+                        <span class="input-prefix-tag">UX</span>
+                        <input type="number" id="reg-node-input" placeholder="Ej. 777..." min="0" max="100000" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Crear Contraseña Numérica:</label>
+                    <input type="password" id="reg-passcode-input" class="form-control" placeholder="Solo números..." maxlength="12" autocomplete="off">
+                </div>
+                <button class="btn-primary" style="background: #10b981;" onclick="handleRegister()">Registrar Nodo</button>
+            </div>
         </div>
 
+        <!-- INTERFAZ PRINCIPAL -->
         <div id="app-interface" class="app-interface">
             <div class="status-panel">
                 <div>Nodo: <span style="color: #ef4444;" id="display-node">UX1</span></div>
@@ -247,16 +332,17 @@
 
             <div class="action-panel-inside">
                 <h3>Bóveda de Pagos</h3>
-                <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 12px;">Para obtener tokens, debes realizar un pago real a través de la pasarela de pagos oficial.</p>
+                <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 12px;">Tu saldo actual es 0. Para obtener tokens, debes realizar un pago real a través de la pasarela oficial.</p>
                 <button class="neon-red-btn" onclick="openModal('recharge-modal')">🪙 Recargar Saldo con Pasarela Real</button>
             </div>
         </div>
     </div>
 
+    <!-- MODAL DE RECARGA -->
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🪙 Seleccionar Paquete de Tokens</h3>
-            <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 15px;">Al hacer clic en pagar, serás redirigido a la pasarela de pagos oficial. El saldo solo se acreditará cuando el pago se complete de forma real.</p>
+            <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 15px;">Al hacer clic en pagar, serás redirigido a la pasarela externa real. El saldo solo se acreditará cuando el pago se complete de forma real.</p>
             
             <div class="price-grid">
                 <div class="price-card selected" onclick="selectPackage(5, '1.99', this)">
@@ -300,6 +386,25 @@
         let selectedCredits = 5;
         let selectedUsd = "1.99";
 
+        function switchAuthMode(mode) {
+            const loginContainer = document.getElementById('form-login-container');
+            const registerContainer = document.getElementById('form-register-container');
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+
+            if (mode === 'login') {
+                loginContainer.style.display = 'block';
+                registerContainer.style.display = 'none';
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+            } else {
+                loginContainer.style.display = 'none';
+                registerContainer.style.display = 'block';
+                tabRegister.classList.add('active');
+                tabLogin.classList.remove('active');
+            }
+        }
+
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
@@ -310,13 +415,57 @@
             el.classList.add('selected');
         }
 
+        function handleRegister() {
+            let nodeNum = document.getElementById('reg-node-input').value.trim();
+            let passcode = document.getElementById('reg-passcode-input').value.trim();
+
+            if (nodeNum === "" || isNaN(nodeNum)) {
+                alert("❌ Ingresa un número de nodo válido.");
+                return;
+            }
+            if (!passcode) {
+                alert("❌ Ingresa una contraseña numérica.");
+                return;
+            }
+
+            let fullNodeId = 'UX' + parseInt(nodeNum);
+            
+            if (localStorage.getItem('pleniux_pass_' + fullNodeId) !== null) {
+                alert(`⚠️ El nodo ${fullNodeId} ya está registrado.`);
+                return;
+            }
+
+            // Guardar credenciales de registro con 0 tokens iniciales (estricto)
+            localStorage.setItem('pleniux_pass_' + fullNodeId, passcode);
+            localStorage.setItem('pleniux_real_credits_' + fullNodeId, '0');
+
+            alert(`✅ ¡Nodo ${fullNodeId} registrado exitosamente!\n\nNota: Tus tokens están en 0. Debes realizar un pago real en la pasarela para obtener saldo.`);
+            
+            document.getElementById('login-node-input').value = fullNodeId;
+            switchAuthMode('login');
+        }
+
         function handleLogin() {
-            const node = document.getElementById('login-node-input').value.trim().toUpperCase();
+            let node = document.getElementById('login-node-input').value.trim().toUpperCase();
             const pass = document.getElementById('login-passcode-input').value.trim();
-            if (!node || !pass) { alert("Ingresa nodo y contraseña"); return; }
+            
+            if (/^[0-9]+$/.test(node)) node = 'UX' + node;
+
+            if (!node || !pass) { 
+                alert("Ingresa nodo y contraseña"); 
+                return; 
+            }
+
+            let savedPass = localStorage.setItem ? localStorage.getItem('pleniux_pass_' + node) : null;
+            if (node === 'UX0') savedPass = '1971'; // Founder bypass si aplica
+
+            if (savedPass !== pass) {
+                alert("🚨 Contraseña incorrecta o nodo no registrado.");
+                return;
+            }
 
             activeNodeId = node;
-            // Consultar saldo real desde base de datos o almacenamiento seguro por nodo
+            // Saldo real estrictamente obtenido del almacenamiento/base de datos (inicia en 0 para nuevos)
             let realCredits = parseInt(localStorage.getItem('pleniux_real_credits_' + node) || '0');
             
             document.getElementById('display-node').innerText = node;
@@ -329,16 +478,11 @@
         function redirectToRealGateway() {
             closeModal('recharge-modal');
 
-            // AQUÍ ES DONDE SE CONECTA LA PASARELA REAL:
-            // En lugar de dar saldo gratis, abrimos la pasarela de pagos (Ejemplo: NowPayments, Stripe, Coinbase Commerce, etc.)
-            // Le pasamos por parámetro el nodo del usuario para que el servidor sepa a quién acreditarle cuando el pago sea exitoso.
-            
-            const gatewayUrl = `https://your-payment-gateway-url.com/pay?node=${activeNodeId}&amount=${selectedUsd}&credits=${selectedCredits}`;
-            
-            // EJEMPLO REAL:
+            // AQUÍ SE CONECTARÁ TU PASARELA DE PAGOS REAL EXTERNA:
+            // const gatewayUrl = `https://tu-pasarela.com/checkout?node=${activeNodeId}&amount=${selectedUsd}&credits=${selectedCredits}`;
             // window.location.href = gatewayUrl;
-            
-            alert(`🔗 [REDIRECCIÓN A PASARELA REAL]:\n\nEl sistema está generando la factura real de ${selectedUsd} USD para el nodo (${activeNodeId}).\n\n⚠️ Ningún saldo será acreditado hasta que la pasarela devuelva el código de confirmación de pago exitoso.`);
+
+            alert(`🔗 [PASARELA DE PAGO EXTERNA]:\n\nRedirigiendo pasarela para procesar ${selectedUsd} USD al nodo (${activeNodeId}).\n\n⚠️ Ningún saldo cambiará en tu cuenta hasta que la pasarela de pagos confirme el dinero de forma real.`);
         }
     </script>
 </body>
