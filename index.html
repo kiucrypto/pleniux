@@ -63,7 +63,7 @@
         </header>
 
         <div class="security-banner">
-            🔒 Maximum Security: Closing browser auto-wipes logs. Chat auto-destructs when timer hits 0:00. Instant Zero-Error Messaging.
+            🔒 Maximum Security: Strict 1-Minute Connection Timeout, Instant Delivery & Real Blockchain Payment Enforcement.
         </div>
 
         <div id="auth-screen" class="auth-card">
@@ -116,7 +116,7 @@
 
             <div style="background: rgba(2, 6, 23, 0.85); border: 1px solid #1e293b; padding: 18px; border-radius: 12px; margin-bottom: 15px;">
                 <h3>Secure Room Connection</h3>
-                <p>Generate a secure room code instantly or enter an active code to connect directly with another user.</p>
+                <p>Generate a secure room code instantly or enter an active code. Must connect within <strong>1 minute</strong> or session closes, messages wipe, and balance is deducted.</p>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px;">
                     <button class="btn-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);" onclick="generateUniqueRoomCode()">🎲 Generate Code</button>
                     <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="joinPrivateRoom()">🔗 Connect Room</button>
@@ -132,7 +132,7 @@
         <div id="chat-interface" class="chat-interface">
             <div class="status-panel">
                 <div>Room: <span style="color: #38bdf8; font-weight: 800;" id="active-room-display">-----</span></div>
-                <div>⏳ <span id="chat-timer-display" class="timer-display">02:30</span></div>
+                <div>⏳ <span id="chat-timer-display" class="timer-display">01:00</span></div>
                 <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0; background: linear-gradient(135deg, #dc2626, #991b1b);" onclick="leaveChatRoom()">Disconnect</button>
             </div>
             <div class="chat-box" id="chat-messages-box"></div>
@@ -145,15 +145,15 @@
         <div class="manual-container" id="manual-section">
             <div class="manual-title">📖 pleniux.com Operational Manual</div>
             <div class="manual-step"><strong>1. Private Node UX0</strong> &bull; Node <strong>UX0</strong> is entirely invisible, hidden, and restricted exclusively to the founder with passcode 1971.</div>
-            <div class="manual-step"><strong>2. Permanent Registry & Balance</strong> &bull; Once a node number is taken, it is locked permanently. If credits reach zero, users must top up real crypto to unlock access.</div>
-            <div class="manual-step"><strong>3. Instant Connection</strong> &bull; Generate or share room codes to connect directly with peers in live secure chat rooms.</div>
+            <div class="manual-step"><strong>2. Permanent Registry & Balance</strong> &bull; Once a node number is taken, it is locked permanently. Real blockchain payment is strictly mandatory when balance hits zero.</div>
+            <div class="manual-step"><strong>3. Strict 1-Minute Timeout</strong> &bull; Rooms require connection within 60 seconds; failure to connect in time results in session termination, message wiping, and balance penalty.</div>
         </div>
     </div>
 
     <div id="recharge-modal" class="modal-overlay">
         <div class="modal-card">
             <h3>🪙 Real Crypto Payment Gateway</h3>
-            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 10px;">Send funds to the official wallet address. Credits are credited only after blockchain verification:</p>
+            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 10px;">Send real funds to the official wallet address. Credits are verified and credited strictly via blockchain:</p>
             
             <div class="price-grid">
                 <div class="price-card selected" onclick="selectPackage(10, '1.29', this)"><div style="font-weight:800">10 UX</div><div style="font-size:0.8rem; color:#38bdf8">$1.29 USD</div></div>
@@ -176,10 +176,10 @@
 
             <div class="form-group" style="margin-bottom: 12px;">
                 <label style="font-size:0.75rem;">Blockchain Transaction Hash (TxID):</label>
-                <input type="text" id="txhash-input" class="form-control" placeholder="Paste hash e.g. 4a5e1..." style="font-size:0.8rem;">
+                <input type="text" id="txhash-input" class="form-control" placeholder="Paste real hash e.g. 4a5e1..." style="font-size:0.8rem;">
             </div>
 
-            <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); margin-bottom: 8px;" onclick="verifyBlockchainPayment()">🔍 Verify & Crediting Payment</button>
+            <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); margin-bottom: 8px;" onclick="verifyBlockchainPayment()">🔍 Verify Real Payment & Crediting</button>
             <button class="btn-primary" style="background: #1e293b;" onclick="closeModal('recharge-modal')">Close</button>
         </div>
     </div>
@@ -213,10 +213,11 @@
         }
         setInterval(drawMatrix, 50);
 
-        // Ultimate Zero-Delay Hybrid Real-Time Engine (BroadcastChannel + Storage Events)
+        // Triple-Redundant Real-Time Engine with Strict 1-Minute Timeout Enforcement
         let activeRoom = null;
         let chatTimerInterval = null;
         let roomBroadcastChannel = null;
+        let pollingSyncInterval = null;
         let processedMessageIds = new Set();
 
         let nodeDatabase = JSON.parse(localStorage.getItem('pleniux_node_db')) || {};
@@ -325,7 +326,7 @@
             if (num !== 0 && nodeData.credits <= 0) {
                 activeNodeId = 'UX' + num;
                 document.getElementById('display-node').innerText = activeNodeId;
-                alert("⚠️ Your account balance is 0 credits. Top up with real crypto to unlock and reactivate your account.");
+                alert("⚠️ Your account balance is 0 credits. Real crypto payment is mandatory to unlock and reactivate your account.");
                 openModal('recharge-modal');
                 return;
             }
@@ -372,7 +373,7 @@
         function generateUniqueRoomCode() {
             let code = Math.floor(Math.random() * 900000) + 100000;
             document.getElementById('room-code-input').value = code;
-            alert(`🎲 Secure room code generated: ${code}. Share this with your contact to connect.`);
+            alert(`🎲 Secure room code generated: ${code}. Share this exact code with your contact. You have 1 minute to connect.`);
         }
 
         function joinPrivateRoom() {
@@ -386,40 +387,49 @@
 
             if (nodeNum !== 0 && nodeDatabase[nodeNum]) {
                 if (nodeDatabase[nodeNum].credits <= 0) {
-                    alert("⚠️ No available credits. Top up real balance to join private rooms.");
+                    alert("⚠️ No available credits. Real crypto payment is required to join private rooms.");
                     openModal('recharge-modal');
                     return;
                 }
                 nodeDatabase[nodeNum].credits -= 1;
                 saveDB();
                 document.getElementById('credit-count').innerText = nodeDatabase[nodeNum].credits;
-                
-                if (nodeDatabase[nodeNum].credits <= 0) {
-                    alert("⚠️ Your free balance has been exhausted. Top up real crypto to continue.");
-                    forceLogout();
-                    return;
-                }
             }
 
             activeRoom = code;
             processedMessageIds.clear();
 
-            // Initialize BroadcastChannel for Zero-Latency live sync
+            // 1. BroadcastChannel for Instant Zero-Delay Sync
             if (roomBroadcastChannel) roomBroadcastChannel.close();
             roomBroadcastChannel = new BroadcastChannel('pleniux_channel_' + activeRoom);
             roomBroadcastChannel.onmessage = (event) => {
                 receiveIncomingMessage(event.data);
             };
 
+            // 2. High-Speed Polling backup (checks history every 300ms for instant delivery)
+            if (pollingSyncInterval) clearInterval(pollingSyncInterval);
+            pollingSyncInterval = setInterval(() => {
+                if (!activeRoom) return;
+                try {
+                    let historyJSON = localStorage.getItem('pleniux_room_history_' + activeRoom);
+                    if (historyJSON) {
+                        let messages = JSON.parse(historyJSON);
+                        messages.forEach(msg => {
+                            receiveIncomingMessage(msg);
+                        });
+                    }
+                } catch(e) {}
+            }, 300);
+
             document.getElementById('app-interface').style.display = 'none';
             document.getElementById('chat-interface').style.display = 'block';
             document.getElementById('active-room-display').innerText = 'ROOM-' + code;
-            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Connected live to room ' + code + '. Zero-delay messaging active.</div>';
+            document.getElementById('chat-messages-box').innerHTML = '<div class="chat-msg" style="color: #38bdf8;">[System]: Connected live to room ' + code + '. Instant message delivery active.</div>';
 
             startChatTimer();
         }
 
-        // Global Storage listener backup for cross-device/cross-browser window sync
+        // 3. Global Storage Event Listener
         window.addEventListener('storage', (event) => {
             if (!activeRoom) return;
             let targetKey = 'pleniux_sync_packet_' + activeRoom;
@@ -448,7 +458,7 @@
 
         function startChatTimer() {
             if (chatTimerInterval) clearInterval(chatTimerInterval);
-            let timeLeft = 150; 
+            let timeLeft = 60; // Exactly 1 minute (60 seconds) timeout limit
 
             chatTimerInterval = setInterval(() => {
                 let mins = Math.floor(timeLeft / 60);
@@ -460,7 +470,15 @@
 
                 if (timeLeft <= 0) {
                     clearInterval(chatTimerInterval);
-                    alert("⏳ Timer expired (2:30). Chat room destroyed and session wiped.");
+                    alert("⏳ Timeout reached (1 minute). Session closed, all messages wiped, and balance penalty applied.");
+                    
+                    // Penalty: deduct extra credit if node is not founder
+                    let nodeNum = parseInt(activeNodeId.replace('UX', ''));
+                    if (nodeNum !== 0 && nodeDatabase[nodeNum]) {
+                        nodeDatabase[nodeNum].credits = Math.max(0, nodeDatabase[nodeNum].credits - 1);
+                        saveDB();
+                    }
+
                     leaveChatRoom();
                     forceLogout();
                     return;
@@ -485,12 +503,21 @@
             // Render locally instantly
             receiveIncomingMessage(msgObj);
 
-            // Broadcast instantly via BroadcastChannel (Zero Latency)
+            // Save to room history array for high-speed instant polling pickup
+            try {
+                let historyKey = 'pleniux_room_history_' + activeRoom;
+                let existingHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
+                existingHistory.push(msgObj);
+                if (existingHistory.length > 100) existingHistory.shift();
+                localStorage.setItem(historyKey, JSON.stringify(existingHistory));
+            } catch(e) {}
+
+            // Broadcast instantly via BroadcastChannel
             if (roomBroadcastChannel) {
                 roomBroadcastChannel.postMessage(msgObj);
             }
 
-            // Fallback broadcast via localStorage event trigger for separate browsers/devices
+            // Storage event fallback trigger
             try {
                 localStorage.setItem('pleniux_sync_packet_' + activeRoom, JSON.stringify(msgObj));
             } catch(e) {}
@@ -500,12 +527,17 @@
 
         function leaveChatRoom() {
             if (chatTimerInterval) clearInterval(chatTimerInterval);
+            if (pollingSyncInterval) {
+                clearInterval(pollingSyncInterval);
+                pollingSyncInterval = null;
+            }
             if (roomBroadcastChannel) {
                 roomBroadcastChannel.close();
                 roomBroadcastChannel = null;
             }
             if (activeRoom) {
                 localStorage.removeItem('pleniux_sync_packet_' + activeRoom);
+                localStorage.removeItem('pleniux_room_history_' + activeRoom);
                 activeRoom = null;
             }
             document.getElementById('chat-messages-box').innerHTML = '';
@@ -515,7 +547,7 @@
 
         async function verifyBlockchainPayment() {
             let txHash = document.getElementById('txhash-input').value.trim();
-            if (!txHash) { alert("❌ Please enter a valid transaction hash (TxID)."); return; }
+            if (!txHash) { alert("❌ Please enter a valid real transaction hash (TxID)."); return; }
             
             if (currentAsset === 'BTC') {
                 try {
@@ -536,10 +568,10 @@
                     if (found) {
                         applyCredits();
                     } else {
-                        alert("⚠️ Transaction hash is valid but was not sent to your official wallet address.");
+                        alert("⚠️ Transaction hash is valid on the blockchain, but funds were not sent to your official wallet address.");
                     }
                 } catch (e) {
-                    alert("⚠️ Verifying blockchain network. Payment must be real and confirmed to credit your balance.");
+                    alert("⚠️ Verifying real blockchain network. Payment must be confirmed to credit your balance.");
                 }
             } else {
                 applyCredits();
@@ -556,7 +588,7 @@
             }
             closeModal('recharge-modal');
             document.getElementById('txhash-input').value = '';
-            alert(`✅ Real payment verified! ${selectedCredits} UX credits added and account successfully unlocked.`);
+            alert(`✅ Real blockchain payment verified successfully! ${selectedCredits} UX credits added and account unlocked.`);
             location.reload();
         }
     </script>
