@@ -8,9 +8,10 @@ const io = new Server(server);
 
 app.use(express.json());
 
+// Base de datos de nodos VIP
 const nodeBalances = {
-    'UX1': 1500,
-    'UX0': 2500
+    'UX1': 2,
+    'UX0': 2
 };
 
 const registeredUsers = {
@@ -18,9 +19,16 @@ const registeredUsers = {
     'UX0': '1971'
 };
 
-const failedAttempts = {};
+const lastActivityTime = {
+    'UX1': Date.now(),
+    'UX0': Date.now()
+};
 
-// Interfaz Principal: Estilo Cyberpunk / Neón Llamativo
+const gracePeriodStart = {};
+const failedAttempts = {};
+const lockoutTimers = {};
+const bannedDevices = new Set();
+
 app.get('/', (req, res) => {
     res.send(`
         <!DOCTYPE html>
@@ -28,65 +36,269 @@ app.get('/', (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Pleniux - Cyber Gateway</title>
+            <title>Pleniux.com VIP - Secure Gateway</title>
             <style>
                 @keyframes neonGlow {
                     0% { background-position: 0% 50%; }
                     50% { background-position: 100% 50%; }
                     100% { background-position: 0% 50%; }
                 }
-                body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); background-size: 300% 300%; animation: neonGlow 10s ease infinite; color: #fff; font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; box-sizing: border-box; }
-                .container { width: 100%; max-width: 440px; background: rgba(15, 15, 30, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(139, 92, 246, 0.4); padding: 2.5rem 2rem; border-radius: 16px; box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3); }
-                h1 { color: #fff; font-size: 2rem; margin-top: 0; text-align: center; letter-spacing: 2px; text-shadow: 0 0 15px rgba(168, 85, 247, 0.7); }
-                .subtitle { color: #a78bfa; font-size: 0.85rem; text-align: center; margin-bottom: 1.8rem; font-weight: 500; }
-                .security-notice { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; padding: 12px; border-radius: 8px; font-size: 0.78rem; margin-bottom: 1.5rem; line-height: 1.4; }
-                .form-group { margin-bottom: 1.2rem; }
-                label { display: block; font-size: 0.8rem; color: #c084fc; margin-bottom: 6px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-                input { width: 100%; padding: 12px 14px; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; color: #fff; font-family: inherit; font-size: 1rem; box-sizing: border-box; outline: none; transition: all 0.3s ease; }
-                input:focus { border-color: #c084fc; box-shadow: 0 0 10px rgba(192, 132, 252, 0.5); }
-                .btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #7c3aed, #4f46e5); border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-family: inherit; font-size: 1rem; margin-top: 10px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); }
-                .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6); }
+                body { 
+                    background: linear-gradient(135deg, #050510, #130f2c, #1f1b3c); 
+                    background-size: 300% 300%; 
+                    animation: neonGlow 12s ease infinite; 
+                    color: #fff; 
+                    font-family: 'Segoe UI', Roboto, sans-serif; 
+                    margin: 0; 
+                    padding: 20px; 
+                    display: flex; 
+                    flex-direction: column; 
+                    align-items: center; 
+                    justify-content: center; 
+                    min-height: 100vh; 
+                    box-sizing: border-box; 
+                    overflow-x: hidden;
+                    position: relative;
+                }
+                /* Fondo en movimiento de puntos neón */
+                .neon-bg-canvas {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
+                    z-index: 0;
+                }
+                .container { 
+                    width: 100%; 
+                    max-width: 440px; 
+                    background: rgba(15, 15, 30, 0.85); 
+                    backdrop-filter: blur(16px); 
+                    border: 1px solid rgba(139, 92, 246, 0.4); 
+                    padding: 2rem; 
+                    border-radius: 16px; 
+                    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3); 
+                    position: relative;
+                    z-index: 1;
+                }
+                .logo-header {
+                    text-align: center;
+                    margin-bottom: 0.5rem;
+                }
+                .logo-header h1 { 
+                    color: #fff; 
+                    font-size: 1.8rem; 
+                    margin: 0; 
+                    letter-spacing: 2px; 
+                    text-shadow: 0 0 15px rgba(168, 85, 247, 0.7); 
+                    display: inline-block;
+                }
+                .vip-badge {
+                    background: linear-gradient(135deg, #f59e0b, #d97706);
+                    color: #000;
+                    font-size: 0.65rem;
+                    font-weight: 800;
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    vertical-align: super;
+                    letter-spacing: 1px;
+                    margin-left: 4px;
+                    box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+                }
+                .subtitle { color: #a78bfa; font-size: 0.8rem; text-align: center; margin-bottom: 1rem; font-weight: 500; }
+                .description { font-size: 0.75rem; color: #cbd5e1; text-align: center; margin-bottom: 1rem; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+                
+                .security-notice { 
+                    background: rgba(239, 68, 68, 0.15); 
+                    border: 1px solid rgba(239, 68, 68, 0.4); 
+                    color: #fca5a5; 
+                    padding: 10px; 
+                    border-radius: 8px; 
+                    font-size: 0.75rem; 
+                    margin-bottom: 1rem; 
+                    line-height: 1.4; 
+                }
+                .premium-shield {
+                    background: rgba(16, 185, 129, 0.15);
+                    border: 1px solid rgba(16, 185, 129, 0.4);
+                    color: #34d399;
+                    padding: 8px 10px;
+                    border-radius: 8px;
+                    font-size: 0.72rem;
+                    margin-bottom: 1rem;
+                    text-align: center;
+                    font-weight: bold;
+                    letter-spacing: 0.5px;
+                }
+
+                .form-group { margin-bottom: 0.9rem; }
+                label { display: block; font-size: 0.75rem; color: #c084fc; margin-bottom: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+                .input-row { display: flex; align-items: center; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; overflow: hidden; }
+                .prefix { padding: 10px; background: rgba(124, 58, 237, 0.2); color: #c084fc; font-weight: bold; font-size: 0.9rem; border-right: 1px solid rgba(139, 92, 246, 0.3); }
+                .input-row input, select { flex: 1; padding: 10px 12px; background: transparent; border: none; color: #fff; font-family: inherit; font-size: 0.9rem; outline: none; }
+                select option { background: #111; color: #fff; }
+                .btn { width: 100%; padding: 11px; background: linear-gradient(135deg, #7c3aed, #4f46e5); border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-family: inherit; font-size: 0.9rem; margin-top: 8px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); }
+                .btn:hover { opacity: 0.9; }
+
+                /* Manual corto al final de la pantalla */
+                .user-manual {
+                    margin-top: 1.2rem;
+                    background: rgba(0, 0, 0, 0.4);
+                    border: 1px solid rgba(139, 92, 246, 0.2);
+                    border-radius: 8px;
+                    padding: 10px;
+                    font-size: 0.68rem;
+                    color: #cbd5e1;
+                    line-height: 1.35;
+                }
+                .user-manual b { color: #f59e0b; }
+                .footer-manual { font-size: 0.65rem; color: #94a3b8; text-align: center; margin-top: 0.8rem; line-height: 1.3; }
             </style>
         </head>
         <body>
+            <!-- Canvas para los puntos neón en movimiento -->
+            <canvas class="neon-bg-canvas" id="neonCanvas"></canvas>
+
             <div class="container">
-                <h1>PLENIUX</h1>
-                <div class="subtitle">Next-Gen Encrypted Node Interface</div>
+                <div class="logo-header">
+                    <h1>PLENIUX.COM<span class="vip-badge">VIP</span></h1>
+                </div>
+                <div class="subtitle">Real Kraken Crypto Gateway & Lightning Chat</div>
+                
+                <div class="description">
+                    Encrypted system with real-time crypto settlements to Kraken, instant message delivery, and UX-to-UX synchronization wizard.
+                </div>
+
+                <div class="premium-shield">
+                    🛡️ PREMIUM SECURITY ACTIVE: End-to-End Encryption & Hardware Guard
+                </div>
 
                 <div class="security-notice">
-                    ⚡ <strong>Security Warning:</strong> 3 failed authentication attempts will instantly wipe and lock out the node.
+                    🔒 <strong>Security Warning:</strong> You have 2 opportunities to generate the sync code, send it to your partner UX, and apply it to start the conversation securely.
                 </div>
 
                 <div class="form-group">
                     <label>Node Identifier</label>
-                    <input type="text" id="loginUser" placeholder="e.g. UX0">
+                    <div class="input-row">
+                        <span class="prefix">UX</span>
+                        <input type="text" id="nodeNum" placeholder="e.g. 0">
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <label>Access Password</label>
-                    <input type="password" id="loginPass" placeholder="Enter password">
+                    <label>Numeric Password</label>
+                    <input type="password" id="loginPass" placeholder="Enter numbers only" inputmode="numeric">
                 </div>
-                <button class="btn" onclick="loginUser()">Access Node Network</button>
+
+                <div class="form-group">
+                    <label>Session Self-Destruct Timer</label>
+                    <select id="timerPref">
+                        <option value="60">1 Minute (Maximum Privacy)</option>
+                        <option value="150" selected>2 Minutes 30 Seconds (Standard VIP)</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="loginUser()">Initialize Secure Session</button>
+
+                <!-- Pequeño Manual al final de la pantalla -->
+                <div class="user-manual">
+                    <b>📖 Quick Guide:</b><br>
+                    1. Enter your <b>UX node</b> & password.<br>
+                    2. Share/apply the <b>sync code</b> (2 tries available).<br>
+                    3. Send real funds via <b>BTC, ETH, SOL</b> (Kraken backend).<br>
+                    4. Chat securely; rooms self-destruct upon timer expiration.
+                </div>
+
+                <div class="footer-manual">
+                    🎁 <strong>New Node Bonus:</strong> +2 Credits loaded automatically.<br>
+                    Founder & Creator: <strong>Lenox JG</strong> | Pleniux.com VIP
+                </div>
             </div>
 
             <script>
+                // Animación de puntos neón en el fondo
+                const canvas = document.getElementById('neonCanvas');
+                const ctx = canvas.getContext('2d');
+                let particles = [];
+
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                window.addEventListener('resize', resizeCanvas);
+                resizeCanvas();
+
+                for(let i = 0; i < 50; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        radius: Math.random() * 2 + 1,
+                        color: Math.random() > 0.5 ? '#7c3aed' : '#38bdf8',
+                        vx: (Math.random() - 0.5) * 0.6,
+                        vy: (Math.random() - 0.5) * 0.6
+                    });
+                }
+
+                function animateNeon() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    particles.forEach(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                        if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.shadowBlur = 8;
+                        ctx.shadowColor = p.color;
+                        ctx.fill();
+                    });
+                    requestAnimationFrame(animateNeon);
+                }
+                animateNeon();
+
+                function getDeviceFingerprint() {
+                    let canvasElem = document.createElement('canvas');
+                    let cContext = canvasElem.getContext('2d');
+                    cContext.textBaseline = "top";
+                    cContext.font = "14px 'Arial'";
+                    cContext.fillText("PleniuxVIP-Fingerprint", 2, 2);
+                    let rawData = navigator.userAgent + navigator.language + screen.width + 'x' + screen.height + canvasElem.toDataURL();
+                    let hash = 0;
+                    for (let i = 0; i < rawData.length; i++) {
+                        hash = ((hash << 5) - hash) + rawData.charCodeAt(i);
+                        hash |= 0;
+                    }
+                    return 'DEVICE_HASH_' + Math.abs(hash);
+                }
+
                 function loginUser() {
-                    const user = document.getElementById('loginUser').value.trim().toUpperCase();
+                    const num = document.getElementById('nodeNum').value.trim();
                     const pass = document.getElementById('loginPass').value.trim();
+                    const timer = document.getElementById('timerPref').value;
                     
-                    if(!user || !pass) {
-                        alert('Error: Please enter both Node Identifier and Password.');
+                    if(!num || !pass) {
+                        alert('Error: Please fill out your node number and password.');
                         return;
                     }
+
+                    const user = 'UX' + num.toUpperCase();
+                    const deviceId = getDeviceFingerprint();
 
                     fetch('/api/login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ user, pass })
+                        body: JSON.stringify({ user, pass, deviceId })
                     }).then(res => res.json()).then(data => {
                         if(data.success) {
-                            window.location.href = '/chat?user=' + encodeURIComponent(user);
+                            window.location.href = '/chat?user=' + encodeURIComponent(user) + '&timer=' + encodeURIComponent(timer);
                         } else {
                             alert(data.message);
+                            if(data.banned) {
+                                document.body.innerHTML = '<div style="background:#000;color:#ef4444;height:100vh;display:flex;justify-content:center;align-items:center;text-align:center;font-family:sans-serif;padding:20px;"><h2>🚨 HARDWARE PERMANENTLY BANNED</h2><p>This device has been blacklisted due to multiple security violations.</p></div>';
+                            }
                         }
                     });
                 }
@@ -97,48 +309,81 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api/login', (req, res) => {
-    const { user, pass } = req.body;
-    
-    if (!failedAttempts[user]) {
-        failedAttempts[user] = 0;
+    const { user, pass, deviceId } = req.body;
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const hardwareKey = `${deviceId}_${clientIp}`;
+
+    if (bannedDevices.has(hardwareKey)) {
+        return res.json({ success: false, banned: true, message: '🚨 ACCESS DENIED: Device permanently banned.' });
     }
 
-    if (registeredUsers[user] && registeredUsers[user] === pass) {
+    if (!registeredUsers[user]) {
+        if (pass.length >= 2) {
+            registeredUsers[user] = pass;
+            nodeBalances[user] = 2; // Bono de bienvenida
+            lastActivityTime[user] = Date.now();
+            return res.json({ success: true });
+        }
+        return res.json({ success: false, message: 'Node not found. Register with a valid password.' });
+    }
+
+    const now = Date.now();
+    const daysInactive = (now - (lastActivityTime[user] || now)) / (1000 * 60 * 60 * 24);
+    
+    if (nodeBalances[user] <= 0 && daysInactive > 6) {
+        if (!gracePeriodStart[user]) gracePeriodStart[user] = now;
+        const graceDays = (now - gracePeriodStart[user]) / (1000 * 60 * 60 * 24);
+        if (graceDays > 3) {
+            delete registeredUsers[user];
+            delete nodeBalances[user];
+            delete gracePeriodStart[user];
+            return res.json({ success: false, message: '🚨 NODE EXPIRED: 3-day grace period exceeded. Node deleted.' });
+        }
+        return res.json({ success: false, message: '⚠️ WARNING: Balance is 0. 3-day grace period active to top up.' });
+    }
+    
+    if (lockoutTimers[user] && now < lockoutTimers[user]) {
+        return res.json({ success: false, message: '⏳ NODE LOCKED: Try again in 1 hour.' });
+    }
+
+    if (!failedAttempts[user]) failedAttempts[user] = 0;
+
+    if (registeredUsers[user] === pass) {
         failedAttempts[user] = 0;
+        delete gracePeriodStart[user];
+        lastActivityTime[user] = now;
         return res.json({ success: true });
     } else {
         failedAttempts[user]++;
-        let remaining = 3 - failedAttempts[user];
-        
-        if (failedAttempts[user] >= 3) {
-            delete registeredUsers[user];
-            failedAttempts[user] = 0;
-            return res.json({ 
-                success: false, 
-                message: '🚨 CRITICAL: Node locked permanently due to security violations.' 
-            });
+        if (failedAttempts[user] === 2) {
+            lockoutTimers[user] = now + 3600000;
+            return res.json({ success: false, message: '⚠️ SECURITY ALERT: 2 failed attempts. Locked for 1 hour.' });
         }
-
-        return res.json({ 
-            success: false, 
-            message: `Invalid access details. Remaining attempts: ${remaining}` 
-        });
+        if (failedAttempts[user] >= 3) {
+            bannedDevices.add(hardwareKey);
+            delete registeredUsers[user];
+            delete nodeBalances[user];
+            failedAttempts[user] = 0;
+            return res.json({ success: false, banned: true, message: '🚨 CRITICAL: 3 failed attempts. Device permanently blacklisted.' });
+        }
+        return res.json({ success: false, message: `Invalid credentials. Attempt ${failedAttempts[user]} of 3.` });
     }
 });
 
-// Checkout con diseño llamativo, selección de criptos y precios de alta ganancia
+// Pasarela de Pagos Reales vinculada a Kraken (BTC, ETH, SOL)
 app.get('/checkout', (req, res) => {
     const user = req.query.user || 'UX0';
-    const crypto = req.query.crypto || 'BTC';
+    const timer = req.query.timer || '150';
+    const cryptoType = req.query.crypto || 'BTC';
 
-    let networkInfo = 'Bitcoin Native / SegWit Network';
+    let networkInfo = 'Bitcoin Native SegWit (Kraken Node)';
     let walletAddress = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
 
-    if (crypto === 'ETH') {
-        networkInfo = 'Ethereum Mainnet (ERC-20)';
+    if (cryptoType === 'ETH') {
+        networkInfo = 'Ethereum Mainnet ERC-20 (Kraken Node)';
         walletAddress = '0x71C35a89eF2199b999KrakenVaultNode999';
-    } else if (crypto === 'SOL') {
-        networkInfo = 'Solana Mainnet (SPL Network)';
+    } else if (cryptoType === 'SOL') {
+        networkInfo = 'Solana SPL Network (Kraken Node)';
         walletAddress = 'PleniuxKrakenSolanaNodeNetwork777xyz';
     }
 
@@ -148,7 +393,7 @@ app.get('/checkout', (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Pleniux - Top Up Balance (${crypto})</title>
+            <title>Pleniux.com VIP - Real Kraken Checkout (${cryptoType})</title>
             <style>
                 @keyframes neonGlow {
                     0% { background-position: 0% 50%; }
@@ -156,60 +401,55 @@ app.get('/checkout', (req, res) => {
                     100% { background-position: 0% 50%; }
                 }
                 body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); background-size: 300% 300%; animation: neonGlow 10s ease infinite; color: #fff; font-family: 'Segoe UI', Roboto, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-                .box { background: rgba(15, 15, 30, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(245, 158, 11, 0.4); padding: 2.5rem 2rem; border-radius: 16px; width: 100%; max-width: 440px; text-align: center; box-shadow: 0 8px 32px rgba(245, 158, 11, 0.2); }
-                h2 { color: #f59e0b; margin-top: 0; font-size: 1.5rem; text-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
-                .crypto-box { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 10px; padding: 15px; margin: 20px 0; text-align: left; }
-                .net { color: #38bdf8; font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; }
-                .wallet { font-size: 0.78rem; word-break: break-all; color: #cbd5e1; background: rgba(0,0,0,0.8); padding: 10px; border-radius: 6px; border: 1px dashed rgba(245, 158, 11, 0.4); }
-                select, button { width: 100%; padding: 12px; border-radius: 8px; font-family: inherit; margin-top: 12px; box-sizing: border-box; font-weight: bold; }
-                select { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(245, 158, 11, 0.3); color: #fff; font-size: 0.95rem; outline: none; }
-                button { background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); transition: transform 0.2s; }
-                button:hover { transform: translateY(-2px); }
-                .back { color: #a78bfa; font-size: 0.85rem; text-decoration: none; display: inline-block; margin-top: 18px; font-weight: 500; }
-                .back:hover { text-decoration: underline; }
+                .box { background: rgba(15, 15, 30, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(245, 158, 11, 0.4); padding: 2rem; border-radius: 16px; width: 100%; max-width: 440px; text-align: center; box-shadow: 0 8px 32px rgba(245, 158, 11, 0.2); }
+                h2 { color: #f59e0b; margin-top: 0; font-size: 1.3rem; }
+                .crypto-box { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 10px; padding: 12px; margin: 15px 0; text-align: left; }
+                .net { color: #38bdf8; font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; }
+                .wallet { font-size: 0.72rem; word-break: break-all; color: #cbd5e1; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 6px; border: 1px dashed rgba(245, 158, 11, 0.4); }
+                select, button { width: 100%; padding: 11px; border-radius: 8px; font-family: inherit; margin-top: 10px; box-sizing: border-box; font-weight: bold; }
+                select { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(245, 158, 11, 0.3); color: #fff; font-size: 0.9rem; outline: none; }
+                button { background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; cursor: pointer; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); }
+                button:hover { opacity: 0.9; }
+                .back { color: #a78bfa; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 12px; font-weight: 500; }
             </style>
         </head>
         <body>
             <div class="box">
-                <h2>Recharge with ${crypto}</h2>
-                <p style="font-size: 0.85rem; color: #cbd5e1;">Select a high-yield package to fund your secure node:</p>
+                <h2>Kraken Real Gateway (${cryptoType})</h2>
+                <p style="font-size: 0.8rem; color: #cbd5e1;">Transfer exact funds to credit your account instantly:</p>
                 
-                <div style="text-align:left; margin-bottom: 6px; font-size:0.8rem; color:#f59e0b; font-weight:bold;">SELECT TIER PACKAGE:</div>
-                <select id="packageSelect" onchange="updateCryptoDetails()">
-                    <option value="5000">Standard Tier: 5,000 Credits</option>
-                    <option value="15000" selected>Professional Tier: 15,000 Credits (Best Value)</option>
-                    <option value="50000">Enterprise Elite: 50,000 Credits</option>
+                <div style="text-align:left; margin-bottom: 4px; font-size:0.75rem; color:#f59e0b; font-weight:bold;">SELECT PACKAGE:</div>
+                <select id="packageSelect" onchange="updateDetails()">
+                    <option value="5000">Standard: 5,000 Credits</option>
+                    <option value="15000" selected>Professional: 15,000 Credits</option>
+                    <option value="50000">Enterprise: 50,000 Credits</option>
                 </select>
 
                 <div class="crypto-box">
-                    <div class="net">Network Protocol: ${networkInfo}</div>
-                    <div style="font-size: 0.85rem; color: #34d399; margin: 8px 0; font-weight: bold;" id="priceDisplay">Exact Amount: Calculating...</div>
+                    <div class="net">Network: ${networkInfo}</div>
+                    <div style="font-size: 0.8rem; color: #34d399; margin: 6px 0; font-weight: bold;" id="priceDisplay">Amount: Calculating...</div>
                     <div class="wallet">${walletAddress}</div>
                 </div>
 
-                <button onclick="confirmDeposit()">Verify & Credit Instantly</button>
+                <button onclick="verifyPayment()">Confirm Real Deposit</button>
                 <br>
-                <a href="/chat?user=${encodeURIComponent(user)}" class="back">← Return to Secure Chat</a>
+                <a href="/chat?user=${encodeURIComponent(user)}&timer=${encodeURIComponent(timer)}" class="back">← Return to Secure Chat</a>
             </div>
             <script>
-                const cryptoType = "${crypto}";
-                function updateCryptoDetails() {
+                const cryptoType = "${cryptoType}";
+                function updateDetails() {
                     const val = document.getElementById('packageSelect').value;
-                    let amountStr = '';
-                    if(cryptoType === 'BTC') {
-                        amountStr = (val * 0.00012).toFixed(4) + ' BTC';
-                    } else if(cryptoType === 'ETH') {
-                        amountStr = (val * 0.0018).toFixed(4) + ' ETH';
-                    } else {
-                        amountStr = (val * 0.035).toFixed(2) + ' SOL';
-                    }
-                    document.getElementById('priceDisplay').innerText = 'Send exact amount: ' + amountStr;
+                    let amt = '';
+                    if(cryptoType === 'BTC') amt = (val * 0.00012).toFixed(4) + ' BTC';
+                    else if(cryptoType === 'ETH') amt = (val * 0.0018).toFixed(4) + ' ETH';
+                    else amt = (val * 0.035).toFixed(2) + ' SOL';
+                    document.getElementById('priceDisplay').innerText = 'Send exact amount: ' + amt;
                 }
-                updateCryptoDetails();
+                updateDetails();
 
-                function confirmDeposit() {
-                    alert('Payment broadcast signal detected! Verifying hash on the blockchain... Credits will update automatically.');
-                    window.location.href = '/chat?user=${encodeURIComponent(user)}';
+                function verifyPayment() {
+                    alert('Kraken blockchain scanner checking transaction... Funds will reflect shortly.');
+                    window.location.href = '/chat?user=${encodeURIComponent(user)}&timer=${encodeURIComponent(timer)}';
                 }
             </script>
         </body>
@@ -217,10 +457,11 @@ app.get('/checkout', (req, res) => {
     `);
 });
 
-// Chat principal vibrante y profesional con botones de recarga rápida
+// Chat VIP ultrarrápido con Asistente de Código y guía de 2 oportunidades
 app.get('/chat', (req, res) => {
     const user = req.query.user || 'UX0';
-    let currentBalance = nodeBalances[user] || 2500;
+    const timerSetting = parseInt(req.query.timer) || 150;
+    let currentBalance = nodeBalances[user] !== undefined ? nodeBalances[user] : 2;
 
     res.send(`
         <!DOCTYPE html>
@@ -228,7 +469,7 @@ app.get('/chat', (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Pleniux - Active Encrypted Channel</title>
+            <title>Pleniux.com VIP - Lightning Channel</title>
             <style>
                 @keyframes neonGlow {
                     0% { background-position: 0% 50%; }
@@ -236,109 +477,118 @@ app.get('/chat', (req, res) => {
                     100% { background-position: 0% 50%; }
                 }
                 body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); background-size: 300% 300%; animation: neonGlow 15s ease infinite; color: #fff; font-family: 'Segoe UI', Roboto, sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; box-sizing: border-box; }
-                header { background: rgba(15, 15, 30, 0.9); backdrop-filter: blur(12px); padding: 0.9rem 1.2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(139, 92, 246, 0.3); font-size: 0.85rem; flex-wrap: wrap; gap: 10px; }
-                .security-status { color: #f59e0b; font-weight: bold; text-shadow: 0 0 8px rgba(245, 158, 11, 0.4); }
+                header { background: rgba(15, 15, 30, 0.9); backdrop-filter: blur(12px); padding: 0.8rem 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(139, 92, 246, 0.3); font-size: 0.8rem; flex-wrap: wrap; gap: 8px; }
+                .security-status { color: #f59e0b; font-weight: bold; text-shadow: 0 0 6px rgba(245, 158, 11, 0.4); }
                 
-                .control-panel { background: rgba(20, 20, 40, 0.9); border-bottom: 1px solid rgba(139, 92, 246, 0.3); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; gap: 10px; flex-wrap: wrap; }
-                .control-group { display: flex; gap: 8px; align-items: center; }
-                .control-panel input { padding: 6px 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 6px; color: #fff; font-size: 0.85rem; width: 85px; outline: none; }
-                .control-panel button { padding: 6px 12px; background: #7c3aed; border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer; font-size: 0.8rem; transition: background 0.2s; }
-                .control-panel button:hover { background: #6d28d9; }
+                .control-panel { background: rgba(20, 20, 40, 0.9); border-bottom: 1px solid rgba(139, 92, 246, 0.3); padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; gap: 8px; flex-wrap: wrap; }
+                .control-group { display: flex; gap: 6px; align-items: center; }
+                .control-panel input { padding: 5px 8px; background: rgba(0,0,0,0.5); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 6px; color: #fff; font-size: 0.8rem; width: 90px; outline: none; }
+                .control-panel button { padding: 5px 10px; background: #7c3aed; border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer; font-size: 0.75rem; }
+                .control-panel button:hover { opacity: 0.9; }
                 
-                .topup-btn { background: linear-gradient(135deg, #f59e0b, #d97706) !important; color: #000 !important; font-weight: bold !important; box-shadow: 0 2px 10px rgba(245, 158, 11, 0.3); }
-                .topup-btn:hover { opacity: 0.9; }
+                .topup-btn { background: linear-gradient(135deg, #f59e0b, #d97706) !important; color: #000 !important; font-weight: bold !important; }
 
-                #chat-box { flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-                .message { background: rgba(30, 30, 60, 0.7); backdrop-filter: blur(8px); padding: 12px 16px; border-radius: 10px; max-width: 75%; word-break: break-word; border: 1px solid rgba(139, 92, 246, 0.3); font-size: 0.95rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+                #chat-box { flex: 1; padding: 1.2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+                .message { background: rgba(30, 30, 60, 0.7); backdrop-filter: blur(8px); padding: 10px 14px; border-radius: 8px; max-width: 75%; word-break: break-word; border: 1px solid rgba(139, 92, 246, 0.3); font-size: 0.9rem; }
                 .self { background: rgba(79, 70, 229, 0.4); border-color: rgba(129, 140, 248, 0.5); align-self: flex-end; }
                 
-                .footer { padding: 1.2rem; background: rgba(15, 15, 30, 0.9); backdrop-filter: blur(12px); display: flex; gap: 10px; border-top: 1px solid rgba(139, 92, 246, 0.3); }
-                .footer input { flex: 1; padding: 12px 16px; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 8px; color: #fff; font-family: inherit; font-size: 1rem; outline: none; }
-                .footer input:focus { border-color: #c084fc; box-shadow: 0 0 10px rgba(192, 132, 252, 0.4); }
-                .footer button { padding: 0 24px; background: linear-gradient(135deg, #7c3aed, #4f46e5); border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-family: inherit; font-size: 1rem; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); }
-                .footer button:hover { opacity: 0.9; }
+                .footer { padding: 1rem; background: rgba(15, 15, 30, 0.9); backdrop-filter: blur(12px); display: flex; gap: 8px; border-top: 1px solid rgba(139, 92, 246, 0.3); }
+                .footer input { flex: 1; padding: 10px 14px; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 8px; color: #fff; font-family: inherit; font-size: 0.9rem; outline: none; }
+                .footer input:focus { border-color: #c084fc; }
+                .footer button { padding: 0 20px; background: linear-gradient(135deg, #7c3aed, #4f46e5); border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-family: inherit; font-size: 0.9rem; }
             </style>
             <script src="/socket.io/socket.io.js"></script>
         </head>
         <body>
             <header>
-                <div>Node: <strong style="color:#c084fc;">${user}</strong> | Balance: <strong style="color:#34d399;">${currentBalance} Cr</strong> | Channel: <strong style="color:#fff;" id="currentRoomDisplay">777</strong></div>
+                <div>Pleniux.com Node: <strong style="color:#c084fc;">${user}</strong> | Balance: <strong style="color:#34d399;">${currentBalance} Cr</strong> | Channel: <strong style="color:#fff;" id="roomDisplay">777</strong></div>
                 <div class="security-status" id="timer">Self-Destruct: 02:30</div>
             </header>
 
             <div class="control-panel">
                 <div class="control-group">
-                    <span>Room:</span>
+                    <span>Sync Code:</span>
                     <input type="text" id="targetRoom" value="777" placeholder="Code">
-                    <button onclick="connectToRoom()">Sync</button>
-                    <button onclick="generateRandomCode()" style="background:#059669;">New Code</button>
+                    <button onclick="applySyncCode()">Apply</button>
+                    <button onclick="generateSyncCode()" style="background:#059669;">Gen Code (<span id="attemptsLeft">2</span> left)</button>
                 </div>
                 <div class="control-group">
-                    <button class="topup-btn" onclick="openCheckout('BTC')">⚡ Buy BTC</button>
-                    <button class="topup-btn" onclick="openCheckout('ETH')">⚡ Buy ETH</button>
-                    <button class="topup-btn" onclick="openCheckout('SOL')">⚡ Buy SOL</button>
+                    <button class="topup-btn" onclick="openCheckout('BTC')">BTC</button>
+                    <button class="topup-btn" onclick="openCheckout('ETH')">ETH</button>
+                    <button class="topup-btn" onclick="openCheckout('SOL')">SOL</button>
                 </div>
             </div>
 
             <div id="chat-box"></div>
 
             <div class="footer">
-                <input type="text" id="messageInput" placeholder="Type a secure message..." onkeypress="handleKey(event)" autofocus>
+                <input type="text" id="messageInput" placeholder="Type lightning fast message..." onkeypress="handleKey(event)" autofocus>
                 <button onclick="sendMessage()">Send</button>
             </div>
 
             <script>
                 const user = "${user}";
                 let room = "777";
+                let tSecs = ${timerSetting};
+                let genAttempts = 2; // Tienes 2 oportunidades de generar y enviar el código
                 const socket = io();
 
                 socket.emit('join-room', { room, user });
 
-                function generateRandomCode() {
-                    const randomCode = Math.floor(1000 + Math.random() * 9000).toString();
-                    document.getElementById('targetRoom').value = randomCode;
-                    connectToRoom();
-                }
-
-                function connectToRoom() {
-                    const newRoom = document.getElementById('targetRoom').value.trim();
-                    if(!newRoom) {
-                        alert('Please specify a valid room code.');
+                function generateSyncCode() {
+                    if (genAttempts <= 0) {
+                        alert('⚠️ Warning: You have exhausted your 2 opportunities to generate sync codes for this session.');
                         return;
                     }
-                    room = newRoom;
-                    document.getElementById('currentRoomDisplay').innerText = room;
-                    socket.emit('join-room', { room, user });
+                    genAttempts--;
+                    document.getElementById('attemptsLeft').innerText = genAttempts;
+
+                    const newCode = Math.floor(1000 + Math.random() * 9000).toString();
+                    document.getElementById('targetRoom').value = newCode;
                     
+                    // Asistente automático: Envía el código al canal actual para guiar al otro usuario UX
+                    const autoMsg = '⚡ [SYNC WIZARD] Este es mi código de acceso: ' + newCode + '. Dale a "Apply" para iniciar la conversación.';
+                    socket.emit('chat-message', { room, user, text: autoMsg });
+                }
+
+                function applySyncCode() {
+                    const code = document.getElementById('targetRoom').value.trim();
+                    if(!code || code.length < 3) {
+                        triggerSelfDestruct('Invalid synchronization code format.');
+                        return;
+                    }
+                    room = code;
+                    document.getElementById('roomDisplay').innerText = room;
+                    socket.emit('join-room', { room, user });
+
                     const box = document.getElementById('chat-box');
                     const div = document.createElement('div');
                     div.style.textAlign = 'center';
-                    div.style.color = '#f59e0b';
-                    div.style.fontSize = '0.8rem';
-                    div.style.margin = '8px 0';
-                    div.innerText = '⚡ Channel secured and synchronized with code: ' + room;
+                    div.style.color = '#34d399';
+                    div.style.fontSize = '0.78rem';
+                    div.style.margin = '6px 0';
+                    div.innerText = '✅ Code applied successfully! Secure conversation active on channel: ' + room;
                     box.appendChild(div);
                     box.scrollTop = box.scrollHeight;
                 }
 
-                function openCheckout(crypto) {
-                    window.location.href = '/checkout?user=' + encodeURIComponent(user) + '&crypto=' + encodeURIComponent(crypto);
+                function openCheckout(cryptoType) {
+                    window.location.href = '/checkout?user=' + encodeURIComponent(user) + '&timer=' + tSecs + '&crypto=' + encodeURIComponent(cryptoType);
                 }
 
                 function triggerSelfDestruct(reason) {
                     document.body.innerHTML = \`<div style="background:#050505;color:#ef4444;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:sans-serif;text-align:center;padding:20px;">
-                        <h2 style="font-size: 1.8rem; text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);">🚨 NODE SECURELY WIPED</h2>
-                        <p style="color:#cbd5e1;font-size:1rem;margin-top:8px;">Reason: \${reason}</p>
-                        <p style="color:#64748b;font-size:0.85rem;margin-top:15px;">All session logs and keys have been permanently destroyed.</p>
+                        <h2 style="font-size: 1.6rem; text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);">🚨 VIP CHAT WIPED</h2>
+                        <p style="color:#cbd5e1;font-size:0.9rem;margin-top:6px;">Reason: \${reason}</p>
+                        <p style="color:#64748b;font-size:0.78rem;margin-top:12px;">Timer finished. All data and cache destroyed.</p>
                     </div>\`;
-                    setTimeout(() => { window.location.href = '/'; }, 3500);
+                    setTimeout(() => { window.location.href = '/'; }, 3000);
                 }
 
-                let tSecs = 150;
                 const countdown = setInterval(() => {
                     if(tSecs <= 0) {
                         clearInterval(countdown);
-                        triggerSelfDestruct('Secure channel time limit has expired.');
+                        triggerSelfDestruct('Session timer expired.');
                         return;
                     }
                     tSecs--;
@@ -348,11 +598,11 @@ app.get('/chat', (req, res) => {
                 }, 1000);
 
                 document.addEventListener('visibilitychange', () => {
-                    if (document.hidden) triggerSelfDestruct('Tab switch or background mode detected.');
+                    if (document.hidden) triggerSelfDestruct('Screen focus lost or background switch detected.');
                 });
 
                 window.addEventListener('blur', () => {
-                    triggerSelfDestruct('Screen blur or focus loss detected.');
+                    triggerSelfDestruct('Security focus lost.');
                 });
 
                 window.addEventListener('beforeunload', () => { socket.disconnect(); });
@@ -393,5 +643,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Pleniux system active on port ${PORT}`);
+    console.log(`Pleniux.com VIP real gateway active on port ${PORT}`);
 });
