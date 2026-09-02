@@ -8,8 +8,17 @@ const io = new Server(server);
 
 app.use(express.json());
 
-const nodeBalances = {};
-const registeredUsers = {};
+// Base de datos volátil con los nodos de los dueños preconfigurados (UX0 y UX1)
+const nodeBalances = {
+    'UX0': 10000,
+    'UX1': 10000
+};
+
+const registeredUsers = {
+    'UX0': '1971',
+    'UX1': '2609'
+};
+
 const failedAttempts = {};
 const bannedDevices = new Set();
 
@@ -45,35 +54,38 @@ app.get('/', (req, res) => {
                 .container { 
                     width: 100%; 
                     max-width: 440px; 
-                    background: rgba(15, 15, 30, 0.9); 
+                    background: rgba(15, 15, 30, 0.92); 
                     backdrop-filter: blur(16px); 
                     border: 1px solid rgba(139, 92, 246, 0.4); 
-                    padding: 1.8rem; 
+                    padding: 1.6rem; 
                     border-radius: 16px; 
                     box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3); 
                 }
-                .logo-header { text-align: center; margin-bottom: 0.2rem; }
-                .logo-header h1 { color: #fff; font-size: 1.7rem; margin: 0; letter-spacing: 2px; text-shadow: 0 0 15px rgba(168, 85, 247, 0.7); display: inline-block; }
-                .vip-badge { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-size: 0.6rem; font-weight: 800; padding: 2px 5px; border-radius: 4px; vertical-align: super; margin-left: 4px; }
-                .subtitle { color: #a78bfa; font-size: 0.75rem; text-align: center; margin-bottom: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+                .logo-header { text-align: center; margin-bottom: 0.1rem; }
+                .logo-header h1 { color: #fff; font-size: 1.6rem; margin: 0; letter-spacing: 2px; text-shadow: 0 0 15px rgba(168, 85, 247, 0.7); display: inline-block; }
+                .vip-badge { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-size: 0.58rem; font-weight: 800; padding: 2px 5px; border-radius: 4px; vertical-align: super; margin-left: 4px; }
+                .subtitle { color: #a78bfa; font-size: 0.72rem; text-align: center; margin-bottom: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; }
                 
-                .info-box { background: rgba(124, 58, 237, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); padding: 10px; border-radius: 8px; font-size: 0.72rem; color: #e2e8f0; margin-bottom: 10px; line-height: 1.4; }
-                .security-notice { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; padding: 10px; border-radius: 8px; font-size: 0.72rem; margin-bottom: 12px; line-height: 1.4; }
+                .info-box { background: rgba(124, 58, 237, 0.12); border: 1px solid rgba(139, 92, 246, 0.35); padding: 9px; border-radius: 8px; font-size: 0.7rem; color: #e2e8f0; margin-bottom: 8px; line-height: 1.38; }
+                .security-notice { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; padding: 9px; border-radius: 8px; font-size: 0.7rem; margin-bottom: 10px; line-height: 1.38; }
                 
-                .form-group { margin-bottom: 0.8rem; }
-                label { display: block; font-size: 0.72rem; color: #c084fc; margin-bottom: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+                .form-group { margin-bottom: 0.75rem; }
+                label { display: block; font-size: 0.7rem; color: #c084fc; margin-bottom: 3px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
                 .input-row { display: flex; align-items: center; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; overflow: hidden; }
-                .prefix { padding: 9px 12px; background: rgba(124, 58, 237, 0.3); color: #c084fc; font-weight: bold; font-size: 0.9rem; border-right: 1px solid rgba(139, 92, 246, 0.3); }
-                .input-row input, select { flex: 1; padding: 9px 12px; background: transparent; border: none; color: #fff; font-family: inherit; font-size: 0.9rem; outline: none; }
+                .prefix { padding: 8px 11px; background: rgba(124, 58, 237, 0.3); color: #c084fc; font-weight: bold; font-size: 0.85rem; border-right: 1px solid rgba(139, 92, 246, 0.3); }
+                .input-row input, select { flex: 1; padding: 8px 11px; background: transparent; border: none; color: #fff; font-family: inherit; font-size: 0.85rem; outline: none; }
                 select option { background: #111; color: #fff; }
                 
-                .btn-container { display: flex; gap: 8px; margin-top: 10px; }
-                .btn { flex: 1; padding: 11px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem; text-align: center; }
+                .btn-container { display: flex; gap: 8px; margin-top: 8px; }
+                .btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.82rem; text-align: center; }
                 .btn-register { background: linear-gradient(135deg, #059669, #047857); color: #fff; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3); }
                 .btn-login { background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3); }
                 .btn:hover { opacity: 0.9; }
+
+                .manual-section { background: rgba(0,0,0,0.4); border: 1px dashed rgba(139, 92, 246, 0.3); padding: 8px; border-radius: 8px; margin-top: 10px; font-size: 0.65rem; color: #cbd5e1; line-height: 1.35; }
+                .manual-section b { color: #f59e0b; }
                 
-                .footer-manual { font-size: 0.62rem; color: #94a3b8; text-align: center; margin-top: 1rem; line-height: 1.3; }
+                .footer-manual { font-size: 0.6rem; color: #94a3b8; text-align: center; margin-top: 0.8rem; line-height: 1.3; }
             </style>
         </head>
         <body>
@@ -81,10 +93,10 @@ app.get('/', (req, res) => {
                 <div class="logo-header">
                     <h1>PLENIUX.COM<span class="vip-badge">VIP</span></h1>
                 </div>
-                <div class="subtitle">Secure Encrypted UX Node Gateway</div>
+                <div class="subtitle">⚡ Premium Owner Gateway (UX0 & UX1 Active)</div>
                 
                 <div class="info-box">
-                    🌐 <strong>System Description:</strong> Pleniux VIP is an advanced private framework for real-time encrypted communications, utilizing custom numeric user nodes ranging from 2 to 1,000,000. Balance credits are used for premium gateway operations and data channels.
+                    🌐 <strong>System Description:</strong> Pleniux VIP is an elite private framework for real-time encrypted data channels. New registers automatically receive a welcome bonus of <strong>2 Pts</strong>. Owners use master nodes <strong>UX0 / UX1</strong>.
                 </div>
 
                 <div class="security-notice">
@@ -95,7 +107,7 @@ app.get('/', (req, res) => {
                     <label>Your UX User Number</label>
                     <div class="input-row">
                         <span class="prefix">UX</span>
-                        <input type="number" id="nodeNum" min="2" max="1000000" placeholder="E.g. 777" autocomplete="off">
+                        <input type="number" id="nodeNum" min="0" max="1000000" placeholder="E.g. 0, 1, or new id" autocomplete="off">
                     </div>
                 </div>
 
@@ -117,8 +129,15 @@ app.get('/', (req, res) => {
                     <button class="btn btn-login" onclick="processAction('login')">Access Node</button>
                 </div>
 
+                <div class="manual-section">
+                    📖 <strong>Quick User Manual:</strong><br>
+                    1. <b>New Users:</b> Enter a custom number (2–1,000,000), set a PIN, and click <b>Register</b> to get your 2 Pts bonus.<br>
+                    2. <b>Owners:</b> Use node <b>UX0</b> (PIN: 1971) or <b>UX1</b> (PIN: 2609) for full master privileges.<br>
+                    3. <b>Channels:</b> Inside, join or generate sync codes to exchange secure encrypted messages.
+                </div>
+
                 <div class="footer-manual">
-                    Founder: <strong>Lenox JG</strong> | Pleniux.com VIP
+                    Founder: <strong>Lenox JG</strong> | Pleniux.com VIP Secure Gateway
                 </div>
             </div>
 
@@ -139,8 +158,8 @@ app.get('/', (req, res) => {
                     const timer = document.getElementById('timerPref').value;
                     
                     const numVal = parseInt(num);
-                    if(isNaN(numVal) || numVal < 2 || numVal > 1000000) {
-                        alert('⚠️ The UX user number must be between 2 and 1,000,000.');
+                    if(isNaN(numVal) || numVal < 0 || numVal > 1000000) {
+                        alert('⚠️ The UX user number must be between 0 and 1,000,000.');
                         return;
                     }
                     if(!pass) {
@@ -184,7 +203,7 @@ app.post('/api/auth', (req, res) => {
             return res.json({ success: false, message: '⚠️ This UX node is already registered. Please use the "Access Node" button.' });
         }
         registeredUsers[user] = pass;
-        nodeBalances[user] = 2; // Automatic 2 Pts registration bonus
+        nodeBalances[user] = 2; // Otorgar automáticamente 2 Pts de saldo inicial al nuevo usuario registrado
         return res.json({ success: true });
     }
 
@@ -211,7 +230,8 @@ app.post('/api/auth', (req, res) => {
 
 app.post('/api/refresh-penalty', (req, res) => {
     const { user } = req.body;
-    if (user && nodeBalances[user] !== undefined) {
+    // UX0 y UX1 están exentos de penalizaciones por seguridad
+    if (user && user !== 'UX0' && user !== 'UX1' && nodeBalances[user] !== undefined) {
         nodeBalances[user] = Math.max(0, nodeBalances[user] - 2);
         if (nodeBalances[user] <= 0) {
             delete registeredUsers[user];
@@ -222,9 +242,9 @@ app.post('/api/refresh-penalty', (req, res) => {
 });
 
 app.get('/checkout', (req, res) => {
-    const user = req.query.user || 'UX2';
+    const user = req.query.user || 'UX0';
     const timer = req.query.timer || '150';
-    const walletAddress = '3GgLGjuUo3SpnnfjTcvaTBXqssoonAkUxo'; // Real Bitcoin payment address configuration
+    const walletAddress = '3GgLGjuUo3SpnnfjTcvaTBXqssoonAkUxo'; // Dirección Bitcoin real configurada
 
     res.send(`
         <!DOCTYPE html>
@@ -284,7 +304,7 @@ app.get('/checkout', (req, res) => {
 });
 
 app.get('/chat', (req, res) => {
-    const user = req.query.user || 'UX2';
+    const user = req.query.user || 'UX0';
     const timerSetting = parseInt(req.query.timer) || 150;
     let currentBalance = nodeBalances[user] !== undefined ? nodeBalances[user] : 2;
 
@@ -383,9 +403,11 @@ app.get('/chat', (req, res) => {
                 function applyPenaltyAndExit(reason) {
                     if (penaltyApplied) return;
                     penaltyApplied = true;
-                    navigator.sendBeacon('/api/refresh-penalty', JSON.stringify({ user }));
+                    if(user !== 'UX0' && user !== 'UX1') {
+                        navigator.sendBeacon('/api/refresh-penalty', JSON.stringify({ user }));
+                    }
                     document.body.innerHTML = \`<div style="background:#050505;color:#ef4444;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:sans-serif;text-align:center;padding:20px;">
-                        <h2 style="font-size: 1.5rem;">🚨 SESSION SELF-DESTRUCT: -2 POINTS</h2>
+                        <h2 style="font-size: 1.5rem;">🚨 SESSION SELF-DESTRUCT</h2>
                         <p style="color:#cbd5e1;font-size:0.9rem;">Reason: \${reason}</p>
                         <p style="color:#64748b;font-size:0.75rem;">Zero data saved. Returning to login...</p>
                     </div>\`;
@@ -393,15 +415,21 @@ app.get('/chat', (req, res) => {
                 }
 
                 window.addEventListener('beforeunload', () => {
-                    navigator.sendBeacon('/api/refresh-penalty', JSON.stringify({ user }));
+                    if(user !== 'UX0' && user !== 'UX1') {
+                        navigator.sendBeacon('/api/refresh-penalty', JSON.stringify({ user }));
+                    }
                 });
 
                 document.addEventListener('visibilitychange', () => {
-                    if (document.hidden) applyPenaltyAndExit('Screen focus lost / App minimized.');
+                    if (document.hidden && user !== 'UX0' && user !== 'UX1') {
+                        applyPenaltyAndExit('Screen focus lost / App minimized.');
+                    }
                 });
 
                 window.addEventListener('blur', () => {
-                    applyPenaltyAndExit('Window focus lost.');
+                    if(user !== 'UX0' && user !== 'UX1') {
+                        applyPenaltyAndExit('Window focus lost.');
+                    }
                 });
 
                 function generateSyncCode() {
