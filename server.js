@@ -132,7 +132,7 @@ app.get('/', (req, res) => {
                 <div class="manual-section">
                     📖 <strong>Quick User Manual:</strong><br>
                     1. <b>New Users:</b> Enter a custom number (2–1,000,000), set a PIN, and click <b>Register</b> to get your 2 Pts bonus.<br>
-                    2. <b>Owners:</b> Use node <b>UX0</b> (PIN: 1971) or <b>UX1</b> (PIN: 2609) for full master privileges.<br>
+                    2. <b>Owners:</b> Use node <b>UX0</b> (PIN: ****) or <b>UX1</b> (PIN: ***) for full master privileges.<br>
                     3. <b>Channels:</b> Inside, join or generate sync codes to exchange secure encrypted messages.
                 </div>
 
