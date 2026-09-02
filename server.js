@@ -8,7 +8,6 @@ const io = new Server(server);
 
 app.use(express.json());
 
-// Secure balance and node credentials database
 const nodeBalances = {
     'UX1': 10000,
     'UX0': 10000
@@ -19,10 +18,9 @@ const registeredUsers = {
     'UX0': '1971'
 };
 
-// In-memory tracking for failed attempts to prevent brute-force attacks
 const failedAttempts = {};
 
-// 1. Professional Main Interface with Manual, Access, and Crypto Gateway
+// Interfaz Principal con Fondo en Movimiento (Animación CSS)
 app.get('/', (req, res) => {
     res.send(`
         <!DOCTYPE html>
@@ -32,14 +30,18 @@ app.get('/', (req, res) => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Pleniux - Secure Messaging & Crypto Gateway</title>
             <style>
-                body { background: #080808; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
-                .container { width: 100%; max-width: 520px; background: #121212; border: 1px solid #222; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.8); }
+                @keyframes backgroundMove {
+                    0% { background-position: 0% 50%; }
+                    50% { background-position: 100% 50%; }
+                    100% { background-position: 0% 50%; }
+                }
+                body { background: linear-gradient(-45deg, #050505, #0f172a, #09090b, #111827); background-size: 400% 400%; animation: backgroundMove 15s ease infinite; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
+                .container { width: 100%; max-width: 520px; background: rgba(18, 18, 18, 0.9); backdrop-filter: blur(10px); border: 1px solid #222; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.8); }
                 h1 { color: #fff; font-size: 1.5rem; margin-top: 0; text-align: center; letter-spacing: 1px; }
                 .subtitle { color: #888; font-size: 0.82rem; text-align: center; margin-bottom: 1.5rem; line-height: 1.4; }
-                .security-notice { background: #1a1500; border: 1px solid #423500; color: #f59e0b; padding: 10px; border-radius: 6px; font-size: 0.78rem; margin-bottom: 1.5rem; line-height: 1.4; }
+                .security-notice { background: rgba(26, 21, 0, 0.8); border: 1px solid #423500; color: #f59e0b; padding: 10px; border-radius: 6px; font-size: 0.78rem; margin-bottom: 1.5rem; line-height: 1.4; }
                 
-                /* Operational Manual Box */
-                .manual-box { background: #0a0a0a; border: 1px solid #27272a; padding: 12px; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.78rem; color: #a1a1aa; line-height: 1.4; }
+                .manual-box { background: rgba(10, 10, 10, 0.8); border: 1px solid #27272a; padding: 12px; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.78rem; color: #a1a1aa; line-height: 1.4; }
                 .manual-box strong { color: #fff; }
                 .manual-box ul { margin: 5px 0 0 15px; padding: 0; }
 
@@ -74,13 +76,12 @@ app.get('/', (req, res) => {
                     🔒 <strong>Anti-Intrusion Protocol:</strong> 3 failed access attempts will permanently lock and self-destruct the target node. Sessions expire in 02:30 min or on tab blur.
                 </div>
 
-                <!-- Operational Manual -->
                 <div class="manual-box">
                     <strong>📖 Operating Manual:</strong>
                     <ul>
-                        <li><strong>Access:</strong> Use authorized node credentials (e.g., UX0 / 1971 or UX1 / 2609).</li>
-                        <li><strong>Secure Channel:</strong> Input a shared numerical room code to synchronize real-time chats.</li>
-                        <li><strong>Top-ups:</strong> Process balance deposits using BTC, ETH, or Solana with network verification.</li>
+                        <li><strong>Access:</strong> Enter your authorized node identifier and password.</li>
+                        <li><strong>Secure Channel:</strong> Input a room code (e.g., 777) to synchronize chats.</li>
+                        <li><strong>Top-ups:</strong> Process balance deposits securely using BTC, ETH, or Solana.</li>
                     </ul>
                 </div>
 
@@ -89,24 +90,22 @@ app.get('/', (req, res) => {
                     <button class="tab-btn" onclick="switchTab('register')">Register Node</button>
                 </div>
 
-                <!-- Login Section -->
                 <div id="loginSection" class="form-section active">
                     <div class="form-group">
                         <label>Node Identifier</label>
-                        <input type="text" id="loginUser" placeholder="e.g. UX0" value="UX0">
+                        <input type="text" id="loginUser" placeholder="e.g. UX0">
                     </div>
                     <div class="form-group">
                         <label>Access Password</label>
-                        <input type="password" id="loginPass" placeholder="••••••••" value="1971">
+                        <input type="password" id="loginPass" placeholder="Enter password">
                     </div>
                     <div class="form-group">
-                        <label>Secure Channel Code</label>
-                        <input type="text" id="roomCode" placeholder="e.g. 777" value="777">
+                        <label>Secure Channel Code (Required)</label>
+                        <input type="text" id="roomCode" placeholder="e.g. 777">
                     </div>
                     <button class="btn" onclick="loginUser()">Enter Secure Channel</button>
                 </div>
 
-                <!-- Registration Section -->
                 <div id="registerSection" class="form-section">
                     <div class="form-group">
                         <label>New Identifier</label>
@@ -119,23 +118,22 @@ app.get('/', (req, res) => {
                     <button class="btn btn-secondary" onclick="registerUser()">Register New Node</button>
                 </div>
 
-                <!-- Crypto Gateway -->
                 <div class="crypto-packages">
-                    <label style="text-align: center;">Cryptocurrency Gateway</label>
+                    <label style="text-align: center;">Cryptocurrency Gateway & Pricing</label>
                     <div class="crypto-grid">
                         <div class="crypto-card">
                             <h4>BTC</h4>
-                            <span style="font-size: 0.7rem; color: #888;">Bitcoin</span>
+                            <span style="font-size: 0.65rem; color: #888;">10,000 Cr = 0.001 BTC</span>
                             <button onclick="openCryptoCheckout('BTC')">Pay BTC</button>
                         </div>
                         <div class="crypto-card">
                             <h4>ETH</h4>
-                            <span style="font-size: 0.7rem; color: #888;">Ethereum</span>
+                            <span style="font-size: 0.65rem; color: #888;">10,000 Cr = 0.03 ETH</span>
                             <button onclick="openCryptoCheckout('ETH')">Pay ETH</button>
                         </div>
                         <div class="crypto-card">
                             <h4>Solana</h4>
-                            <span style="font-size: 0.7rem; color: #888;">SOL</span>
+                            <span style="font-size: 0.65rem; color: #888;">10,000 Cr = 0.5 SOL</span>
                             <button onclick="openCryptoCheckout('SOL')">Pay SOL</button>
                         </div>
                     </div>
@@ -180,10 +178,12 @@ app.get('/', (req, res) => {
                     const user = document.getElementById('loginUser').value.trim().toUpperCase();
                     const pass = document.getElementById('loginPass').value.trim();
                     const room = document.getElementById('roomCode').value.trim();
+                    
                     if(!user || !pass || !room) {
-                        alert('Complete credentials and room code.');
+                        alert('Error: You must fill out the Node Identifier, Password, and the Secure Channel Code to enter.');
                         return;
                     }
+
                     fetch('/api/login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -206,7 +206,6 @@ app.get('/', (req, res) => {
     `);
 });
 
-// Strict login control with 3 failed attempts rule and self-destruction
 app.post('/api/register', (req, res) => {
     const { user, pass } = req.body;
     if (registeredUsers[user]) {
@@ -225,14 +224,14 @@ app.post('/api/login', (req, res) => {
     }
 
     if (registeredUsers[user] && registeredUsers[user] === pass) {
-        failedAttempts[user] = 0; // Reset attempts on success
+        failedAttempts[user] = 0;
         return res.json({ success: true });
     } else {
         failedAttempts[user]++;
         let remaining = 3 - failedAttempts[user];
         
         if (failedAttempts[user] >= 3) {
-            delete registeredUsers[user]; // Node self-destruction for security
+            delete registeredUsers[user];
             failedAttempts[user] = 0;
             return res.json({ 
                 success: false, 
@@ -247,19 +246,20 @@ app.post('/api/login', (req, res) => {
     }
 });
 
-// Crypto Checkout Gateway
 app.get('/checkout', (req, res) => {
     const crypto = req.query.crypto || 'BTC';
-    
     let networkInfo = 'Bitcoin Native / SegWit Network';
     let walletAddress = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
+    let priceLabel = '0.001 BTC = 10,000 Credits';
 
     if (crypto === 'ETH') {
         networkInfo = 'Ethereum Mainnet (ERC-20)';
         walletAddress = '0x71C35a89eF2199b999KrakenVaultNode999';
+        priceLabel = '0.03 ETH = 10,000 Credits';
     } else if (crypto === 'SOL') {
         networkInfo = 'Solana Mainnet (SPL Network)';
         walletAddress = 'PleniuxKrakenSolanaNodeNetwork777xyz';
+        priceLabel = '0.5 SOL = 10,000 Credits';
     }
 
     res.send(`
@@ -270,12 +270,18 @@ app.get('/checkout', (req, res) => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Pleniux - Secure Checkout (${crypto})</title>
             <style>
-                body { background: #080808; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-                .box { background: #121212; border: 1px solid #222; padding: 2rem; border-radius: 8px; width: 100%; max-width: 440px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.8); }
+                @keyframes backgroundMove {
+                    0% { background-position: 0% 50%; }
+                    50% { background-position: 100% 50%; }
+                    100% { background-position: 0% 50%; }
+                }
+                body { background: linear-gradient(-45deg, #050505, #0f172a, #09090b, #111827); background-size: 400% 400%; animation: backgroundMove 15s ease infinite; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+                .box { background: rgba(18, 18, 18, 0.9); backdrop-filter: blur(10px); border: 1px solid #222; padding: 2rem; border-radius: 8px; width: 100%; max-width: 440px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.8); }
                 h2 { color: #f59e0b; margin-top: 0; font-size: 1.3rem; }
                 .crypto-box { background: #0a0a0a; border: 1px solid #333; border-radius: 6px; padding: 12px; margin: 15px 0; text-align: left; }
                 .net { color: #3b82f6; font-size: 0.75rem; font-weight: bold; margin-bottom: 6px; }
                 .wallet { font-size: 0.75rem; word-break: break-all; color: #a1a1aa; background: #121212; padding: 8px; border-radius: 4px; border: 1px dashed #444; }
+                .price-tag { color: #10b981; font-weight: bold; font-size: 0.9rem; margin-bottom: 10px; }
                 button { width: 100%; padding: 11px; background: #2563eb; border: none; border-radius: 4px; color: #fff; font-weight: bold; cursor: pointer; font-family: inherit; margin-top: 10px; }
                 button:hover { background: #1d4ed8; }
                 .back { color: #888; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 15px; }
@@ -284,13 +290,12 @@ app.get('/checkout', (req, res) => {
         <body>
             <div class="box">
                 <h2>Secure Deposit in ${crypto}</h2>
+                <div class="price-tag">Cost: ${priceLabel}</div>
                 <p style="font-size: 0.85rem; color: #aaa;">Transfer exact funds to the official network address:</p>
-                
                 <div class="crypto-box">
                     <div class="net">Official Network: ${networkInfo}</div>
                     <div class="wallet">${walletAddress}</div>
                 </div>
-
                 <button onclick="confirmDeposit()">Verify Blockchain Transaction</button>
                 <br>
                 <a href="/" class="back">← Return to Dashboard</a>
@@ -306,7 +311,7 @@ app.get('/checkout', (req, res) => {
     `);
 });
 
-// Real-Time Encrypted Chat with Active Security Protections
+// Chat con opción dentro de la interfaz para Generar Código, Conectarse, y Mostrar Precios de Saldos
 app.get('/chat', (req, res) => {
     const user = req.query.user || 'UX0';
     const room = req.query.room || '777';
@@ -320,25 +325,52 @@ app.get('/chat', (req, res) => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Pleniux - Secure Active Channel</title>
             <style>
-                body { background: #080808; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; display: flex; flex-direction: column; height: 100vh; margin: 0; box-sizing: border-box; }
-                header { background: #121212; padding: 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; font-size: 0.85rem; }
+                @keyframes backgroundMove {
+                    0% { background-position: 0% 50%; }
+                    50% { background-position: 100% 50%; }
+                    100% { background-position: 0% 50%; }
+                }
+                body { background: linear-gradient(-45deg, #050505, #0f172a, #09090b, #111827); background-size: 400% 400%; animation: backgroundMove 15s ease infinite; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; display: flex; flex-direction: column; height: 100vh; margin: 0; box-sizing: border-box; }
+                header { background: rgba(18, 18, 18, 0.95); backdrop-filter: blur(10px); padding: 0.8rem 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; font-size: 0.8rem; flex-wrap: wrap; gap: 10px; }
                 .security-status { color: #f59e0b; font-weight: bold; }
+                
+                /* Panel de Control de Códigos y Precios integrado */
+                .control-panel { background: rgba(15, 15, 15, 0.95); border-bottom: 1px solid #222; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; gap: 10px; flex-wrap: wrap; }
+                .control-group { display: flex; gap: 8px; align-items: center; }
+                .control-panel input { padding: 5px 8px; background: #0a0a0a; border: 1px solid #333; border-radius: 4px; color: #fff; font-size: 0.8rem; width: 90px; outline: none; }
+                .control-panel button { padding: 5px 10px; background: #2563eb; border: none; border-radius: 4px; color: #fff; font-weight: bold; cursor: pointer; font-size: 0.75rem; }
+                .control-panel button:hover { background: #1d4ed8; }
+                .prices-info { color: #10b981; font-weight: bold; }
+
                 #chat-box { flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
                 .message { background: #18181b; padding: 10px 14px; border-radius: 6px; max-width: 75%; word-break: break-word; border: 1px solid #27272a; font-size: 0.9rem; }
                 .self { background: #1e3a8a; border-color: #2563eb; align-self: flex-end; }
-                .footer { padding: 1rem; background: #121212; display: flex; gap: 10px; border-top: 1px solid #222; }
-                input { flex: 1; padding: 12px; background: #0a0a0a; border: 1px solid #333; border-radius: 4px; color: #fff; font-family: inherit; font-size: 0.95rem; outline: none; }
-                input:focus { border-color: #3b82f6; }
-                button { padding: 0 20px; background: #2563eb; border: none; border-radius: 4px; color: #fff; font-weight: bold; cursor: pointer; font-family: inherit; }
-                button:hover { background: #1d4ed8; }
+                .footer { padding: 1rem; background: rgba(18, 18, 18, 0.95); backdrop-filter: blur(10px); display: flex; gap: 10px; border-top: 1px solid #222; }
+                .footer input { flex: 1; padding: 12px; background: #0a0a0a; border: 1px solid #333; border-radius: 4px; color: #fff; font-family: inherit; font-size: 0.95rem; outline: none; }
+                .footer input:focus { border-color: #3b82f6; }
+                .footer button { padding: 0 20px; background: #2563eb; border: none; border-radius: 4px; color: #fff; font-weight: bold; cursor: pointer; font-family: inherit; }
+                .footer button:hover { background: #1d4ed8; }
             </style>
             <script src="/socket.io/socket.io.js"></script>
         </head>
         <body>
             <header>
-                <div>Node: <strong style="color:#fff;">${user}</strong> | Balance: <strong style="color:#f59e0b;">${currentBalance} Cr</strong> | Channel: <strong style="color:#fff;">${room}</strong></div>
+                <div>Node: <strong style="color:#fff;">${user}</strong> | Balance: <strong style="color:#f59e0b;">${currentBalance} Cr</strong> | Active Channel: <strong style="color:#fff;" id="currentRoomDisplay">${room}</strong></div>
                 <div class="security-status" id="timer">Self-Destruct: 02:30</div>
             </header>
+
+            <!-- Panel interno para Generar Código, Conectarse y ver Precios -->
+            <div class="control-panel">
+                <div class="control-group">
+                    <span>Channel Code:</span>
+                    <input type="text" id="targetRoom" value="${room}" placeholder="Room">
+                    <button onclick="connectToRoom()">Connect</button>
+                    <button onclick="generateRandomCode()" style="background:#059669;">Generate New</button>
+                </div>
+                <div class="prices-info">
+                    Rates: 10k Cr = 0.001BTC | 0.03ETH | 0.5SOL
+                </div>
+            </div>
 
             <div id="chat-box"></div>
 
@@ -349,10 +381,37 @@ app.get('/chat', (req, res) => {
 
             <script>
                 const user = "${user}";
-                const room = "${room}";
+                let room = "${room}";
                 const socket = io();
 
                 socket.emit('join-room', { room, user });
+
+                function generateRandomCode() {
+                    const randomCode = Math.floor(1000 + Math.random() * 9000).toString();
+                    document.getElementById('targetRoom').value = randomCode;
+                    connectToRoom();
+                }
+
+                function connectToRoom() {
+                    const newRoom = document.getElementById('targetRoom').value.trim();
+                    if(!newRoom) {
+                        alert('Please specify a valid room code.');
+                        return;
+                    }
+                    room = newRoom;
+                    document.getElementById('currentRoomDisplay').innerText = room;
+                    socket.emit('join-room', { room, user });
+                    
+                    const box = document.getElementById('chat-box');
+                    const div = document.createElement('div');
+                    div.style.textAlign = 'center';
+                    div.style.color = '#f59e0b';
+                    div.style.fontSize = '0.78rem';
+                    div.style.margin = '5px 0';
+                    div.innerText = '--- Synchronized securely with channel code: ' + room + ' ---';
+                    box.appendChild(div);
+                    box.scrollTop = box.scrollHeight;
+                }
 
                 function triggerSelfDestruct(reason) {
                     document.body.innerHTML = \`<div style="background:#080808;color:#ef4444;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:monospace;text-align:center;padding:20px;">
@@ -363,7 +422,6 @@ app.get('/chat', (req, res) => {
                     setTimeout(() => { window.location.href = '/'; }, 3500);
                 }
 
-                // Countdown Timer (02:30)
                 let tSecs = 150;
                 const countdown = setInterval(() => {
                     if(tSecs <= 0) {
@@ -377,7 +435,6 @@ app.get('/chat', (req, res) => {
                     document.getElementById('timer').innerText = 'Self-Destruct: ' + mins + ':' + secs;
                 }, 1000);
 
-                // Tab switch or focus loss security triggers
                 document.addEventListener('visibilitychange', () => {
                     if (document.hidden) triggerSelfDestruct('Tab switch or app exit detected.');
                 });
@@ -398,6 +455,7 @@ app.get('/chat', (req, res) => {
                 function handleKey(e) { if(e.key === 'Enter') sendMessage(); }
 
                 socket.on('chat-message', (data) => {
+                    if(data.room && data.room !== room) return; // Filtro de sala activa
                     const box = document.getElementById('chat-box');
                     const div = document.createElement('div');
                     div.className = 'message' + (data.user === user ? ' self' : '');
@@ -412,8 +470,13 @@ app.get('/chat', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    socket.on('join-room', ({ room, user }) => { socket.join(room); });
-    socket.on('chat-message', (data) => { io.to(data.room).emit('chat-message', data); });
+    socket.on('join-room', ({ room, user }) => {
+        socket.rooms.forEach(r => { if (r !== socket.id) socket.leave(r); });
+        socket.join(room);
+    });
+    socket.on('chat-message', (data) => { 
+        io.to(data.room).emit('chat-message', data); 
+    });
 });
 
 const PORT = process.env.PORT || 3000;
