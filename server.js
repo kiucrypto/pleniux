@@ -8,7 +8,7 @@ const io = new Server(server);
 
 app.use(express.json());
 
-// Base de datos volátil segura con los nodos de los dueños protegidos
+// Base de datos volátil con los nodos de los dueños protegidos (UX0 y UX1)
 const nodeBalances = {
     'UX0': 10000,
     'UX1': 10000
@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Pleniux.com VIP - Secure UX Gateway</title>
+            <title>Pleniux.com VIP - Elite Secure Gateway</title>
             <style>
                 @keyframes neonGlow {
                     0% { background-position: 0% 50%; }
@@ -93,14 +93,14 @@ app.get('/', (req, res) => {
                 <div class="logo-header">
                     <h1>PLENIUX.COM<span class="vip-badge">VIP</span></h1>
                 </div>
-                <div class="subtitle">⚡ Secure Encrypted UX Gateway</div>
+                <div class="subtitle">⚡ Elite Maximum Security Gateway</div>
                 
                 <div class="info-box">
-                    🌐 <strong>System Description:</strong> Pleniux VIP is an elite private framework for real-time encrypted data channels. New registers automatically receive a welcome bonus of <strong>2 Pts</strong>. Master nodes are strictly restricted.
+                    🌐 <strong>Elite Protocol:</strong> New registrations receive a starting bonus of <strong>2 Pts</strong>. Refreshing or reloading the chat page triggers immediate session destruction, redirection to login, and a 2 Pts penalty deduction.
                 </div>
 
                 <div class="security-notice">
-                    🔒 <strong>Strict Security Policy:</strong> Encrypted sessions provide stable communication channels. Active timer controls session duration. Zero persistent chat logs are stored on servers.
+                    🔒 <strong>Strict Protection:</strong> Unauthorized actions or page refreshes are actively penalized to preserve elite chat integrity.
                 </div>
 
                 <div class="form-group">
@@ -117,7 +117,7 @@ app.get('/', (req, res) => {
                 </div>
 
                 <div class="form-group">
-                    <label>Self-Destruct Timer</label>
+                    <label>Session Timer</label>
                     <select id="timerPref">
                         <option value="60">1 Minute (High Security)</option>
                         <option value="150" selected>2 Minutes 30 Seconds (Standard)</option>
@@ -130,10 +130,10 @@ app.get('/', (req, res) => {
                 </div>
 
                 <div class="manual-section">
-                    📖 <strong>Quick User Manual:</strong><br>
-                    1. <b>New Users:</b> Enter a custom number (2–1,000,000), set a private PIN, and click <b>Register</b> to get your 2 Pts bonus.<br>
-                    2. <b>Owners:</b> Enter your secure master node number (UX0 or UX1) and confidential PIN to access high privileges.<br>
-                    3. <b>Channels:</b> Inside, join or generate sync codes for instant encrypted messaging.
+                    📖 <b>Elite Manual:</b><br>
+                    1. <b>Registration:</b> Create your custom ID and PIN to get 2 Pts.<br>
+                    2. <b>Security Rules:</b> Never refresh inside the chat. Doing so drops your balance by 2 Pts and forces re-login.<br>
+                    3. <b>Express Channels:</b> Use custom codes or express join inside the secure chat room.
                 </div>
 
                 <div class="footer-manual">
@@ -142,6 +142,8 @@ app.get('/', (req, res) => {
             </div>
 
             <script>
+                sessionStorage.removeItem('plx_active_session');
+
                 function getDeviceFingerprint() {
                     let c = document.createElement('canvas');
                     let ctx = c.getContext('2d');
@@ -176,11 +178,12 @@ app.get('/', (req, res) => {
                         body: JSON.stringify({ user, pass, deviceId, actionType })
                     }).then(res => res.json()).then(data => {
                         if(data.success) {
+                            sessionStorage.setItem('plx_active_session', user);
                             window.location.href = '/chat?user=' + encodeURIComponent(user) + '&timer=' + encodeURIComponent(timer);
                         } else {
                             alert(data.message);
                             if(data.banned) {
-                                document.body.innerHTML = '<div style="background:#000;color:#ef4444;height:100vh;display:flex;justify-content:center;align-items:center;text-align:center;font-family:sans-serif;"><h2>🚨 ACCOUNT & ACCESS WIPED</h2><p>Unauthorized intrusion or security violation detected.</p></div>';
+                                document.body.innerHTML = '<div style="background:#000;color:#ef4444;height:100vh;display:flex;justify-content:center;align-items:center;text-align:center;font-family:sans-serif;"><h2>🚨 ACCOUNT & ACCESS WIPED</h2><p>Security violation detected.</p></div>';
                             }
                         }
                     });
@@ -196,11 +199,11 @@ app.post('/api/auth', (req, res) => {
     const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     const hardwareKey = `${deviceId}_${clientIp}`;
 
-    if (bannedDevices.has(hardwareKey)) return res.json({ success: false, banned: true, message: '🚨 Access denied. Account deleted.' });
+    if (bannedDevices.has(hardwareKey)) return res.json({ success: false, banned: true, message: '🚨 Access denied.' });
 
     if (actionType === 'register') {
         if (registeredUsers[user]) {
-            return res.json({ success: false, message: '⚠️ This UX node is already registered. Please use the "Access Node" button.' });
+            return res.json({ success: false, message: '⚠️ This UX node is already registered. Please use "Access Node".' });
         }
         registeredUsers[user] = pass;
         nodeBalances[user] = 2; 
@@ -219,13 +222,25 @@ app.post('/api/auth', (req, res) => {
             delete registeredUsers[user];
             delete nodeBalances[user];
             failedAttempts[user] = 0;
-            return res.json({ success: false, banned: true, message: '🚨 Too many failed password attempts. Account permanently deleted.' });
+            return res.json({ success: false, banned: true, message: '🚨 Too many failed attempts. Account deleted.' });
         }
         return res.json({ success: false, message: `Incorrect password. Attempt ${failedAttempts[user]} of 3.` });
     }
 
     failedAttempts[user] = 0;
     return res.json({ success: true });
+});
+
+app.post('/api/refresh-penalty', (req, res) => {
+    const { user } = req.body;
+    if (user && user !== 'UX0' && user !== 'UX1' && nodeBalances[user] !== undefined) {
+        nodeBalances[user] = Math.max(0, nodeBalances[user] - 2);
+        if (nodeBalances[user] <= 0) {
+            delete registeredUsers[user];
+            delete nodeBalances[user];
+        }
+    }
+    res.json({ success: true });
 });
 
 app.get('/checkout', (req, res) => {
@@ -255,7 +270,7 @@ app.get('/checkout', (req, res) => {
         <body>
             <div class="box">
                 <h2>Real Bitcoin Gateway</h2>
-                <p style="font-size: 0.8rem; color: #cbd5e1;">Send exact Bitcoin to load credits directly to your active node:</p>
+                <p style="font-size: 0.8rem; color: #cbd5e1;">Send exact Bitcoin to fund your node credits:</p>
                 
                 <select id="packageSelect" onchange="updateDetails()">
                     <option value="5000">Standard Package: 5,000 Credits</option>
@@ -281,7 +296,7 @@ app.get('/checkout', (req, res) => {
                 }
                 updateDetails();
                 function verifyPayment() {
-                    alert('Broadcasting transaction query to blockchain mempool...');
+                    alert('Querying blockchain mempool for incoming transaction...');
                     window.location.href = '/chat?user=${encodeURIComponent(user)}&timer=${encodeURIComponent(timer)}';
                 }
             </script>
@@ -301,7 +316,7 @@ app.get('/chat', (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Pleniux.com VIP - Lightning Channel</title>
+            <title>Pleniux.com VIP - Elite Channel</title>
             <style>
                 @keyframes neonGlow {
                     0% { background-position: 0% 50%; }
@@ -362,9 +377,10 @@ app.get('/chat', (req, res) => {
             <div class="control-panel">
                 <div class="control-group">
                     <span>Channel Code:</span>
-                    <input type="text" id="targetRoom" value="777" placeholder="Code">
+                    <input type="text" id="targetRoom" value="777" placeholder="Custom Code">
                     <button onclick="applySyncCode()">Join</button>
                     <button onclick="generateSyncCode()" style="background:#059669;">Generate</button>
+                    <button onclick="expressJoinPrompt()" style="background:#0284c7;" title="Express Quick Join">⚡ Express</button>
                 </div>
                 <div class="control-group">
                     <button class="topup-btn" onclick="openCheckout()">Deposit BTC</button>
@@ -384,12 +400,32 @@ app.get('/chat', (req, res) => {
                 let tSecs = ${timerSetting};
                 const socket = io();
 
+                // PROTOCOLO DE SEGURIDAD ELITE: Anti-Actualización estricto
+                if (!sessionStorage.getItem('plx_active_session') || sessionStorage.getItem('plx_active_session') !== user) {
+                    if(user !== 'UX0' && user !== 'UX1') {
+                        navigator.sendBeacon('/api/refresh-penalty', JSON.stringify({ user }));
+                    }
+                    alert('🚨 Security Alert: Reload or direct bypass detected! 2 Pts deducted. Please log in again.');
+                    window.location.replace('/');
+                } else {
+                    window.isInternalNavigation = false;
+                    window.addEventListener('beforeunload', () => {
+                        if (!window.isInternalNavigation) {
+                            if(user !== 'UX0' && user !== 'UX1') {
+                                navigator.sendBeacon('/api/refresh-penalty', JSON.stringify({ user }));
+                            }
+                        }
+                    });
+                }
+
                 socket.emit('join-room', { room, user });
 
                 const countdown = setInterval(() => {
                     if(tSecs <= 0) {
                         clearInterval(countdown);
-                        alert('⚠️ Session time ended. Returning to gateway.');
+                        window.isInternalNavigation = true;
+                        sessionStorage.removeItem('plx_active_session');
+                        alert('⚠️ Session ended. Returning to gateway.');
                         window.location.href = '/';
                         return;
                     }
@@ -406,7 +442,7 @@ app.get('/chat', (req, res) => {
                     document.getElementById('roomDisplay').innerText = room;
                     socket.emit('join-room', { room, user });
 
-                    const autoMsg = '⚡ [SECURE SYNC] ' + user + ' created a private channel. Join using code: ' + newCode;
+                    const autoMsg = '⚡ [EXPRESS SYNC] ' + user + ' generated secure channel code: ' + newCode;
                     socket.emit('chat-message', { room, user, text: autoMsg });
                 }
 
@@ -425,12 +461,21 @@ app.get('/chat', (req, res) => {
                     div.style.margin = '6px 0';
                     div.style.position = 'relative';
                     div.style.zIndex = '1';
-                    div.innerText = '✅ Successfully connected to secure channel: ' + room;
+                    div.innerText = '✅ Connected to secure channel: ' + room;
                     box.appendChild(div);
                     box.scrollTop = box.scrollHeight;
                 }
 
+                function expressJoinPrompt() {
+                    const code = prompt('⚡ Express Join: Enter partner channel code or link ID:');
+                    if(code && code.trim()) {
+                        document.getElementById('targetRoom').value = code.trim();
+                        applySyncCode();
+                    }
+                }
+
                 function openCheckout() {
+                    window.isInternalNavigation = true;
                     window.location.href = '/checkout?user=' + encodeURIComponent(user) + '&timer=' + tSecs;
                 }
 
@@ -471,5 +516,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Pleniux.com VIP UX Gateway active on port ${PORT}`);
+    console.log(`Pleniux.com VIP Elite Gateway active on port ${PORT}`);
 });
