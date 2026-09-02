@@ -164,10 +164,10 @@ app.get('/', (req, res) => {
                 <div class="logo-header">
                     <h1>PLENIUX.COM<span class="vip-badge">VIP</span></h1>
                 </div>
-                <div class="subtitle">Real Kraken Crypto Gateway & Lightning Chat</div>
+                <div class="subtitle">Real Bitcoin Lightning Gateway & Secure Chat</div>
                 
                 <div class="description">
-                    Private encrypted system with real-time crypto settlements, instant messaging, and secure UX-to-UX channel synchronization.
+                    Private encrypted system with strict instant messaging, BTC settlements, and secure UX-to-UX channel synchronization.
                 </div>
 
                 <div class="premium-shield">
@@ -175,7 +175,7 @@ app.get('/', (req, res) => {
                 </div>
 
                 <div class="security-notice">
-                    🔒 <strong>Security Warning:</strong> Leaving the tab, minimizing, or refreshing wipes messages, deducts 2 points, and forces a secure re-login.
+                    🔒 <strong>Security Warning:</strong> Leaving the tab, minimizing, refreshing, or changing apps immediately deducts 2 points, wipes cache, and forces re-login.
                 </div>
 
                 <div class="form-group">
@@ -188,7 +188,6 @@ app.get('/', (req, res) => {
 
                 <div class="form-group">
                     <label>Numeric Password</label>
-                    <!-- autocomplete="new-password" evita que el navegador guarde la contraseña -->
                     <input type="password" id="loginPass" placeholder="Enter private password" inputmode="numeric" autocomplete="new-password">
                 </div>
 
@@ -205,9 +204,9 @@ app.get('/', (req, res) => {
                 <div class="user-manual">
                     <b>📖 Quick Guide:</b><br>
                     1. Enter your private node & password.<br>
-                    2. Share/apply the sync code easily in chat.<br>
-                    3. Tab refresh safely deducts 2 points & wipes cache.<br>
-                    4. Real owners are fully protected against malicious probes.
+                    2. Share/apply sync codes securely in chat.<br>
+                    3. Refresh/Tab switch instantly triggers -2 pts penalty & wipe.<br>
+                    4. All real BTC deposits route directly to your wallet.
                 </div>
 
                 <div class="footer-manual">
@@ -296,7 +295,7 @@ app.get('/', (req, res) => {
                         } else {
                             alert(data.message);
                             if(data.banned) {
-                                document.body.innerHTML = '<div style="background:#000;color:#ef4444;height:100vh;display:flex;justify-content:center;align-items:center;text-align:center;font-family:sans-serif;padding:20px;"><h2>🚨 IP / HARDWARE BLACKLISTED</h2><p>This malicious connection attempt has been blocked. The real owner data remains safe and untouched.</p></div>';
+                                document.body.innerHTML = '<div style="background:#000;color:#ef4444;height:100vh;display:flex;justify-content:center;align-items:center;text-align:center;font-family:sans-serif;padding:20px;"><h2>🚨 IP / HARDWARE BLACKLISTED</h2><p>This malicious connection attempt has been blocked. Real owner data remains safe.</p></div>';
                             }
                         }
                     });
@@ -313,7 +312,7 @@ app.post('/api/login', (req, res) => {
     const hardwareKey = `${deviceId}_${clientIp}`;
 
     if (bannedDevices.has(hardwareKey)) {
-        return res.json({ success: false, banned: true, message: '🚨 ACCESS DENIED: Malicious device blocked. Real owner data is fully protected.' });
+        return res.json({ success: false, banned: true, message: '🚨 ACCESS DENIED: Malicious device blocked.' });
     }
 
     if (!registeredUsers[user]) {
@@ -327,7 +326,7 @@ app.post('/api/login', (req, res) => {
         if (failedAttempts[user] >= 3) {
             bannedDevices.add(hardwareKey);
             failedAttempts[user] = 0;
-            return res.json({ success: false, banned: true, message: '🚨 SECURITY ALERT: Unauthorized intrusion attempt detected from this IP/Device. Blocked, but the real owner profile and balance are fully safe.' });
+            return res.json({ success: false, banned: true, message: '🚨 SECURITY ALERT: Unauthorized intrusion attempt detected. Blocked.' });
         }
         return res.json({ success: false, message: `Invalid password. Attempt ${failedAttempts[user]} of 3.` });
     }
@@ -341,6 +340,7 @@ app.post('/api/login', (req, res) => {
     return res.json({ success: true });
 });
 
+// Endpoint seguro para aplicar penalización inmediata en saldo de forma síncrona/beacon
 app.post('/api/refresh-penalty', (req, res) => {
     const { user } = req.body;
     if (user && nodeBalances[user] !== undefined) {
@@ -349,21 +349,13 @@ app.post('/api/refresh-penalty', (req, res) => {
     res.json({ success: true });
 });
 
+// ÚNICO MÉTODO DE PAGO: BTC con tu dirección exacta configurada
 app.get('/checkout', (req, res) => {
     const user = req.query.user || 'UX0';
     const timer = req.query.timer || '150';
-    const cryptoType = req.query.crypto || 'BTC';
 
-    let networkInfo = 'Bitcoin Native SegWit (Kraken Node)';
-    let walletAddress = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
-
-    if (cryptoType === 'ETH') {
-        networkInfo = 'Ethereum Mainnet ERC-20 (Kraken Node)';
-        walletAddress = '0x71C35a89eF2199b999KrakenVaultNode999';
-    } else if (cryptoType === 'SOL') {
-        networkInfo = 'Solana SPL Network (Kraken Node)';
-        walletAddress = 'PleniuxKrakenSolanaNodeNetwork777xyz';
-    }
+    const networkInfo = 'Bitcoin Native SegWit (Direct Vault)';
+    const walletAddress = '3GgLGjuUo3SpnnfjTcvaTBXqssoonAkUxo';
 
     res.send(`
         <!DOCTYPE html>
@@ -371,7 +363,7 @@ app.get('/checkout', (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Pleniux.com VIP - Real Kraken Checkout (${cryptoType})</title>
+            <title>Pleniux.com VIP - Bitcoin Vault Checkout</title>
             <style>
                 @keyframes neonGlow {
                     0% { background-position: 0% 50%; }
@@ -393,8 +385,8 @@ app.get('/checkout', (req, res) => {
         </head>
         <body>
             <div class="box">
-                <h2>Kraken Real Gateway (${cryptoType})</h2>
-                <p style="font-size: 0.8rem; color: #cbd5e1;">Transfer exact funds to credit your account instantly:</p>
+                <h2>Bitcoin Direct Gateway</h2>
+                <p style="font-size: 0.8rem; color: #cbd5e1;">Transfer exact BTC to credit your account directly to your wallet:</p>
                 
                 <div style="text-align:left; margin-bottom: 4px; font-size:0.75rem; color:#f59e0b; font-weight:bold;">SELECT PACKAGE:</div>
                 <select id="packageSelect" onchange="updateDetails()">
@@ -414,19 +406,15 @@ app.get('/checkout', (req, res) => {
                 <a href="/chat?user=${encodeURIComponent(user)}&timer=${encodeURIComponent(timer)}" class="back">← Return to Secure Chat</a>
             </div>
             <script>
-                const cryptoType = "${cryptoType}";
                 function updateDetails() {
                     const val = document.getElementById('packageSelect').value;
-                    let amt = '';
-                    if(cryptoType === 'BTC') amt = (val * 0.00012).toFixed(4) + ' BTC';
-                    else if(cryptoType === 'ETH') amt = (val * 0.0018).toFixed(4) + ' ETH';
-                    else amt = (val * 0.035).toFixed(2) + ' SOL';
+                    let amt = (val * 0.00012).toFixed(4) + ' BTC';
                     document.getElementById('priceDisplay').innerText = 'Send exact amount: ' + amt;
                 }
                 updateDetails();
 
                 function verifyPayment() {
-                    alert('Kraken blockchain scanner checking transaction... Funds will reflect shortly.');
+                    alert('Bitcoin blockchain scanner verifying transaction to your wallet... Funds will reflect shortly.');
                     window.location.href = '/chat?user=${encodeURIComponent(user)}&timer=${encodeURIComponent(timer)}';
                 }
             </script>
@@ -490,9 +478,7 @@ app.get('/chat', (req, res) => {
                     <button onclick="generateSyncCode()" style="background:#059669;">Gen Code (<span id="attemptsLeft">2</span> left)</button>
                 </div>
                 <div class="control-group">
-                    <button class="topup-btn" onclick="openCheckout('BTC')">BTC</button>
-                    <button class="topup-btn" onclick="openCheckout('ETH')">ETH</button>
-                    <button class="topup-btn" onclick="openCheckout('SOL')">SOL</button>
+                    <button class="topup-btn" onclick="openCheckout()">Deposit BTC</button>
                 </div>
             </div>
 
@@ -512,9 +498,35 @@ app.get('/chat', (req, res) => {
 
                 socket.emit('join-room', { room, user });
 
-                // Detección estricta de recarga o salida de pestaña
-                window.addEventListener('beforeunload', (e) => {
+                // Sistema riguroso de penalización por recarga, cierre o salida de pestaña
+                let penaltyApplied = false;
+                function applyPenaltyAndExit(reason) {
+                    if (penaltyApplied) return;
+                    penaltyApplied = true;
+
+                    // Enviar de forma síncrona el descuento de 2 puntos al servidor antes de salir
                     navigator.sendBeacon('/api/refresh-penalty', JSON.stringify({ user }));
+
+                    document.body.innerHTML = \`<div style="background:#050505;color:#ef4444;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:sans-serif;text-align:center;padding:20px;">
+                        <h2 style="font-size: 1.6rem; text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);">🚨 SECURITY ALERT: 2 POINTS DEDUCTED</h2>
+                        <p style="color:#cbd5e1;font-size:0.9rem;margin-top:6px;">Reason: \${reason}</p>
+                        <p style="color:#64748b;font-size:0.78rem;margin-top:12px;">Wiping cache and forcing secure re-login...</p>
+                    </div>\`;
+                    setTimeout(() => { window.location.href = '/'; }, 2000);
+                }
+
+                window.addEventListener('beforeunload', () => {
+                    navigator.sendBeacon('/api/refresh-penalty', JSON.stringify({ user }));
+                });
+
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        applyPenaltyAndExit('Screen focus lost, tab minimized or switched app.');
+                    }
+                });
+
+                window.addEventListener('blur', () => {
+                    applyPenaltyAndExit('Window focus lost.');
                 });
 
                 function generateSyncCode() {
@@ -535,7 +547,7 @@ app.get('/chat', (req, res) => {
                 function applySyncCode() {
                     const code = document.getElementById('targetRoom').value.trim();
                     if(!code || code.length < 3) {
-                        triggerSelfDestruct('Invalid synchronization code format.');
+                        alert('Invalid synchronization code format.');
                         return;
                     }
                     room = code;
@@ -553,23 +565,14 @@ app.get('/chat', (req, res) => {
                     box.scrollTop = box.scrollHeight;
                 }
 
-                function openCheckout(cryptoType) {
-                    window.location.href = '/checkout?user=' + encodeURIComponent(user) + '&timer=' + tSecs + '&crypto=' + encodeURIComponent(cryptoType);
-                }
-
-                function triggerSelfDestruct(reason) {
-                    document.body.innerHTML = \`<div style="background:#050505;color:#ef4444;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:sans-serif;text-align:center;padding:20px;">
-                        <h2 style="font-size: 1.6rem; text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);">🚨 VIP CHAT WIPED & 2 POINTS DEDUCTED</h2>
-                        <p style="color:#cbd5e1;font-size:0.9rem;margin-top:6px;">Reason: \${reason}</p>
-                        <p style="color:#64748b;font-size:0.78rem;margin-top:12px;">Redirecting to login securely...</p>
-                    </div>\`;
-                    setTimeout(() => { window.location.href = '/'; }, 3000);
+                function openCheckout() {
+                    window.location.href = '/checkout?user=' + encodeURIComponent(user) + '&timer=' + tSecs;
                 }
 
                 const countdown = setInterval(() => {
                     if(tSecs <= 0) {
                         clearInterval(countdown);
-                        triggerSelfDestruct('Session timer expired.');
+                        applyPenaltyAndExit('Session timer expired.');
                         return;
                     }
                     tSecs--;
@@ -577,14 +580,6 @@ app.get('/chat', (req, res) => {
                     let secs = (tSecs % 60).toString().padStart(2, '0');
                     document.getElementById('timer').innerText = 'Self-Destruct: ' + mins + ':' + secs;
                 }, 1000);
-
-                document.addEventListener('visibilitychange', () => {
-                    if (document.hidden) triggerSelfDestruct('Screen focus lost or background switch detected.');
-                });
-
-                window.addEventListener('blur', () => {
-                    triggerSelfDestruct('Security focus lost.');
-                });
 
                 function sendMessage() {
                     const text = document.getElementById('messageInput').value.trim();
