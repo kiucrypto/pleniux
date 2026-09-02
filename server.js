@@ -8,7 +8,7 @@ const io = new Server(server);
 
 app.use(express.json());
 
-// Base de datos volátil con los nodos de los dueños preconfigurados (UX0 y UX1)
+// Base de datos volátil segura con los nodos de los dueños protegidos
 const nodeBalances = {
     'UX0': 10000,
     'UX1': 10000
@@ -93,14 +93,14 @@ app.get('/', (req, res) => {
                 <div class="logo-header">
                     <h1>PLENIUX.COM<span class="vip-badge">VIP</span></h1>
                 </div>
-                <div class="subtitle">⚡ Premium Owner Gateway (UX0 & UX1 Active)</div>
+                <div class="subtitle">⚡ Secure Encrypted UX Gateway</div>
                 
                 <div class="info-box">
-                    🌐 <strong>System Description:</strong> Pleniux VIP is an elite private framework for real-time encrypted data channels. New registers automatically receive a welcome bonus of <strong>2 Pts</strong>. Owners use master nodes <strong>UX0 / UX1</strong>.
+                    🌐 <strong>System Description:</strong> Pleniux VIP is an elite private framework for real-time encrypted data channels. New registers automatically receive a welcome bonus of <strong>2 Pts</strong>. Master nodes are strictly restricted.
                 </div>
 
                 <div class="security-notice">
-                    🔒 <strong>Strict Security Policy:</strong> Ephemeral sessions feature automatic self-destruction ranging from <strong>1 minute to 2 minutes 30 seconds</strong> upon inactivity or tab switching. Zero persistent logs are stored.
+                    🔒 <strong>Strict Security Policy:</strong> Encrypted sessions provide stable communication channels. Active timer controls session duration. Zero persistent chat logs are stored on servers.
                 </div>
 
                 <div class="form-group">
@@ -131,9 +131,9 @@ app.get('/', (req, res) => {
 
                 <div class="manual-section">
                     📖 <strong>Quick User Manual:</strong><br>
-                    1. <b>New Users:</b> Enter a custom number (2–1,000,000), set a PIN, and click <b>Register</b> to get your 2 Pts bonus.<br>
-                    2. <b>Owners:</b> Use node <b>UX0</b> (PIN: ****) or <b>UX1</b> (PIN: ***) for full master privileges.<br>
-                    3. <b>Channels:</b> Inside, join or generate sync codes to exchange secure encrypted messages.
+                    1. <b>New Users:</b> Enter a custom number (2–1,000,000), set a private PIN, and click <b>Register</b> to get your 2 Pts bonus.<br>
+                    2. <b>Owners:</b> Enter your secure master node number (UX0 or UX1) and confidential PIN to access high privileges.<br>
+                    3. <b>Channels:</b> Inside, join or generate sync codes for instant encrypted messaging.
                 </div>
 
                 <div class="footer-manual">
@@ -203,7 +203,7 @@ app.post('/api/auth', (req, res) => {
             return res.json({ success: false, message: '⚠️ This UX node is already registered. Please use the "Access Node" button.' });
         }
         registeredUsers[user] = pass;
-        nodeBalances[user] = 2; // Otorgar automáticamente 2 Pts de saldo inicial al nuevo usuario registrado
+        nodeBalances[user] = 2; 
         return res.json({ success: true });
     }
 
@@ -228,23 +228,10 @@ app.post('/api/auth', (req, res) => {
     return res.json({ success: true });
 });
 
-app.post('/api/refresh-penalty', (req, res) => {
-    const { user } = req.body;
-    // UX0 y UX1 están exentos de penalizaciones por seguridad
-    if (user && user !== 'UX0' && user !== 'UX1' && nodeBalances[user] !== undefined) {
-        nodeBalances[user] = Math.max(0, nodeBalances[user] - 2);
-        if (nodeBalances[user] <= 0) {
-            delete registeredUsers[user];
-            delete nodeBalances[user];
-        }
-    }
-    res.json({ success: true });
-});
-
 app.get('/checkout', (req, res) => {
     const user = req.query.user || 'UX0';
     const timer = req.query.timer || '150';
-    const walletAddress = '3GgLGjuUo3SpnnfjTcvaTBXqssoonAkUxo'; // Dirección Bitcoin real configurada
+    const walletAddress = '3GgLGjuUo3SpnnfjTcvaTBXqssoonAkUxo'; // Dirección Bitcoin oficial
 
     res.send(`
         <!DOCTYPE html>
@@ -268,7 +255,7 @@ app.get('/checkout', (req, res) => {
         <body>
             <div class="box">
                 <h2>Real Bitcoin Gateway</h2>
-                <p style="font-size: 0.8rem; color: #cbd5e1;">Send the exact BTC amount to load active node credits:</p>
+                <p style="font-size: 0.8rem; color: #cbd5e1;">Send exact Bitcoin to load credits directly to your active node:</p>
                 
                 <select id="packageSelect" onchange="updateDetails()">
                     <option value="5000">Standard Package: 5,000 Credits</option>
@@ -282,7 +269,7 @@ app.get('/checkout', (req, res) => {
                     <div class="wallet">${walletAddress}</div>
                 </div>
 
-                <button onclick="verifyPayment()">Confirm Live Transfer</button>
+                <button onclick="verifyPayment()">Verify Blockchain Transfer</button>
                 <br>
                 <a href="/chat?user=${encodeURIComponent(user)}&timer=${encodeURIComponent(timer)}" class="back">← Return to Secure Channel</a>
             </div>
@@ -369,7 +356,7 @@ app.get('/chat', (req, res) => {
         <body>
             <header>
                 <div>Node: <strong style="color:#c084fc;">${user}</strong> | Balance: <strong style="color:#34d399;" id="balanceDisplay">${currentBalance} Pts</strong> | Channel: <strong style="color:#fff;" id="roomDisplay">777</strong></div>
-                <div class="security-status" id="timer">Self-Destruct: 02:30</div>
+                <div class="security-status" id="timer">Session Time: 02:30</div>
             </header>
 
             <div class="control-panel">
@@ -399,38 +386,18 @@ app.get('/chat', (req, res) => {
 
                 socket.emit('join-room', { room, user });
 
-                let penaltyApplied = false;
-                function applyPenaltyAndExit(reason) {
-                    if (penaltyApplied) return;
-                    penaltyApplied = true;
-                    if(user !== 'UX0' && user !== 'UX1') {
-                        navigator.sendBeacon('/api/refresh-penalty', JSON.stringify({ user }));
+                const countdown = setInterval(() => {
+                    if(tSecs <= 0) {
+                        clearInterval(countdown);
+                        alert('⚠️ Session time ended. Returning to gateway.');
+                        window.location.href = '/';
+                        return;
                     }
-                    document.body.innerHTML = \`<div style="background:#050505;color:#ef4444;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:sans-serif;text-align:center;padding:20px;">
-                        <h2 style="font-size: 1.5rem;">🚨 SESSION SELF-DESTRUCT</h2>
-                        <p style="color:#cbd5e1;font-size:0.9rem;">Reason: \${reason}</p>
-                        <p style="color:#64748b;font-size:0.75rem;">Zero data saved. Returning to login...</p>
-                    </div>\`;
-                    setTimeout(() => { window.location.href = '/'; }, 2000);
-                }
-
-                window.addEventListener('beforeunload', () => {
-                    if(user !== 'UX0' && user !== 'UX1') {
-                        navigator.sendBeacon('/api/refresh-penalty', JSON.stringify({ user }));
-                    }
-                });
-
-                document.addEventListener('visibilitychange', () => {
-                    if (document.hidden && user !== 'UX0' && user !== 'UX1') {
-                        applyPenaltyAndExit('Screen focus lost / App minimized.');
-                    }
-                });
-
-                window.addEventListener('blur', () => {
-                    if(user !== 'UX0' && user !== 'UX1') {
-                        applyPenaltyAndExit('Window focus lost.');
-                    }
-                });
+                    tSecs--;
+                    let mins = Math.floor(tSecs / 60).toString().padStart(2, '0');
+                    let secs = (tSecs % 60).toString().padStart(2, '0');
+                    document.getElementById('timer').innerText = 'Session Time: ' + mins + ':' + secs;
+                }, 1000);
 
                 function generateSyncCode() {
                     const newCode = 'PLX-' + Math.floor(1000 + Math.random() * 9000);
@@ -467,23 +434,12 @@ app.get('/chat', (req, res) => {
                     window.location.href = '/checkout?user=' + encodeURIComponent(user) + '&timer=' + tSecs;
                 }
 
-                const countdown = setInterval(() => {
-                    if(tSecs <= 0) {
-                        clearInterval(countdown);
-                        applyPenaltyAndExit('Session timer expired.');
-                        return;
-                    }
-                    tSecs--;
-                    let mins = Math.floor(tSecs / 60).toString().padStart(2, '0');
-                    let secs = (tSecs % 60).toString().padStart(2, '0');
-                    document.getElementById('timer').innerText = 'Self-Destruct: ' + mins + ':' + secs;
-                }, 1000);
-
                 function sendMessage() {
-                    const text = document.getElementById('messageInput').value.trim();
+                    const inputField = document.getElementById('messageInput');
+                    const text = inputField.value.trim();
                     if(!text) return;
                     socket.emit('chat-message', { room, user, text });
-                    document.getElementById('messageInput').value = '';
+                    inputField.value = '';
                 }
 
                 function handleKey(e) { if(e.key === 'Enter') sendMessage(); }
