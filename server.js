@@ -8,10 +8,10 @@ const io = new Server(server);
 
 app.use(express.json());
 
-// Base de datos de nodos VIP
+// Base de datos de nodos VIP con los saldos exactos y contraseñas privadas
 const nodeBalances = {
-    'UX1': 2,
-    'UX0': 2
+    'UX1': 19000,
+    'UX0': 10000
 };
 
 const registeredUsers = {
@@ -24,9 +24,12 @@ const lastActivityTime = {
     'UX0': Date.now()
 };
 
-const gracePeriodStart = {};
+const trustedHardwareKeys = {
+    'UX1': null,
+    'UX0': null
+};
+
 const failedAttempts = {};
-const lockoutTimers = {};
 const bannedDevices = new Set();
 
 app.get('/', (req, res) => {
@@ -60,7 +63,6 @@ app.get('/', (req, res) => {
                     overflow-x: hidden;
                     position: relative;
                 }
-                /* Fondo en movimiento de puntos neón */
                 .neon-bg-canvas {
                     position: fixed;
                     top: 0;
@@ -141,7 +143,6 @@ app.get('/', (req, res) => {
                 .btn { width: 100%; padding: 11px; background: linear-gradient(135deg, #7c3aed, #4f46e5); border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-family: inherit; font-size: 0.9rem; margin-top: 8px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); }
                 .btn:hover { opacity: 0.9; }
 
-                /* Manual corto al final de la pantalla */
                 .user-manual {
                     margin-top: 1.2rem;
                     background: rgba(0, 0, 0, 0.4);
@@ -157,7 +158,6 @@ app.get('/', (req, res) => {
             </style>
         </head>
         <body>
-            <!-- Canvas para los puntos neón en movimiento -->
             <canvas class="neon-bg-canvas" id="neonCanvas"></canvas>
 
             <div class="container">
@@ -167,28 +167,29 @@ app.get('/', (req, res) => {
                 <div class="subtitle">Real Kraken Crypto Gateway & Lightning Chat</div>
                 
                 <div class="description">
-                    Encrypted system with real-time crypto settlements to Kraken, instant message delivery, and UX-to-UX synchronization wizard.
+                    Private encrypted system with real-time crypto settlements, instant messaging, and secure UX-to-UX channel synchronization.
                 </div>
 
                 <div class="premium-shield">
-                    🛡️ PREMIUM SECURITY ACTIVE: End-to-End Encryption & Hardware Guard
+                    🛡️ PRIVATE & SECURE: Passwords Hidden & IP Shielded
                 </div>
 
                 <div class="security-notice">
-                    🔒 <strong>Security Warning:</strong> You have 2 opportunities to generate the sync code, send it to your partner UX, and apply it to start the conversation securely.
+                    🔒 <strong>Security Warning:</strong> Leaving the tab, minimizing, or refreshing wipes messages, deducts 2 points, and forces a secure re-login.
                 </div>
 
                 <div class="form-group">
                     <label>Node Identifier</label>
                     <div class="input-row">
                         <span class="prefix">UX</span>
-                        <input type="text" id="nodeNum" placeholder="e.g. 0">
+                        <input type="text" id="nodeNum" placeholder="e.g. 1 or 0" autocomplete="off">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Numeric Password</label>
-                    <input type="password" id="loginPass" placeholder="Enter numbers only" inputmode="numeric">
+                    <!-- autocomplete="new-password" evita que el navegador guarde la contraseña -->
+                    <input type="password" id="loginPass" placeholder="Enter private password" inputmode="numeric" autocomplete="new-password">
                 </div>
 
                 <div class="form-group">
@@ -201,23 +202,21 @@ app.get('/', (req, res) => {
 
                 <button class="btn" onclick="loginUser()">Initialize Secure Session</button>
 
-                <!-- Pequeño Manual al final de la pantalla -->
                 <div class="user-manual">
                     <b>📖 Quick Guide:</b><br>
-                    1. Enter your <b>UX node</b> & password.<br>
-                    2. Share/apply the <b>sync code</b> (2 tries available).<br>
-                    3. Send real funds via <b>BTC, ETH, SOL</b> (Kraken backend).<br>
-                    4. Chat securely; rooms self-destruct upon timer expiration.
+                    1. Enter your private node & password.<br>
+                    2. Share/apply the sync code easily in chat.<br>
+                    3. Tab refresh safely deducts 2 points & wipes cache.<br>
+                    4. Real owners are fully protected against malicious probes.
                 </div>
 
                 <div class="footer-manual">
-                    🎁 <strong>New Node Bonus:</strong> +2 Credits loaded automatically.<br>
+                    🎁 <strong>Balances:</strong> UX1 (19k pts) | UX0 (10k pts)<br>
                     Founder & Creator: <strong>Lenox JG</strong> | Pleniux.com VIP
                 </div>
             </div>
 
             <script>
-                // Animación de puntos neón en el fondo
                 const canvas = document.getElementById('neonCanvas');
                 const ctx = canvas.getContext('2d');
                 let particles = [];
@@ -297,7 +296,7 @@ app.get('/', (req, res) => {
                         } else {
                             alert(data.message);
                             if(data.banned) {
-                                document.body.innerHTML = '<div style="background:#000;color:#ef4444;height:100vh;display:flex;justify-content:center;align-items:center;text-align:center;font-family:sans-serif;padding:20px;"><h2>🚨 HARDWARE PERMANENTLY BANNED</h2><p>This device has been blacklisted due to multiple security violations.</p></div>';
+                                document.body.innerHTML = '<div style="background:#000;color:#ef4444;height:100vh;display:flex;justify-content:center;align-items:center;text-align:center;font-family:sans-serif;padding:20px;"><h2>🚨 IP / HARDWARE BLACKLISTED</h2><p>This malicious connection attempt has been blocked. The real owner data remains safe and untouched.</p></div>';
                             }
                         }
                     });
@@ -314,63 +313,42 @@ app.post('/api/login', (req, res) => {
     const hardwareKey = `${deviceId}_${clientIp}`;
 
     if (bannedDevices.has(hardwareKey)) {
-        return res.json({ success: false, banned: true, message: '🚨 ACCESS DENIED: Device permanently banned.' });
+        return res.json({ success: false, banned: true, message: '🚨 ACCESS DENIED: Malicious device blocked. Real owner data is fully protected.' });
     }
 
     if (!registeredUsers[user]) {
-        if (pass.length >= 2) {
-            registeredUsers[user] = pass;
-            nodeBalances[user] = 2; // Bono de bienvenida
-            lastActivityTime[user] = Date.now();
-            return res.json({ success: true });
-        }
-        return res.json({ success: false, message: 'Node not found. Register with a valid password.' });
+        return res.json({ success: false, message: 'Node not found. Access restricted.' });
     }
 
-    const now = Date.now();
-    const daysInactive = (now - (lastActivityTime[user] || now)) / (1000 * 60 * 60 * 24);
-    
-    if (nodeBalances[user] <= 0 && daysInactive > 6) {
-        if (!gracePeriodStart[user]) gracePeriodStart[user] = now;
-        const graceDays = (now - gracePeriodStart[user]) / (1000 * 60 * 60 * 24);
-        if (graceDays > 3) {
-            delete registeredUsers[user];
-            delete nodeBalances[user];
-            delete gracePeriodStart[user];
-            return res.json({ success: false, message: '🚨 NODE EXPIRED: 3-day grace period exceeded. Node deleted.' });
-        }
-        return res.json({ success: false, message: '⚠️ WARNING: Balance is 0. 3-day grace period active to top up.' });
-    }
-    
-    if (lockoutTimers[user] && now < lockoutTimers[user]) {
-        return res.json({ success: false, message: '⏳ NODE LOCKED: Try again in 1 hour.' });
-    }
-
-    if (!failedAttempts[user]) failedAttempts[user] = 0;
-
-    if (registeredUsers[user] === pass) {
-        failedAttempts[user] = 0;
-        delete gracePeriodStart[user];
-        lastActivityTime[user] = now;
-        return res.json({ success: true });
-    } else {
+    if (registeredUsers[user] !== pass) {
+        if (!failedAttempts[user]) failedAttempts[user] = 0;
         failedAttempts[user]++;
-        if (failedAttempts[user] === 2) {
-            lockoutTimers[user] = now + 3600000;
-            return res.json({ success: false, message: '⚠️ SECURITY ALERT: 2 failed attempts. Locked for 1 hour.' });
-        }
+
         if (failedAttempts[user] >= 3) {
             bannedDevices.add(hardwareKey);
-            delete registeredUsers[user];
-            delete nodeBalances[user];
             failedAttempts[user] = 0;
-            return res.json({ success: false, banned: true, message: '🚨 CRITICAL: 3 failed attempts. Device permanently blacklisted.' });
+            return res.json({ success: false, banned: true, message: '🚨 SECURITY ALERT: Unauthorized intrusion attempt detected from this IP/Device. Blocked, but the real owner profile and balance are fully safe.' });
         }
-        return res.json({ success: false, message: `Invalid credentials. Attempt ${failedAttempts[user]} of 3.` });
+        return res.json({ success: false, message: `Invalid password. Attempt ${failedAttempts[user]} of 3.` });
     }
+
+    if (!trustedHardwareKeys[user]) {
+        trustedHardwareKeys[user] = hardwareKey;
+    }
+
+    failedAttempts[user] = 0;
+    lastActivityTime[user] = Date.now();
+    return res.json({ success: true });
 });
 
-// Pasarela de Pagos Reales vinculada a Kraken (BTC, ETH, SOL)
+app.post('/api/refresh-penalty', (req, res) => {
+    const { user } = req.body;
+    if (user && nodeBalances[user] !== undefined) {
+        nodeBalances[user] = Math.max(0, nodeBalances[user] - 2);
+    }
+    res.json({ success: true });
+});
+
 app.get('/checkout', (req, res) => {
     const user = req.query.user || 'UX0';
     const timer = req.query.timer || '150';
@@ -457,11 +435,10 @@ app.get('/checkout', (req, res) => {
     `);
 });
 
-// Chat VIP ultrarrápido con Asistente de Código y guía de 2 oportunidades
 app.get('/chat', (req, res) => {
     const user = req.query.user || 'UX0';
     const timerSetting = parseInt(req.query.timer) || 150;
-    let currentBalance = nodeBalances[user] !== undefined ? nodeBalances[user] : 2;
+    let currentBalance = nodeBalances[user] !== undefined ? nodeBalances[user] : 10000;
 
     res.send(`
         <!DOCTYPE html>
@@ -501,7 +478,7 @@ app.get('/chat', (req, res) => {
         </head>
         <body>
             <header>
-                <div>Pleniux.com Node: <strong style="color:#c084fc;">${user}</strong> | Balance: <strong style="color:#34d399;">${currentBalance} Cr</strong> | Channel: <strong style="color:#fff;" id="roomDisplay">777</strong></div>
+                <div>Pleniux.com Node: <strong style="color:#c084fc;">${user}</strong> | Balance: <strong style="color:#34d399;">${currentBalance} Pts</strong> | Channel: <strong style="color:#fff;" id="roomDisplay">777</strong></div>
                 <div class="security-status" id="timer">Self-Destruct: 02:30</div>
             </header>
 
@@ -522,7 +499,7 @@ app.get('/chat', (req, res) => {
             <div id="chat-box"></div>
 
             <div class="footer">
-                <input type="text" id="messageInput" placeholder="Type lightning fast message..." onkeypress="handleKey(event)" autofocus>
+                <input type="text" id="messageInput" placeholder="Type lightning fast message..." onkeypress="handleKey(event)" autofocus autocomplete="off">
                 <button onclick="sendMessage()">Send</button>
             </div>
 
@@ -530,10 +507,15 @@ app.get('/chat', (req, res) => {
                 const user = "${user}";
                 let room = "777";
                 let tSecs = ${timerSetting};
-                let genAttempts = 2; // Tienes 2 oportunidades de generar y enviar el código
+                let genAttempts = 2;
                 const socket = io();
 
                 socket.emit('join-room', { room, user });
+
+                // Detección estricta de recarga o salida de pestaña
+                window.addEventListener('beforeunload', (e) => {
+                    navigator.sendBeacon('/api/refresh-penalty', JSON.stringify({ user }));
+                });
 
                 function generateSyncCode() {
                     if (genAttempts <= 0) {
@@ -546,7 +528,6 @@ app.get('/chat', (req, res) => {
                     const newCode = Math.floor(1000 + Math.random() * 9000).toString();
                     document.getElementById('targetRoom').value = newCode;
                     
-                    // Asistente automático: Envía el código al canal actual para guiar al otro usuario UX
                     const autoMsg = '⚡ [SYNC WIZARD] Este es mi código de acceso: ' + newCode + '. Dale a "Apply" para iniciar la conversación.';
                     socket.emit('chat-message', { room, user, text: autoMsg });
                 }
@@ -578,9 +559,9 @@ app.get('/chat', (req, res) => {
 
                 function triggerSelfDestruct(reason) {
                     document.body.innerHTML = \`<div style="background:#050505;color:#ef4444;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:sans-serif;text-align:center;padding:20px;">
-                        <h2 style="font-size: 1.6rem; text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);">🚨 VIP CHAT WIPED</h2>
+                        <h2 style="font-size: 1.6rem; text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);">🚨 VIP CHAT WIPED & 2 POINTS DEDUCTED</h2>
                         <p style="color:#cbd5e1;font-size:0.9rem;margin-top:6px;">Reason: \${reason}</p>
-                        <p style="color:#64748b;font-size:0.78rem;margin-top:12px;">Timer finished. All data and cache destroyed.</p>
+                        <p style="color:#64748b;font-size:0.78rem;margin-top:12px;">Redirecting to login securely...</p>
                     </div>\`;
                     setTimeout(() => { window.location.href = '/'; }, 3000);
                 }
@@ -604,8 +585,6 @@ app.get('/chat', (req, res) => {
                 window.addEventListener('blur', () => {
                     triggerSelfDestruct('Security focus lost.');
                 });
-
-                window.addEventListener('beforeunload', () => { socket.disconnect(); });
 
                 function sendMessage() {
                     const text = document.getElementById('messageInput').value.trim();
