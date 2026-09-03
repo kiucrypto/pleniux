@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 // Tu dirección real de Trust Wallet para recibir los pagos de Bitcoin
-const YOUR_BTC_WALLET = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
+const YOUR_BTC_WALLET = 'bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s';
 
 // Base de datos: UX0 es el nodo jefe/administrador. Los demás entran en 0 y bloqueados.
 const users = {
