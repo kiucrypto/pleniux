@@ -1,520 +1,379 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
+const path = require('path');
+const https = require('https');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, { maxHttpBufferSize: 10 * 1024 * 1024 });
 
-app.use(express.json());
+app.set('trust proxy', true);
 
-// Base de datos volátil con los nodos de los dueños protegidos (UX0 y UX1)
-const nodeBalances = {
-    'UX0': 10000,
-    'UX1': 10000
-};
+app.use(express.static(path.join(__dirname, 'public')));
 
-const registeredUsers = {
-    'UX0': '1971',
-    'UX1': '2609'
-};
-
-const failedAttempts = {};
-const bannedDevices = new Set();
-
-app.get('/', (req, res) => {
-    res.send(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Pleniux.com VIP - Elite Secure Gateway</title>
-            <style>
-                @keyframes neonGlow {
-                    0% { background-position: 0% 50%; }
-                    50% { background-position: 100% 50%; }
-                    100% { background-position: 0% 50%; }
-                }
-                body { 
-                    background: linear-gradient(135deg, #050510, #130f2c, #1f1b3c); 
-                    background-size: 300% 300%; 
-                    animation: neonGlow 12s ease infinite; 
-                    color: #fff; 
-                    font-family: 'Segoe UI', Roboto, sans-serif; 
-                    margin: 0; 
-                    padding: 20px; 
-                    display: flex; 
-                    flex-direction: column; 
-                    align-items: center; 
-                    justify-content: center; 
-                    min-height: 100vh; 
-                    box-sizing: border-box; 
-                }
-                .container { 
-                    width: 100%; 
-                    max-width: 440px; 
-                    background: rgba(15, 15, 30, 0.92); 
-                    backdrop-filter: blur(16px); 
-                    border: 1px solid rgba(139, 92, 246, 0.4); 
-                    padding: 1.6rem; 
-                    border-radius: 16px; 
-                    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3); 
-                }
-                .logo-header { text-align: center; margin-bottom: 0.1rem; }
-                .logo-header h1 { color: #fff; font-size: 1.6rem; margin: 0; letter-spacing: 2px; text-shadow: 0 0 15px rgba(168, 85, 247, 0.7); display: inline-block; }
-                .vip-badge { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-size: 0.58rem; font-weight: 800; padding: 2px 5px; border-radius: 4px; vertical-align: super; margin-left: 4px; }
-                .subtitle { color: #a78bfa; font-size: 0.72rem; text-align: center; margin-bottom: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; }
-                
-                .info-box { background: rgba(124, 58, 237, 0.12); border: 1px solid rgba(139, 92, 246, 0.35); padding: 9px; border-radius: 8px; font-size: 0.7rem; color: #e2e8f0; margin-bottom: 8px; line-height: 1.38; }
-                .security-notice { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; padding: 9px; border-radius: 8px; font-size: 0.7rem; margin-bottom: 10px; line-height: 1.38; }
-                
-                .form-group { margin-bottom: 0.75rem; }
-                label { display: block; font-size: 0.7rem; color: #c084fc; margin-bottom: 3px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-                .input-row { display: flex; align-items: center; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; overflow: hidden; }
-                .prefix { padding: 8px 11px; background: rgba(124, 58, 237, 0.3); color: #c084fc; font-weight: bold; font-size: 0.85rem; border-right: 1px solid rgba(139, 92, 246, 0.3); }
-                .input-row input, select { flex: 1; padding: 8px 11px; background: transparent; border: none; color: #fff; font-family: inherit; font-size: 0.85rem; outline: none; }
-                select option { background: #111; color: #fff; }
-                
-                .btn-container { display: flex; gap: 8px; margin-top: 8px; }
-                .btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.82rem; text-align: center; }
-                .btn-register { background: linear-gradient(135deg, #059669, #047857); color: #fff; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3); }
-                .btn-login { background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3); }
-                .btn:hover { opacity: 0.9; }
-
-                .manual-section { background: rgba(0,0,0,0.4); border: 1px dashed rgba(139, 92, 246, 0.3); padding: 8px; border-radius: 8px; margin-top: 10px; font-size: 0.65rem; color: #cbd5e1; line-height: 1.35; }
-                .manual-section b { color: #f59e0b; }
-                
-                .footer-manual { font-size: 0.6rem; color: #94a3b8; text-align: center; margin-top: 0.8rem; line-height: 1.3; }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="logo-header">
-                    <h1>PLENIUX.COM<span class="vip-badge">VIP</span></h1>
-                </div>
-                <div class="subtitle">⚡ Elite Maximum Security Gateway</div>
-                
-                <div class="info-box">
-                    🌐 <strong>Elite Protocol:</strong> New registrations receive a starting bonus of <strong>2 Pts</strong>. Refreshing or reloading the chat page triggers immediate session destruction, redirection to login, and a 2 Pts penalty deduction.
-                </div>
-
-                <div class="security-notice">
-                    🔒 <strong>Strict Protection:</strong> Unauthorized actions or page refreshes are actively penalized to preserve elite chat integrity.
-                </div>
-
-                <div class="form-group">
-                    <label>Your UX User Number</label>
-                    <div class="input-row">
-                        <span class="prefix">UX</span>
-                        <input type="number" id="nodeNum" min="0" max="1000000" placeholder="E.g. 0, 1, or new id" autocomplete="off">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Private Password / PIN</label>
-                    <input type="password" id="loginPass" placeholder="Enter your password" inputmode="numeric" autocomplete="new-password">
-                </div>
-
-                <div class="form-group">
-                    <label>Session Timer</label>
-                    <select id="timerPref">
-                        <option value="60">1 Minute (High Security)</option>
-                        <option value="150" selected>2 Minutes 30 Seconds (Standard)</option>
-                    </select>
-                </div>
-
-                <div class="btn-container">
-                    <button class="btn btn-register" onclick="processAction('register')">Register (+2 Pts)</button>
-                    <button class="btn btn-login" onclick="processAction('login')">Access Node</button>
-                </div>
-
-                <div class="manual-section">
-                    📖 <b>Elite Manual:</b><br>
-                    1. <b>Registration:</b> Create your custom ID and PIN to get 2 Pts.<br>
-                    2. <b>Security Rules:</b> Never refresh inside the chat. Doing so drops your balance by 2 Pts and forces re-login.<br>
-                    3. <b>Express Channels:</b> Use custom codes or express join inside the secure chat room.
-                </div>
-
-                <div class="footer-manual">
-                    Founder: <strong>Lenox JG</strong> | Pleniux.com VIP Secure Gateway
-                </div>
-            </div>
-
-            <script>
-                sessionStorage.removeItem('plx_active_session');
-
-                function getDeviceFingerprint() {
-                    let c = document.createElement('canvas');
-                    let ctx = c.getContext('2d');
-                    ctx.textBaseline = "top"; ctx.font = "14px Arial"; ctx.fillText("PleniuxVIP", 2, 2);
-                    let raw = navigator.userAgent + screen.width + 'x' + screen.height + c.toDataURL();
-                    let hash = 0;
-                    for (let i = 0; i < raw.length; i++) { hash = ((hash << 5) - hash) + raw.charCodeAt(i); hash |= 0; }
-                    return 'DEVICE_' + Math.abs(hash);
-                }
-
-                function processAction(actionType) {
-                    const num = document.getElementById('nodeNum').value.trim();
-                    const pass = document.getElementById('loginPass').value.trim();
-                    const timer = document.getElementById('timerPref').value;
-                    
-                    const numVal = parseInt(num);
-                    if(isNaN(numVal) || numVal < 0 || numVal > 1000000) {
-                        alert('⚠️ The UX user number must be between 0 and 1,000,000.');
-                        return;
-                    }
-                    if(!pass) {
-                        alert('⚠️ Please enter your password.');
-                        return;
-                    }
-
-                    const user = 'UX' + numVal;
-                    const deviceId = getDeviceFingerprint();
-
-                    fetch('/api/auth', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ user, pass, deviceId, actionType })
-                    }).then(res => res.json()).then(data => {
-                        if(data.success) {
-                            sessionStorage.setItem('plx_active_session', user);
-                            window.location.href = '/chat?user=' + encodeURIComponent(user) + '&timer=' + encodeURIComponent(timer);
-                        } else {
-                            alert(data.message);
-                            if(data.banned) {
-                                document.body.innerHTML = '<div style="background:#000;color:#ef4444;height:100vh;display:flex;justify-content:center;align-items:center;text-align:center;font-family:sans-serif;"><h2>🚨 ACCOUNT & ACCESS WIPED</h2><p>Security violation detected.</p></div>';
-                            }
-                        }
-                    });
-                }
-            </script>
-        </body>
-        </html>
-    `);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.post('/api/auth', (req, res) => {
-    const { user, pass, deviceId, actionType } = req.body;
-    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    const hardwareKey = `${deviceId}_${clientIp}`;
+// Estructuras de datos y listas negras de seguridad estrictas (Anti-fraude de red e hardware)
+const registeredUsers = {};               // username -> { password, createdAt, lastLogin, fingerprint, ip }
+const userBalances = {};                  // username -> balance
+const bannedDeviceFingerprints = new Set(); // Dispositivos bloqueados permanentemente (1 por dispositivo)
+const bannedIPs = new Set();                      // Redes WiFi / IPs bloqueadas permanentemente (1 por red)
+const activeSockets = {};                 // username -> socket.id
+const privateMessageHistory = {};         // roomId -> array of messages
 
-    if (bannedDevices.has(hardwareKey)) return res.json({ success: false, banned: true, message: '🚨 Access denied.' });
+const FOUNDER_BTC_ADDRESS = 'bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s';
 
-    if (actionType === 'register') {
-        if (registeredUsers[user]) {
-            return res.json({ success: false, message: '⚠️ This UX node is already registered. Please use "Access Node".' });
+// Tarea automática: Inactividad de 3 días o liberación a los 9 días (UX0 protegido)
+setInterval(() => {
+  const now = Date.now();
+  const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
+  const NINE_DAYS = 9 * 24 * 60 * 60 * 1000;
+
+  for (const [username, data] of Object.entries(registeredUsers)) {
+    if (username === 'UX0') continue;
+
+    const timeSinceLastActivity = now - (data.lastLogin || data.createdAt);
+    const timeSinceCreation = now - data.createdAt;
+
+    if (timeSinceLastActivity > THREE_DAYS) {
+      delete registeredUsers[username];
+      delete userBalances[username];
+    }
+
+    if (timeSinceCreation > NINE_DAYS) {
+      delete registeredUsers[username];
+      delete userBalances[username];
+    }
+  }
+}, 60 * 60 * 1000);
+
+function checkRealBlockchainPayment(expectedBtcAmount, callback) {
+  const url = `https://mempool.space/api/address/${FOUNDER_BTC_ADDRESS}/txs`;
+  
+  https.get(url, (res) => {
+    let data = '';
+    res.on('data', (chunk) => { data += chunk; });
+    res.on('end', () => {
+      try {
+        const txs = JSON.parse(data);
+        if (!Array.isArray(txs) || txs.length === 0) {
+          return callback(false, 'No transactions found on this address yet.');
         }
-        registeredUsers[user] = pass;
-        nodeBalances[user] = 2; 
-        return res.json({ success: true });
-    }
 
-    if (!registeredUsers[user]) {
-        return res.json({ success: false, message: '⚠️ This UX node does not exist. Please register first.' });
-    }
+        const recentTxs = txs.slice(0, 5);
+        let paymentFound = false;
 
-    if (registeredUsers[user] !== pass) {
-        if (!failedAttempts[user]) failedAttempts[user] = 0;
-        failedAttempts[user]++;
-        if (failedAttempts[user] >= 3) {
-            bannedDevices.add(hardwareKey);
-            delete registeredUsers[user];
-            delete nodeBalances[user];
-            failedAttempts[user] = 0;
-            return res.json({ success: false, banned: true, message: '🚨 Too many failed attempts. Account deleted.' });
+        for (let tx of recentTxs) {
+          for (let vout of tx.vout) {
+            if (vout.scriptpubkey_address === FOUNDER_BTC_ADDRESS) {
+              const receivedBtc = vout.value / 100000000;
+              if (receivedBtc >= (expectedBtcAmount * 0.95)) {
+                paymentFound = true;
+                break;
+              }
+            }
+          }
+          if (paymentFound) break;
         }
-        return res.json({ success: false, message: `Incorrect password. Attempt ${failedAttempts[user]} of 3.` });
-    }
 
-    failedAttempts[user] = 0;
-    return res.json({ success: true });
-});
-
-app.post('/api/refresh-penalty', (req, res) => {
-    const { user } = req.body;
-    if (user && user !== 'UX0' && user !== 'UX1' && nodeBalances[user] !== undefined) {
-        nodeBalances[user] = Math.max(0, nodeBalances[user] - 2);
-        if (nodeBalances[user] <= 0) {
-            delete registeredUsers[user];
-            delete nodeBalances[user];
+        if (paymentFound) {
+          callback(true, 'Payment successfully confirmed on the Bitcoin blockchain!');
+        } else {
+          callback(false, 'Payment not detected yet.');
         }
-    }
-    res.json({ success: true });
-});
-
-app.get('/checkout', (req, res) => {
-    const user = req.query.user || 'UX0';
-    const timer = req.query.timer || '150';
-    const walletAddress = '3GgLGjuUo3SpnnfjTcvaTBXqssoonAkUxo'; // Dirección Bitcoin oficial
-
-    res.send(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Pleniux.com VIP - Real Bitcoin Top-Up</title>
-            <style>
-                body { background: #0f0c29; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-                .box { background: rgba(15, 15, 30, 0.95); border: 1px solid rgba(245, 158, 11, 0.4); padding: 2rem; border-radius: 16px; width: 100%; max-width: 420px; text-align: center; }
-                h2 { color: #f59e0b; margin-top: 0; }
-                .crypto-box { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 10px; padding: 12px; margin: 15px 0; text-align: left; }
-                .wallet { font-size: 0.72rem; word-break: break-all; color: #cbd5e1; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 6px; border: 1px dashed rgba(245, 158, 11, 0.4); }
-                select, button { width: 100%; padding: 11px; border-radius: 8px; font-family: inherit; margin-top: 10px; font-weight: bold; }
-                select { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(245, 158, 11, 0.3); color: #fff; }
-                button { background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; cursor: pointer; }
-                .back { color: #a78bfa; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 12px; }
-            </style>
-        </head>
-        <body>
-            <div class="box">
-                <h2>Real Bitcoin Gateway</h2>
-                <p style="font-size: 0.8rem; color: #cbd5e1;">Send exact Bitcoin to fund your node credits:</p>
-                
-                <select id="packageSelect" onchange="updateDetails()">
-                    <option value="5000">Standard Package: 5,000 Credits</option>
-                    <option value="15000" selected>Professional Package: 15,000 Credits</option>
-                    <option value="50000">Enterprise Package: 50,000 Credits</option>
-                </select>
-
-                <div class="crypto-box">
-                    <div style="font-size: 0.75rem; color: #38bdf8; font-weight: bold;">Network: Bitcoin Native SegWit</div>
-                    <div style="font-size: 0.8rem; color: #34d399; margin: 6px 0; font-weight: bold;" id="priceDisplay">Exact Amount: Calculating...</div>
-                    <div class="wallet">${walletAddress}</div>
-                </div>
-
-                <button onclick="verifyPayment()">Verify Blockchain Transfer</button>
-                <br>
-                <a href="/chat?user=${encodeURIComponent(user)}&timer=${encodeURIComponent(timer)}" class="back">← Return to Secure Channel</a>
-            </div>
-            <script>
-                function updateDetails() {
-                    const val = document.getElementById('packageSelect').value;
-                    let amt = (val * 0.00012).toFixed(4) + ' BTC';
-                    document.getElementById('priceDisplay').innerText = 'Send exact amount: ' + amt;
-                }
-                updateDetails();
-                function verifyPayment() {
-                    alert('Querying blockchain mempool for incoming transaction...');
-                    window.location.href = '/chat?user=${encodeURIComponent(user)}&timer=${encodeURIComponent(timer)}';
-                }
-            </script>
-        </body>
-        </html>
-    `);
-});
-
-app.get('/chat', (req, res) => {
-    const user = req.query.user || 'UX0';
-    const timerSetting = parseInt(req.query.timer) || 150;
-    let currentBalance = nodeBalances[user] !== undefined ? nodeBalances[user] : 2;
-
-    res.send(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Pleniux.com VIP - Elite Channel</title>
-            <style>
-                @keyframes neonGlow {
-                    0% { background-position: 0% 50%; }
-                    50% { background-position: 100% 50%; }
-                    100% { background-position: 0% 50%; }
-                }
-                body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); background-size: 300% 300%; animation: neonGlow 15s ease infinite; color: #fff; font-family: 'Segoe UI', Roboto, sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; box-sizing: border-box; }
-                header { background: rgba(15, 15, 30, 0.95); backdrop-filter: blur(12px); padding: 0.8rem 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(139, 92, 246, 0.3); font-size: 0.8rem; flex-wrap: wrap; gap: 8px; }
-                .security-status { color: #f59e0b; font-weight: bold; }
-                
-                .control-panel { background: rgba(20, 20, 40, 0.95); border-bottom: 1px solid rgba(139, 92, 246, 0.3); padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; gap: 8px; flex-wrap: wrap; }
-                .control-group { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-                .control-panel input { padding: 6px 8px; background: rgba(0,0,0,0.6); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 6px; color: #fff; font-size: 0.8rem; width: 110px; outline: none; }
-                .control-panel button { padding: 6px 10px; background: #7c3aed; border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer; font-size: 0.75rem; }
-                .control-panel button:hover { opacity: 0.9; }
-                .topup-btn { background: linear-gradient(135deg, #f59e0b, #d97706) !important; color: #000 !important; }
-
-                #chat-box { 
-                    flex: 1; 
-                    padding: 1.2rem; 
-                    overflow-y: auto; 
-                    display: flex; 
-                    flex-direction: column; 
-                    gap: 10px; 
-                    position: relative;
-                    background: radial-gradient(circle at center, rgba(124, 58, 237, 0.08) 0%, rgba(15, 12, 41, 0.8) 100%);
-                }
-                #chat-box::before {
-                    content: "PLENIUX.COM VIP";
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    font-size: 2.5rem;
-                    font-weight: 900;
-                    color: rgba(168, 85, 247, 0.04);
-                    letter-spacing: 6px;
-                    pointer-events: none;
-                    white-space: nowrap;
-                    z-index: 0;
-                }
-
-                .message { background: rgba(30, 30, 60, 0.85); backdrop-filter: blur(8px); padding: 10px 14px; border-radius: 8px; max-width: 75%; word-break: break-word; border: 1px solid rgba(139, 92, 246, 0.3); font-size: 0.9rem; position: relative; z-index: 1; }
-                .self { background: rgba(79, 70, 229, 0.5); border-color: rgba(129, 140, 248, 0.6); align-self: flex-end; }
-                
-                .footer { padding: 1rem; background: rgba(15, 15, 30, 0.95); backdrop-filter: blur(12px); display: flex; gap: 8px; border-top: 1px solid rgba(139, 92, 246, 0.3); }
-                .footer input { flex: 1; padding: 10px 14px; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 8px; color: #fff; font-family: inherit; font-size: 0.9rem; outline: none; }
-                .footer button { padding: 0 20px; background: linear-gradient(135deg, #7c3aed, #4f46e5); border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; }
-            </style>
-            <script src="/socket.io/socket.io.js"></script>
-        </head>
-        <body>
-            <header>
-                <div>Node: <strong style="color:#c084fc;">${user}</strong> | Balance: <strong style="color:#34d399;" id="balanceDisplay">${currentBalance} Pts</strong> | Channel: <strong style="color:#fff;" id="roomDisplay">777</strong></div>
-                <div class="security-status" id="timer">Session Time: 02:30</div>
-            </header>
-
-            <div class="control-panel">
-                <div class="control-group">
-                    <span>Channel Code:</span>
-                    <input type="text" id="targetRoom" value="777" placeholder="Custom Code">
-                    <button onclick="applySyncCode()">Join</button>
-                    <button onclick="generateSyncCode()" style="background:#059669;">Generate</button>
-                    <button onclick="expressJoinPrompt()" style="background:#0284c7;" title="Express Quick Join">⚡ Express</button>
-                </div>
-                <div class="control-group">
-                    <button class="topup-btn" onclick="openCheckout()">Deposit BTC</button>
-                </div>
-            </div>
-
-            <div id="chat-box"></div>
-
-            <div class="footer">
-                <input type="text" id="messageInput" placeholder="Type an encrypted message..." onkeypress="handleKey(event)" autofocus autocomplete="off">
-                <button onclick="sendMessage()">Send</button>
-            </div>
-
-            <script>
-                const user = "${user}";
-                let room = "777";
-                let tSecs = ${timerSetting};
-                const socket = io();
-
-                // PROTOCOLO DE SEGURIDAD ELITE: Anti-Actualización estricto
-                if (!sessionStorage.getItem('plx_active_session') || sessionStorage.getItem('plx_active_session') !== user) {
-                    if(user !== 'UX0' && user !== 'UX1') {
-                        navigator.sendBeacon('/api/refresh-penalty', JSON.stringify({ user }));
-                    }
-                    alert('🚨 Security Alert: Reload or direct bypass detected! 2 Pts deducted. Please log in again.');
-                    window.location.replace('/');
-                } else {
-                    window.isInternalNavigation = false;
-                    window.addEventListener('beforeunload', () => {
-                        if (!window.isInternalNavigation) {
-                            if(user !== 'UX0' && user !== 'UX1') {
-                                navigator.sendBeacon('/api/refresh-penalty', JSON.stringify({ user }));
-                            }
-                        }
-                    });
-                }
-
-                socket.emit('join-room', { room, user });
-
-                const countdown = setInterval(() => {
-                    if(tSecs <= 0) {
-                        clearInterval(countdown);
-                        window.isInternalNavigation = true;
-                        sessionStorage.removeItem('plx_active_session');
-                        alert('⚠️ Session ended. Returning to gateway.');
-                        window.location.href = '/';
-                        return;
-                    }
-                    tSecs--;
-                    let mins = Math.floor(tSecs / 60).toString().padStart(2, '0');
-                    let secs = (tSecs % 60).toString().padStart(2, '0');
-                    document.getElementById('timer').innerText = 'Session Time: ' + mins + ':' + secs;
-                }, 1000);
-
-                function generateSyncCode() {
-                    const newCode = 'PLX-' + Math.floor(1000 + Math.random() * 9000);
-                    document.getElementById('targetRoom').value = newCode;
-                    room = newCode;
-                    document.getElementById('roomDisplay').innerText = room;
-                    socket.emit('join-room', { room, user });
-
-                    const autoMsg = '⚡ [EXPRESS SYNC] ' + user + ' generated secure channel code: ' + newCode;
-                    socket.emit('chat-message', { room, user, text: autoMsg });
-                }
-
-                function applySyncCode() {
-                    const code = document.getElementById('targetRoom').value.trim();
-                    if(!code) { alert('Please enter a valid code.'); return; }
-                    room = code;
-                    document.getElementById('roomDisplay').innerText = room;
-                    socket.emit('join-room', { room, user });
-
-                    const box = document.getElementById('chat-box');
-                    const div = document.createElement('div');
-                    div.style.textAlign = 'center';
-                    div.style.color = '#34d399';
-                    div.style.fontSize = '0.78rem';
-                    div.style.margin = '6px 0';
-                    div.style.position = 'relative';
-                    div.style.zIndex = '1';
-                    div.innerText = '✅ Connected to secure channel: ' + room;
-                    box.appendChild(div);
-                    box.scrollTop = box.scrollHeight;
-                }
-
-                function expressJoinPrompt() {
-                    const code = prompt('⚡ Express Join: Enter partner channel code or link ID:');
-                    if(code && code.trim()) {
-                        document.getElementById('targetRoom').value = code.trim();
-                        applySyncCode();
-                    }
-                }
-
-                function openCheckout() {
-                    window.isInternalNavigation = true;
-                    window.location.href = '/checkout?user=' + encodeURIComponent(user) + '&timer=' + tSecs;
-                }
-
-                function sendMessage() {
-                    const inputField = document.getElementById('messageInput');
-                    const text = inputField.value.trim();
-                    if(!text) return;
-                    socket.emit('chat-message', { room, user, text });
-                    inputField.value = '';
-                }
-
-                function handleKey(e) { if(e.key === 'Enter') sendMessage(); }
-
-                socket.on('chat-message', (data) => {
-                    if(data.room && data.room !== room) return;
-                    const box = document.getElementById('chat-box');
-                    const div = document.createElement('div');
-                    div.className = 'message' + (data.user === user ? ' self' : '');
-                    div.innerHTML = '<strong style="color: ' + (data.user === user ? '#93c5fd' : '#c084fc') + ';">' + data.user + ':</strong> ' + data.text;
-                    box.appendChild(div);
-                    box.scrollTop = box.scrollHeight;
-                });
-            </script>
-        </body>
-        </html>
-    `);
-});
+      } catch (e) {
+        callback(false, 'Error parsing blockchain network response.');
+      }
+    });
+  }).on('error', () => {
+    callback(false, 'Could not connect to the Bitcoin network API.');
+  });
+}
 
 io.on('connection', (socket) => {
-    socket.on('join-room', ({ room, user }) => {
-        socket.rooms.forEach(r => { if (r !== socket.id) socket.leave(r); });
-        socket.join(room);
+  const rawIp = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address || '';
+  const clientIp = rawIp.split(',')[0].trim();
+
+  socket.on('check_security_status', (data) => {
+    const { deviceFingerprint } = data || {};
+    if ((clientIp && bannedIPs.has(clientIp)) || (deviceFingerprint && bannedDeviceFingerprints.has(deviceFingerprint))) {
+      socket.emit('security_lockout', { message: 'CRITICAL SECURITY BLOCK: This network or device has already registered an account.' });
+    }
+  });
+
+  // REGISTRO POTENCIAL Y ESTRICTO (Bono de 20 UX y bloqueo duro de IP / Hardware)
+  socket.on('register_node', (data) => {
+    let { customId, password, deviceFingerprint } = data;
+    
+    // Bloqueo duro por IP de red / WiFi
+    if (clientIp && bannedIPs.has(clientIp)) {
+      socket.emit('auth_error', { message: 'SECURITY BLOCK: This network (IP) has already registered an account. Zero exceptions.' });
+      return;
+    }
+
+    // Bloqueo duro por huella de hardware del teléfono / laptop
+    if (deviceFingerprint && bannedDeviceFingerprints.has(deviceFingerprint)) {
+      socket.emit('auth_error', { message: 'SECURITY BLOCK: This device has already registered an account. Strict 1-device limit.' });
+      return;
+    }
+
+    if (!customId || password === undefined) {
+      socket.emit('auth_error', { message: 'Missing ID or numeric password.' });
+      return;
+    }
+
+    customId = customId.toString().trim();
+    const numericId = parseInt(customId, 10);
+
+    if (isNaN(numericId) || numericId < 0 || numericId > 1000000) {
+      socket.emit('auth_error', { message: 'Access Denied: ID out of range (0 to 1,000,000).' });
+      return;
+    }
+
+    const username = 'UX' + numericId;
+    
+    if (registeredUsers[username]) {
+      socket.emit('auth_error', { message: 'Error: This ID is already registered and active.' });
+      return;
+    }
+
+    const now = Date.now();
+    registeredUsers[username] = {
+      password: password,
+      createdAt: now,
+      lastLogin: now,
+      deviceFingerprint: deviceFingerprint || 'unknown',
+      ip: clientIp || 'unknown'
+    };
+    
+    // Bono de bienvenida automático de 20 UX (99999 para el fundador ID 0)
+    userBalances[username] = (numericId === 0) ? 99999.0 : 20.0;
+    
+    // Registrar y bloquear permanentemente en listas negras
+    if (clientIp) bannedIPs.add(clientIp);
+    if (deviceFingerprint) bannedDeviceFingerprints.add(deviceFingerprint);
+    
+    socket.emit('register_success', { 
+      message: `Node ${username} registered successfully! 20 UX welcome bonus credited. Network and device locked.`,
+      username: username
     });
-    socket.on('chat-message', (data) => { 
-        io.to(data.room).emit('chat-message', data); 
+  });
+
+  socket.on('auth_node', (data) => {
+    let { customId, password } = data;
+    if (customId === undefined || password === undefined) {
+      socket.emit('auth_error', { message: 'Please enter your ID and numeric password.' });
+      return;
+    }
+
+    customId = customId.toString().trim();
+    const numericId = parseInt(customId, 10);
+    const username = 'UX' + numericId;
+    
+    // Acceso Supremo para Fundador UX 0
+    if (numericId === 0 && (password === '197126' || password === '0' || (registeredUsers[username] && registeredUsers[username].password === password))) {
+      registeredUsers['UX0'] = { password: password || '197126', createdAt: Date.now(), lastLogin: Date.now() };
+      userBalances['UX0'] = 99999.0;
+      activeSockets['UX0'] = socket.id;
+      
+      socket.emit('auth_success', {
+        role: 'FOUNDER_VIP',
+        badge: '★ UX 0 [FOUNDER & SUPREME CONTROLLER ✓]',
+        balance: userBalances['UX0'],
+        isVip: true,
+        isAdmin: true,
+        username: 'UX0'
+      });
+      return;
+    }
+
+    const userData = registeredUsers[username];
+
+    if (userData && userData.password === password) {
+      userData.lastLogin = Date.now();
+      if (userBalances[username] === undefined) userBalances[username] = 20.0;
+      activeSockets[username] = socket.id;
+      const isVip = userBalances[username] >= 500.0; 
+
+      socket.emit('auth_success', {
+        role: 'OPERATOR',
+        badge: isVip ? `${username} [SECURE VIP OPERATOR ✓]` : `${username} [SECURE OPERATOR]`,
+        balance: userBalances[username],
+        isVip: isVip,
+        isAdmin: false,
+        username: username
+      });
+    } else {
+      socket.emit('auth_error', { message: 'Invalid credentials, expired account, or access denied.' });
+    }
+  });
+
+  // CONTROL TOTAL DEL FUNDADOR: Acreditar saldo automáticamente
+  socket.on('admin_credit_balance', (data) => {
+    let { adminUser, targetUser, amount } = data;
+    
+    const cleanAdmin = adminUser ? adminUser.toString().trim().toUpperCase().replace(/\s+/g, '') : '';
+    
+    if (cleanAdmin === 'UX0' || cleanAdmin === 'UX 0') {
+      if (!targetUser) {
+        socket.emit('auth_error', { message: 'Target user ID is missing.' });
+        return;
+      }
+
+      targetUser = targetUser.toString().trim();
+      const rawNumber = targetUser.replace(/\D/g, '');
+      const targetFull = targetUser.toUpperCase().startsWith('UX') ? targetUser.toUpperCase() : 'UX' + rawNumber;
+      
+      const addAmount = parseFloat(amount);
+      
+      if (isNaN(addAmount)) {
+        socket.emit('auth_error', { message: 'Invalid amount specified.' });
+        return;
+      }
+
+      if (userBalances[targetFull] === undefined) {
+        userBalances[targetFull] = 20.0;
+      }
+      
+      userBalances[targetFull] += addAmount;
+      
+      socket.emit('admin_action_success', { message: `Successfully credited ${addAmount} to ${targetFull}. New balance: ${userBalances[targetFull]}` });
+      
+      const targetSocket = activeSockets[targetFull];
+      if (targetSocket) {
+        io.to(targetSocket).emit('balance_updated', { 
+          newBalance: userBalances[targetFull], 
+          message: `The Founder credited ${addAmount} to your wallet.` 
+        });
+      }
+    } else {
+      socket.emit('auth_error', { message: 'Unauthorized: Founder privileges required.' });
+    }
+  });
+
+  // PAGOS REALES BLOCKCHAIN CON LOS NUEVOS PRECIOS Y PAQUETES UX
+  socket.on('verify_btc_payment', (data) => {
+    let { username, packageType } = data;
+    if (!username || userBalances[username] === undefined) {
+      socket.emit('auth_error', { message: 'Session error during payment check.' });
+      return;
+    }
+
+    let requiredBtc = 0.000015;
+    let creditedUx = 200;
+    
+    if (packageType.includes('200 UX')) { requiredBtc = 0.000015; creditedUx = 200; }
+    else if (packageType.includes('3666 UX')) { requiredBtc = 0.00012; creditedUx = 3666; }
+    else if (packageType.includes('6666 UX') && packageType.includes('155.99')) { requiredBtc = 0.00038; creditedUx = 6666; } // 155.99 USD Pack
+    else if (packageType.includes('16666 UX')) { requiredBtc = 0.00058; creditedUx = 16666; }
+    else if (packageType.includes('69999 UX')) { requiredBtc = 0.0017; creditedUx = 69999; }
+    else if (packageType.includes('150000 UX') || packageType.includes('150,000 UX')) { requiredBtc = 0.0036; creditedUx = 150000; }
+
+    checkRealBlockchainPayment(requiredBtc, (isPaid, message) => {
+      if (isPaid) {
+        userBalances[username] += creditedUx;
+        socket.emit('balance_updated', { 
+          newBalance: userBalances[username], 
+          message: `Payment verified on blockchain! ${creditedUx} UX credited to your wallet.` 
+        });
+      } else {
+        socket.emit('auth_error', { message: `Verification failed: ${message}` });
+      }
     });
+  });
+
+  // PENALIZACIÓN DE SESIÓN (Descuenta 2 UX, limpia chats y expulsa)
+  socket.on('penalize_session_exit', (data) => {
+    const { username } = data;
+    if (username && username !== 'UX0' && userBalances[username] !== undefined) {
+      userBalances[username] = Math.max(0, userBalances[username] - 2.0);
+
+      for (const roomId of Object.keys(privateMessageHistory)) {
+        if (roomId.includes(username)) {
+          delete privateMessageHistory[roomId];
+        }
+      }
+
+      socket.emit('force_logout_penalty', { 
+        newBalance: userBalances[username], 
+        message: 'Security Alert: Timer expired or left session. -2 UX deducted, chat wiped, and session closed.' 
+      });
+    }
+  });
+
+  socket.on('open_direct_chat', (data) => {
+    let { sender, recipient } = data;
+    if (!recipient) return;
+    recipient = recipient.trim();
+    const targetFull = recipient.toUpperCase().startsWith('UX') ? recipient.toUpperCase() : 'UX' + recipient.replace(/\D/g, '');
+
+    if (targetFull === sender) {
+      socket.emit('auth_error', { message: 'You cannot open a direct chat with yourself.' });
+      return;
+    }
+
+    const usersPair = [sender, targetFull].sort();
+    const chatRoomId = `DIRECT-${usersPair[0]}-${usersPair[1]}`;
+
+    socket.join(chatRoomId);
+
+    if (!privateMessageHistory[chatRoomId]) {
+      privateMessageHistory[chatRoomId] = [];
+    }
+
+    socket.emit('direct_chat_opened', {
+      room: chatRoomId,
+      recipient: targetFull,
+      history: privateMessageHistory[chatRoomId]
+    });
+  });
+
+  socket.on('send_direct_message', (data) => {
+    const { room, sender, recipient, text, image } = data;
+    if ((!text && !image) || !room) return;
+
+    const messageData = {
+      sender: sender,
+      text: text || '',
+      image: image || null,
+      timestamp: new Date().toLocaleTimeString()
+    };
+
+    if (!privateMessageHistory[room]) {
+      privateMessageHistory[room] = [];
+    }
+    privateMessageHistory[room].push(messageData);
+
+    io.to(room).emit('receive_direct_message', messageData);
+
+    const recipientSocketId = activeSockets[recipient];
+    if (recipientSocketId) {
+      io.sockets.sockets.get(recipientSocketId)?.join(room);
+    }
+  });
+
+  socket.on('send_post', (data) => {
+    io.emit('receive_post', {
+      sender: data.sender || 'Operator',
+      text: data.text,
+      timestamp: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString()
+    });
+  });
+
+  socket.on('disconnect', () => {
+    for (const [user, sId] of Object.entries(activeSockets)) {
+      if (sId === socket.id) {
+        delete activeSockets[user];
+        break;
+      }
+    }
+  });
 });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Pleniux.com VIP Elite Gateway active on port ${PORT}`);
+  console.log(`Pleniux Secure Node running on port ${PORT}`);
 });
