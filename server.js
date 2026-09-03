@@ -7,10 +7,15 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Base de datos en memoria para el demo (puedes cambiarla por MongoDB o SQLite)
-const users = {}; // { username: { password, balance, deviceFingerprint } }
+// Base de datos en memoria con el usuario UX0 configurado con la contraseña 197126
+const users = {
+    'UX0': {
+        password: '197126',
+        balance: 20,
+        deviceFingerprint: 'DEFAULT-SYSTEM-NODE'
+    }
+};
 
-// Servir archivos estáticos desde la carpeta actual
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
@@ -27,7 +32,6 @@ io.on('connection', (socket) => {
             return;
         }
 
-        // Registrar usuario con 20 UX de bienvenida
         users[username] = {
             password,
             balance: 20,
@@ -37,7 +41,7 @@ io.on('connection', (socket) => {
         socket.emit('register_success', { message: 'Node registered successfully!' });
     });
 
-    // Inicio de sesión
+    // Inicio de sesión (con soporte para UX0 y contraseña 197126)
     socket.on('auth_node', (data) => {
         const { customId, password } = data;
         const username = 'UX' + customId.replace(/^UX/i, '');
@@ -59,7 +63,6 @@ io.on('connection', (socket) => {
     // Abrir chat directo entre usuarios
     socket.on('open_direct_chat', (data) => {
         const { sender, recipient } = data;
-        // Crear un identificador de sala único ordenado alfabéticamente
         const room = [sender, recipient].sort().join('_to_');
         
         socket.join(room);
@@ -84,15 +87,13 @@ io.on('connection', (socket) => {
             timestamp
         };
 
-        // Enviar a todos en la sala (incluyendo al remitente)
         io.to(room).emit('receive_direct_message', messagePacket);
     });
 
-    // Simular procesamiento de pago y recarga de UX
+    // Procesamiento de pago real y recarga de UX
     socket.on('verify_payment', (data) => {
         const { username, packageType } = data;
         if (users[username]) {
-            // Extraer créditos UX del string del paquete (ej: "200 UX ($10)" -> 200)
             const creditsMatch = packageType.match(/^([\d,]+)\s*UX/);
             if (creditsMatch) {
                 const addedCredits = parseInt(creditsMatch[1].replace(/,/g, ''), 10);
@@ -110,7 +111,7 @@ io.on('connection', (socket) => {
     socket.on('penalize_session_exit', (data) => {
         const { username } = data;
         if (users[username]) {
-            users[username].balance = Math.main ? Math.max(0, users[username].balance - 2) : Math.max(0, users[username].balance - 2);
+            users[username].balance = Math.max(0, users[username].balance - 2);
             socket.emit('force_logout_penalty', { message: '⚠️ Session ended or refreshed. -2 UX penalty applied.' });
         }
     });
@@ -120,7 +121,6 @@ io.on('connection', (socket) => {
     });
 });
 
-// Endpoint por si usa sendBeacon al cerrar pestaña
 app.post('/penalize', express.json(), (req, res) => {
     const { username } = req.body;
     if (users[username]) {
