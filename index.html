@@ -22,6 +22,7 @@
             align-items: center;
             overflow-x: hidden;
             position: relative;
+            padding: 10px;
         }
 
         /* Neon Red Pulsing Dots Background Animation */
@@ -46,13 +47,12 @@
             50% { opacity: 0.9; }
         }
 
-        /* Watermark PLENIUX.COM background */
         .watermark-bg {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 10vw;
+            font-size: 12vw;
             font-weight: bold;
             color: rgba(255, 0, 0, 0.03);
             white-space: nowrap;
@@ -66,53 +66,53 @@
             position: relative;
             z-index: 10;
             width: 100%;
-            max-width: 520px;
-            background: rgba(10, 10, 10, 0.92);
+            max-width: 500px;
+            background: rgba(10, 10, 10, 0.95);
             border: 2px solid #ff0000;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
             border-radius: 12px;
-            padding: 25px;
-            margin: 20px;
-            max-height: 95vh;
+            padding: 15px;
+            margin: 10px auto;
+            max-height: 98vh;
             overflow-y: auto;
         }
 
         .header-title {
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             color: #ff3333;
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
 
         .header-subtitle {
             text-align: center;
-            font-size: 12px;
+            font-size: 10px;
             color: #ff9999;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             letter-spacing: 1px;
         }
 
         .security-alert {
             background: rgba(255, 0, 0, 0.1);
             border-left: 4px solid #ff0000;
-            padding: 10px;
-            font-size: 11px;
+            padding: 8px;
+            font-size: 9px;
             color: #ffcccc;
-            margin-bottom: 15px;
-            line-height: 1.4;
+            margin-bottom: 10px;
+            line-height: 1.3;
         }
 
         .input-group {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         label {
             display: block;
-            font-size: 11px;
+            font-size: 10px;
             color: #ff6666;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             font-weight: bold;
         }
 
@@ -128,9 +128,10 @@
         .prefix-box {
             background: #220000;
             color: #ff3333;
-            padding: 10px 12px;
+            padding: 8px 10px;
             font-weight: bold;
             border-right: 1px solid #440000;
+            font-size: 11px;
         }
 
         input[type="text"], input[type="password"] {
@@ -139,70 +140,53 @@
             border: none;
             outline: none;
             color: #ffffff;
-            padding: 10px;
-            font-size: 13px;
+            padding: 8px;
+            font-size: 11px;
         }
 
         .btn-action {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             border: none;
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
             text-transform: uppercase;
-            font-size: 12px;
-            margin-top: 8px;
+            font-size: 11px;
+            margin-top: 6px;
         }
 
-        .btn-register-action {
-            background: #00aa55;
-            color: #ffffff;
-        }
+        .btn-register-action { background: #00aa55; color: #ffffff; }
         .btn-register-action:hover { background: #00cc66; }
 
-        .btn-login-action {
-            background: #cc0000;
-            color: #ffffff;
-        }
+        .btn-login-action { background: #cc0000; color: #ffffff; }
         .btn-login-action:hover { background: #ff0000; }
 
-        .terms-box {
-            font-size: 10px;
+        .terms-box, .manual-box {
+            font-size: 9px;
             color: #aaaaaa;
-            margin-top: 15px;
+            margin-top: 8px;
             border-top: 1px dashed #440000;
-            padding-top: 10px;
-            line-height: 1.4;
-        }
-
-        .manual-box {
-            margin-top: 15px;
-            border-top: 1px dashed #440000;
-            padding-top: 10px;
-            font-size: 10px;
-            color: #cccccc;
-            line-height: 1.4;
+            padding-top: 6px;
+            line-height: 1.3;
         }
 
         .manual-box h3 {
             color: #ff4444;
-            font-size: 11px;
-            margin-bottom: 4px;
+            font-size: 10px;
+            margin-bottom: 2px;
         }
 
         #status-message {
-            margin-top: 10px;
+            margin-top: 6px;
             text-align: center;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
         }
 
-        /* Dashboard / Chat styles */
-        .dashboard-view {
-            display: none;
-        }
+        /* Dashboard & Responsive Grid */
+        .dashboard-view { display: none; }
 
         .user-panel-header {
             display: flex;
@@ -210,60 +194,129 @@
             align-items: center;
             background: #1a0000;
             border: 1px solid #ff0000;
-            padding: 10px;
+            padding: 8px 10px;
             border-radius: 6px;
-            margin-bottom: 15px;
-            font-size: 12px;
+            margin-bottom: 10px;
+            font-size: 10px;
         }
 
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 6px 4px;
+            background: #150000;
+            border: 1px solid #550000;
+            color: #ff9999;
+            font-size: 9px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            background: #cc0000;
+            color: #ffffff;
+            border-color: #ff3333;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Pricing Grid (Adaptable a celulares y PC) */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .price-card {
+            background: #111;
+            border: 1px solid #440000;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .price-card h4 { color: #00ff88; font-size: 11px; margin-bottom: 2px; }
+        .price-card p { font-size: 9px; color: #ffcccc; margin-bottom: 6px; word-break: break-all; }
+
+        .btn-buy {
+            background: #b8860b;
+            color: white;
+            border: none;
+            padding: 5px;
+            font-size: 9px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-buy:hover { background: #daa520; }
+
+        /* Chat UI Adaptable */
         .chat-box {
             background: #050505;
             border: 1px solid #330000;
             border-radius: 6px;
-            height: 250px;
+            height: 180px;
             overflow-y: auto;
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 8px;
+            margin-bottom: 8px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .message-item {
             background: #1a1a1a;
-            padding: 8px;
+            padding: 6px;
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 10px;
             border-left: 3px solid #ff3333;
+            word-break: break-word;
         }
 
-        .message-item.mine {
-            border-left-color: #00aa55;
-            text-align: right;
-        }
+        .message-item.mine { border-left-color: #00aa55; text-align: right; }
 
-        .chat-input-row {
-            display: flex;
-            gap: 5px;
-        }
-
+        .chat-input-row { display: flex; gap: 5px; }
         .chat-input-row input {
             background: #111;
             border: 1px solid #440000;
             border-radius: 4px;
             color: #fff;
-            padding: 8px;
-            font-size: 12px;
+            padding: 6px;
+            font-size: 10px;
+            flex: 1;
         }
 
         .btn-send {
             background: #cc0000;
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 10px;
+        }
+
+        .timer-badge {
+            background: #330000;
+            color: #ff3333;
+            border: 1px solid #ff0000;
+            padding: 4px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 6px;
         }
     </style>
 </head>
@@ -272,69 +325,132 @@
     <div class="neon-dots-bg"></div>
     <div class="watermark-bg">PLENIUX.COM</div>
 
+    <!-- Auth Gateway Panel -->
     <div class="gateway-container" id="auth-panel">
         <div class="header-title">PLENIUX.COM</div>
         <div class="header-subtitle">⚡ ELITE MAXIMUM SECURITY GATEWAY</div>
 
         <div class="security-alert">
-            🛡️ <strong>Strict Anti-Fraud & Security Protocol:</strong> One account per hardware device & IP. Automatic welcome bonus of <strong>+20 UX</strong>. Sessions self-destruct upon switching web views, exiting, or timer expiration (-2 UX penalty).
+            🛡️ <strong>Strict Anti-Fraud & Security Protocol:</strong> One account per hardware device & IP. Automatic welcome bonus of <strong>+20 UX</strong>. Sessions self-destruct upon switching apps, web changes, or timer expiration (-2 UX penalty).
         </div>
 
         <div class="input-group">
-            <label>YOUR UX USER NUMBER (E.g. 101, 777)</label>
+            <label>YOUR UX USER NUMBER (E.g. 0, 1, 123)</label>
             <div class="input-flex">
                 <div class="prefix-box">UX</div>
-                <input type="text" id="customId" placeholder="Enter your custom number">
+                <input type="text" id="customId" placeholder="Enter custom number">
             </div>
         </div>
 
         <div class="input-group">
             <label>PRIVATE PASSWORD / PIN</label>
-            <input type="password" id="password" placeholder="Create or enter your secure PIN">
+            <input type="password" id="password" placeholder="Create or enter secure PIN">
         </div>
 
         <button class="btn-action btn-register-action" onclick="registerNode()">Register New Account (+20 UX)</button>
-        <button class="btn-action btn-login-action" onclick="loginNode()">Secure Login & Enter Chat</button>
+        <button class="btn-action btn-login-action" onclick="loginNode()">Secure Login & Enter</button>
 
         <div id="status-message"></div>
 
         <div class="terms-box">
-            <strong>Terms & Conditions:</strong> Unauthorized multi-account creation, bad faith interaction, tampering with encryption, or attempting to bypass security hardware identifiers will result in a permanent network ban and balance forfeiture.
+            <strong>Terms & Conditions:</strong> Multi-account creation, bad faith interaction, or tampering with device identifiers results in a permanent network ban and balance forfeiture.
         </div>
 
         <div class="manual-box">
             <h3>Official Pleniux Connection Manual:</h3>
-            <p><strong>1. Registration:</strong> Enter your desired number and PIN, then click Register. You will receive +20 UX instantly and enter the system directly.</p>
-            <p><strong>2. Direct P2P Chat:</strong> Enter any other user's exact number (e.g., 5 or UX5) and click Open Chat to exchange encrypted messages and real photos securely.</p>
-            <p><strong>3. Security Notice:</strong> Each device is locked to its specific web instance to protect user integrity and prevent spoofing.</p>
+            <p><strong>1. Registration:</strong> Enter your number and PIN, then click Register to receive +20 UX instantly.</p>
+            <p><strong>2. Add Contacts & Chat:</strong> Go to the "Add/Chat" tab, enter any user's exact number, open the channel, and chat securely with a mandatory 1:30 min timer.</p>
+            <p><strong>3. Security Penalty:</strong> Exiting the app or timer expiration deducts <strong>-2 UX</strong> and destroys chat data immediately.</p>
         </div>
     </div>
 
+    <!-- Dashboard & Main Panel -->
     <div class="gateway-container dashboard-view" id="dashboard-panel">
         <div class="user-panel-header">
             <span id="user-badge-display">NODE: UX0</span>
             <span id="user-balance-display">BALANCE: 20 UX</span>
         </div>
 
-        <div class="input-group">
-            <label>CONNECT WITH TARGET USER (Recipient ID)</label>
-            <div class="input-flex">
-                <div class="prefix-box">UX</div>
-                <input type="text" id="targetRecipient" placeholder="Target User Number (e.g. 0)">
-            </div>
-            <button class="btn-action btn-register-action" style="margin-top: 5px;" onclick="openDirectChat()">Open Encrypted Chat Channel</button>
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <div class="tab-btn active" onclick="switchTab('chat-tab')">💬 Add & Chat</div>
+            <div class="tab-btn" onclick="switchTab('pricing-tab')">💎 Balance Pricing</div>
+            <div class="tab-btn" onclick="switchTab('manual-tab')">📜 Manual & Terms</div>
         </div>
 
-        <div id="active-chat-container" style="display:none;">
-            <div style="font-size: 11px; color: #00ff88; margin-bottom: 5px;" id="chat-status-target">Secure Channel Active</div>
-            <div class="chat-box" id="chatMessageList"></div>
-            <div class="chat-input-row">
-                <input type="text" id="messageInput" placeholder="Type secure message..." style="flex:1;">
-                <button class="btn-send" onclick="sendDirectMessage()">Send</button>
+        <!-- TAB 1: Add Contacts & Live Chat with Mandatory 1:30 Timer -->
+        <div id="chat-tab" class="tab-content active">
+            <div class="input-group">
+                <label>ADD / CONNECT WITH USER (Recipient ID)</label>
+                <div class="input-flex">
+                    <div class="prefix-box">UX</div>
+                    <input type="text" id="targetRecipient" placeholder="Target User Number (e.g. 1)">
+                </div>
+                <button class="btn-action btn-register-action" style="margin-top: 5px;" onclick="openDirectChat()">Open Encrypted Chat Channel</button>
+            </div>
+
+            <div id="active-chat-container" style="display:none;">
+                <div class="timer-badge" id="chatTimerDisplay">⏳ Mandatory Self-Destruct Timer: 01:30</div>
+                <div style="font-size: 10px; color: #00ff88; margin-bottom: 4px;" id="chat-status-target">Secure Channel Active</div>
+                <div class="chat-box" id="chatMessageList"></div>
+                <div class="chat-input-row">
+                    <input type="text" id="messageInput" placeholder="Type encrypted message...">
+                    <button class="btn-send" onclick="sendDirectMessage()">Send</button>
+                </div>
             </div>
         </div>
 
-        <button class="btn-action btn-login-action" style="margin-top: 15px;" onclick="logoutAndPenalize()">Self-Destruct / Logout (-2 UX)</button>
+        <!-- TAB 2: Balance Pricing & Real Bitcoin Payments -->
+        <div id="pricing-tab" class="tab-content">
+            <div class="security-alert" style="margin-bottom: 8px;">
+                💳 <strong>Real Blockchain Top-Up:</strong> Send exact BTC to founder wallet: <br><code style="font-size: 8px; word-break: break-all;">bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s</code>
+            </div>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <h4>200 UX</h4>
+                    <p>0.000015 BTC</p>
+                    <button class="btn-buy" onclick="verifyPayment('200 UX')">Verify Payment</button>
+                </div>
+                <div class="price-card">
+                    <h4>3,666 UX</h4>
+                    <p>0.00012 BTC</p>
+                    <button class="btn-buy" onclick="verifyPayment('3666 UX')">Verify Payment</button>
+                </div>
+                <div class="price-card">
+                    <h4>6,666 UX</h4>
+                    <p>0.00038 BTC</p>
+                    <button class="btn-buy" onclick="verifyPayment('6666 UX')">Verify Payment</button>
+                </div>
+                <div class="price-card">
+                    <h4>16,666 UX</h4>
+                    <p>0.00058 BTC</p>
+                    <button class="btn-buy" onclick="verifyPayment('16666 UX')">Verify Payment</button>
+                </div>
+                <div class="price-card">
+                    <h4>69,999 UX</h4>
+                    <p>0.0017 BTC</p>
+                    <button class="btn-buy" onclick="verifyPayment('69999 UX')">Verify Payment</button>
+                </div>
+                <div class="price-card">
+                    <h4>150,000 UX</h4>
+                    <p>0.0036 BTC</p>
+                    <button class="btn-buy" onclick="verifyPayment('150000 UX')">Verify Payment</button>
+                </div>
+            </div>
+            <div id="payment-status-msg" style="text-align:center; font-size:9px; color:#ff9999; margin-top:5px;"></div>
+        </div>
+
+        <!-- TAB 3: Manual & Terms -->
+        <div id="manual-tab" class="tab-content">
+            <div class="manual-box" style="margin-top:0; border:none;">
+                <h3>Official Pleniux Connection Manual & Security Rules:</h3>
+                <p><strong>1. Multi-Account Prohibition:</strong> Each physical device is strictly bound to a single node. Creating multiple accounts or acting in bad faith triggers instant network blacklisting.</p>
+                <p><strong>2. Mandatory Chat Timer:</strong> Every active communication channel enforces a strict 1:30 minute self-destruction countdown. Upon expiration or app exit, chats are permanently wiped and <strong>2 balance units</strong> are deducted.</p>
+                <p><strong>3. Verified Transactions:</strong> Top-ups are processed securely via live blockchain verification on the Mempool network.</p>
+            </div>
+        </div>
+
+        <button class="btn-action btn-login-action" style="margin-top: 10px;" onclick="logoutAndPenalize()">Self-Destruct / Logout (-2 UX)</button>
     </div>
 
     <script>
@@ -342,9 +458,18 @@
         let currentUsername = '';
         let activeRoom = '';
         let activeRecipient = '';
+        let chatCountdownTimer = null;
+        let remainingSeconds = 90;
 
         function getDeviceFingerprint() {
             return 'FP-' + navigator.hardwareConcurrency + '-' + navigator.platform + '-' + screen.width + 'x' + screen.height + '-' + (navigator.deviceMemory || '4');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
         function registerNode() {
@@ -354,7 +479,7 @@
 
             if (!customId || !password) {
                 status.style.color = '#ff3333';
-                status.innerText = 'Please enter both your user ID and password to register.';
+                status.innerText = 'Please enter user ID and password to register.';
                 return;
             }
 
@@ -372,7 +497,7 @@
 
             if (!customId || !password) {
                 status.style.color = '#ff3333';
-                status.innerText = 'Please enter your user ID and password to log in.';
+                status.innerText = 'Please enter user ID and password to log in.';
                 return;
             }
 
@@ -384,7 +509,6 @@
 
         socket.on('register_success', (data) => {
             currentUsername = data.username;
-            // Ingresar directamente al panel tras registrarse con éxito
             socket.emit('auth_node', {
                 customId: currentUsername.replace('UX', ''),
                 password: document.getElementById('password').value
@@ -426,10 +550,33 @@
             
             const list = document.getElementById('chatMessageList');
             list.innerHTML = '';
-            data.history.forEach(msg => {
-                appendMessageToUI(msg);
-            });
+            data.history.forEach(msg => appendMessageToUI(msg));
+
+            startChatTimer();
         });
+
+        function startChatTimer() {
+            if (chatCountdownTimer) clearInterval(chatCountdownTimer);
+            remainingSeconds = 90;
+            updateTimerDisplay();
+
+            chatCountdownTimer = setInterval(() => {
+                remainingSeconds--;
+                updateTimerDisplay();
+
+                if (remainingSeconds <= 0) {
+                    clearInterval(chatCountdownTimer);
+                    alert('⚠️ Mandatory Chat Timer Expired (1:30 min). Session self-destructing and -2 UX deducted.');
+                    logoutAndPenalize();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(remainingSeconds / 60).toString().padStart(2, '0');
+            const secs = (remainingSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('chatTimerDisplay').innerText = `⏳ Mandatory Self-Destruct Timer: ${mins}:${secs}`;
+        }
 
         function sendDirectMessage() {
             const text = document.getElementById('messageInput').value.trim();
@@ -457,6 +604,24 @@
             list.appendChild(div);
             list.scrollTop = list.scrollHeight;
         }
+
+        function verifyPayment(packageType) {
+            const statusMsg = document.getElementById('payment-status-msg');
+            statusMsg.style.color = '#ff9999';
+            statusMsg.innerText = `Checking blockchain for ${packageType}...`;
+
+            socket.emit('verify_btc_payment', {
+                username: currentUsername,
+                packageType: packageType
+            });
+        }
+
+        socket.on('balance_updated', (data) => {
+            document.getElementById('user-balance-display').innerText = `BALANCE: ${data.newBalance} UX`;
+            const statusMsg = document.getElementById('payment-status-msg');
+            statusMsg.style.color = '#00ff88';
+            statusMsg.innerText = data.message;
+        });
 
         function logoutAndPenalize() {
             if (currentUsername) {
