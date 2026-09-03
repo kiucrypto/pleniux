@@ -10,23 +10,25 @@ const io = new Server(server, { maxHttpBufferSize: 10 * 1024 * 1024 });
 
 app.set('trust proxy', true);
 
+// Serve static files from the public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Catch-all route to serve index.html properly without 'Not found' errors
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Estructuras de datos y listas negras de seguridad estrictas (Anti-fraude de red e hardware)
+// Strict security data structures (Anti-fraud for networks and hardware)
 const registeredUsers = {};               // username -> { password, createdAt, lastLogin, fingerprint, ip }
 const userBalances = {};                  // username -> balance
-const bannedDeviceFingerprints = new Set(); // Dispositivos bloqueados permanentemente (1 por dispositivo)
-const bannedIPs = new Set();                      // Redes WiFi / IPs bloqueadas permanentemente (1 por red)
+const bannedDeviceFingerprints = new Set(); // Permanently blocked hardware devices (1 per device)
+const bannedIPs = new Set();              // Permanently blocked network/WiFi IPs (1 per network)
 const activeSockets = {};                 // username -> socket.id
 const privateMessageHistory = {};         // roomId -> array of messages
 
 const FOUNDER_BTC_ADDRESS = 'bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s';
 
-// Tarea automática: Inactividad de 3 días o liberación a los 9 días (UX0 protegido)
+// Automatic cleanup task: Inactivity after 3 days or full release after 9 days (UX0 is protected)
 setInterval(() => {
   const now = Date.now();
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
@@ -80,9 +82,9 @@ function checkRealBlockchainPayment(expectedBtcAmount, callback) {
         }
 
         if (paymentFound) {
-          callback(true, 'Payment successfully confirmed on the Bitcoin blockchain!');
+          callback(true, 'Payment successfully confirmed on the real Bitcoin blockchain!');
         } else {
-          callback(false, 'Payment not detected yet.');
+          callback(false, 'Payment not detected on the network yet.');
         }
       } catch (e) {
         callback(false, 'Error parsing blockchain network response.');
@@ -104,17 +106,15 @@ io.on('connection', (socket) => {
     }
   });
 
-  // REGISTRO POTENCIAL Y ESTRICTO (Bono de 20 UX y bloqueo duro de IP / Hardware)
+  // POTENT & STRICT REGISTRATION (20 UX Welcome Bonus & Hard Hardware/IP Blocking)
   socket.on('register_node', (data) => {
     let { customId, password, deviceFingerprint } = data;
     
-    // Bloqueo duro por IP de red / WiFi
     if (clientIp && bannedIPs.has(clientIp)) {
-      socket.emit('auth_error', { message: 'SECURITY BLOCK: This network (IP) has already registered an account. Zero exceptions.' });
+      socket.emit('auth_error', { message: 'SECURITY BLOCK: This network (IP) has already registered an account. Zero exceptions allowed.' });
       return;
     }
 
-    // Bloqueo duro por huella de hardware del teléfono / laptop
     if (deviceFingerprint && bannedDeviceFingerprints.has(deviceFingerprint)) {
       socket.emit('auth_error', { message: 'SECURITY BLOCK: This device has already registered an account. Strict 1-device limit.' });
       return;
@@ -149,15 +149,14 @@ io.on('connection', (socket) => {
       ip: clientIp || 'unknown'
     };
     
-    // Bono de bienvenida automático de 20 UX (99999 para el fundador ID 0)
+    // Automatic 20 UX welcome bonus for users, 99999 for Founder ID 0
     userBalances[username] = (numericId === 0) ? 99999.0 : 20.0;
     
-    // Registrar y bloquear permanentemente en listas negras
     if (clientIp) bannedIPs.add(clientIp);
     if (deviceFingerprint) bannedDeviceFingerprints.add(deviceFingerprint);
     
     socket.emit('register_success', { 
-      message: `Node ${username} registered successfully! 20 UX welcome bonus credited. Network and device locked.`,
+      message: `Node ${username} registered successfully! 20 UX welcome bonus credited. Network and device securely locked.`,
       username: username
     });
   });
@@ -173,7 +172,7 @@ io.on('connection', (socket) => {
     const numericId = parseInt(customId, 10);
     const username = 'UX' + numericId;
     
-    // Acceso Supremo para Fundador UX 0
+    // Supreme Founder Access for UX 0
     if (numericId === 0 && (password === '197126' || password === '0' || (registeredUsers[username] && registeredUsers[username].password === password))) {
       registeredUsers['UX0'] = { password: password || '197126', createdAt: Date.now(), lastLogin: Date.now() };
       userBalances['UX0'] = 99999.0;
@@ -211,7 +210,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // CONTROL TOTAL DEL FUNDADOR: Acreditar saldo automáticamente
   socket.on('admin_credit_balance', (data) => {
     let { adminUser, targetUser, amount } = data;
     
@@ -246,7 +244,7 @@ io.on('connection', (socket) => {
       if (targetSocket) {
         io.to(targetSocket).emit('balance_updated', { 
           newBalance: userBalances[targetFull], 
-          message: `The Founder credited ${addAmount} to your wallet.` 
+          message: `The Founder credited ${addAmount} UX to your wallet.` 
         });
       }
     } else {
@@ -254,7 +252,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // PAGOS REALES BLOCKCHAIN CON LOS NUEVOS PRECIOS Y PAQUETES UX
+  // REAL BLOCKCHAIN PAYMENT VERIFICATION FOR THE EXACT REQUESTED PACKAGES
   socket.on('verify_btc_payment', (data) => {
     let { username, packageType } = data;
     if (!username || userBalances[username] === undefined) {
@@ -265,11 +263,18 @@ io.on('connection', (socket) => {
     let requiredBtc = 0.000015;
     let creditedUx = 200;
     
+    // Updated packages matching your exact pricing criteria:
+    // 200 UX ($5.99)
     if (packageType.includes('200 UX')) { requiredBtc = 0.000015; creditedUx = 200; }
+    // 3666 UX ($49.99)
     else if (packageType.includes('3666 UX')) { requiredBtc = 0.00012; creditedUx = 3666; }
-    else if (packageType.includes('6666 UX') && packageType.includes('155.99')) { requiredBtc = 0.00038; creditedUx = 6666; } // 155.99 USD Pack
+    // 6666 UX ($155.99)
+    else if (packageType.includes('6666 UX')) { requiredBtc = 0.00038; creditedUx = 6666; }
+    // 16666 UX ($236.99)
     else if (packageType.includes('16666 UX')) { requiredBtc = 0.00058; creditedUx = 16666; }
+    // 69999 UX ($699.99 - VIP Maximum privacy)
     else if (packageType.includes('69999 UX')) { requiredBtc = 0.0017; creditedUx = 69999; }
+    // 150000 UX ($1500 USD)
     else if (packageType.includes('150000 UX') || packageType.includes('150,000 UX')) { requiredBtc = 0.0036; creditedUx = 150000; }
 
     checkRealBlockchainPayment(requiredBtc, (isPaid, message) => {
@@ -277,7 +282,7 @@ io.on('connection', (socket) => {
         userBalances[username] += creditedUx;
         socket.emit('balance_updated', { 
           newBalance: userBalances[username], 
-          message: `Payment verified on blockchain! ${creditedUx} UX credited to your wallet.` 
+          message: `Real payment verified on blockchain! ${creditedUx} UX successfully credited to your wallet.` 
         });
       } else {
         socket.emit('auth_error', { message: `Verification failed: ${message}` });
@@ -285,7 +290,7 @@ io.on('connection', (socket) => {
     });
   });
 
-  // PENALIZACIÓN DE SESIÓN (Descuenta 2 UX, limpia chats y expulsa)
+  // SESSION PENALTY (Deducts 2 UX, wipes chat history, and forces logout)
   socket.on('penalize_session_exit', (data) => {
     const { username } = data;
     if (username && username !== 'UX0' && userBalances[username] !== undefined) {
@@ -299,7 +304,7 @@ io.on('connection', (socket) => {
 
       socket.emit('force_logout_penalty', { 
         newBalance: userBalances[username], 
-        message: 'Security Alert: Timer expired or left session. -2 UX deducted, chat wiped, and session closed.' 
+        message: 'Security Alert: Timer expired or session left. -2 UX deducted, chat wiped, and session closed.' 
       });
     }
   });
