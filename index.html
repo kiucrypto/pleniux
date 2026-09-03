@@ -287,8 +287,8 @@
             text-transform: uppercase;
         }
 
-        .btn-card { background: #0066cc; color: #fff; }
-        .btn-card:hover { background: #0080ff; }
+        .btn-btc { background: #f7931a; color: #fff; }
+        .btn-btc:hover { background: #ff9900; }
 
         .chats-sidebar {
             display: flex;
@@ -414,44 +414,42 @@
         <div class="header-subtitle">SECURE MAXIMUM PRIVACY GATEWAY</div>
 
         <div class="warning-box">
-            ⚠️ ADVERTENCIA / WARNING: NINGÚN REGISTRO DE MENSAJES SE GUARDA. TODO SE ELIMINA POR COMPLETO AL ACTUALIZAR LA PESTAÑA O SALIR.<br>
-            NO MESSAGE LOGS ARE SAVED. EVERYTHING IS COMPLETELY WIPED UPON TAB REFRESH OR EXIT.
+            ⚠️ CRITICAL SECURITY WARNING: NO MESSAGE LOGS OR USER DATA ARE EVER STORED. ALL INFORMATION IS COMPLETELY WIPED UPON TAB REFRESH OR EXIT.
         </div>
 
         <div class="security-alert">
-            🛡️ <strong>Anti-Cheat & Anti-Fraud Protection:</strong> Strict hardware device & IP binding. Automatic welcome bonus of <strong>+20 UX</strong> credits.
+            🛡️ <strong>Anti-Cheat & Hardware Protection:</strong> Strict device fingerprint binding prevents multiple account creation from the same device. Initial welcome bonus of <strong>+20 UX</strong> credits.
         </div>
 
         <div class="input-group">
-            <label>YOUR UX USER NUMBER (E.g. 0, 1, 123)</label>
+            <label>YOUR UX USER NUMBER (Numeric Input Only - E.g. 0, 1, 123)</label>
             <div class="input-flex">
                 <div class="prefix-box">UX</div>
-                <!-- Teclado estrictamente numérico al iniciar o registrar -->
-                <input type="text" id="customId" inputmode="numeric" pattern="[0-9]*" placeholder="Enter custom number">
+                <input type="text" id="customId" inputmode="numeric" pattern="[0-9]*" placeholder="Enter custom numeric ID">
             </div>
         </div>
 
         <div class="input-group">
             <label>PRIVATE PASSWORD / PIN (Hidden)</label>
-            <input type="password" id="password" placeholder="Create or enter secure PIN">
+            <input type="password" id="password" placeholder="Enter secure PIN">
         </div>
 
-        <button class="btn-action btn-register-action" onclick="registerNode()">Register New Account (+20 UX)</button>
+        <button class="btn-action btn-register-action" onclick="registerNode()">Register New Node (+20 UX)</button>
         <button class="btn-action btn-login-action" onclick="loginNode()">Secure Login & Enter</button>
 
         <div id="status-message"></div>
 
         <div class="terms-box">
-            <h3>Términos, Privacidad y Responsabilidad (Español):</h3>
-            <p><strong>Privacidad Absoluta:</strong> Cero retención de datos. Todo el contenido es efímero y se autodestruye permanentemente.</p>
-            <p><strong>Responsabilidad de Uso:</strong> Plataforma creada exclusivamente para comunicación segura y legítima. Prohibido actos ilícitos o fraude. El usuario asume total responsabilidad legal.</p>
+            <h3>Terms, Privacy & Legal Disclaimer (English):</h3>
+            <p><strong>Absolute Privacy:</strong> Zero data retention. All content is strictly ephemeral and self-destructs permanently.</p>
+            <p><strong>User Responsibility:</strong> Platform designed exclusively for secure, legitimate communication. Fraud or illicit actions are strictly prohibited. The user assumes full legal responsibility.</p>
         </div>
 
         <div class="manual-box">
-            <h3>Official Manual (English) - How to Talk with Another UX User:</h3>
-            <p><strong>1. Access:</strong> Enter your numeric User ID (e.g., 0) and your hidden secure password, then click Login.</p>
-            <p><strong>2. Open Chat:</strong> Go to the "Chats & Photos" tab, enter the recipient's numeric ID in the target field, and click "Open New Chat Channel".</p>
-            <p><strong>3. Secure Messaging:</strong> Type your text or send encrypted photos. A 1:30 minute self-destruct countdown will instantly activate for the session.</p>
+            <h3>Official User Manual (English) - Multi-User Communication:</h3>
+            <p><strong>1. Access:</strong> Input your numeric User ID (e.g., 0) with default password 197126, then click Secure Login.</p>
+            <p><strong>2. Multi-Chat Channels:</strong> Navigate to the "Chats & Photos" tab, enter multiple target user IDs to open parallel communication channels, and instantly switch between active chat tabs.</p>
+            <p><strong>3. Secure Messaging:</strong> Transmit encrypted text or secure photo packets. A strict 1:30 minute self-destruct countdown timer activates immediately per active session.</p>
         </div>
     </div>
 
@@ -464,30 +462,30 @@
 
         <!-- Navigation Tabs -->
         <div class="nav-tabs">
-            <div class="tab-btn active" onclick="switchTab('chat-tab')">💬 Chats & Photos</div>
-            <div class="tab-btn" onclick="switchTab('pricing-tab')">💎 Buy UX Credits</div>
+            <div class="tab-btn active" onclick="switchTab('chat-tab')">💬 Multi-Chats & Photos</div>
+            <div class="tab-btn" onclick="switchTab('pricing-tab')">💎 Trust Wallet BTC Refills</div>
             <div class="tab-btn" onclick="switchTab('manual-tab')">📜 Privacy & Manual</div>
         </div>
 
-        <!-- TAB 1: Multi-Chat & Photo Sharing -->
+        <!-- TAB 1: Multi-Chat & Photo Sharing Options -->
         <div id="chat-tab" class="tab-content active">
             <div class="input-group">
-                <label>OPEN NEW CHAT WITH ANOTHER USER (Numeric ID)</label>
+                <label>OPEN PARALLEL CHAT WITH ANOTHER USER (Numeric ID)</label>
                 <div class="input-flex">
                     <div class="prefix-box">UX</div>
-                    <input type="text" id="targetRecipient" inputmode="numeric" pattern="[0-9]*" placeholder="Target User Number (e.g. 1)">
+                    <input type="text" id="targetRecipient" inputmode="numeric" pattern="[0-9]*" placeholder="Target User Number (e.g. 1, 2, 3...)">
                 </div>
-                <button class="btn-action btn-register-action" style="margin-top: 6px;" onclick="openDirectChat()">Open New Chat Channel</button>
+                <button class="btn-action btn-register-action" style="margin-top: 6px;" onclick="openDirectChat()">Open New Parallel Channel</button>
             </div>
 
             <div class="chats-sidebar" id="activeChatsSidebar"></div>
 
             <div id="active-chat-container">
                 <div class="timer-badge" id="chatTimerDisplay">⏳ Self-Destruct Timer: 01:30</div>
-                <div style="font-size: 10px; color: #00ff88; margin-bottom: 4px;" id="chat-status-target">Active Channel</div>
+                <div style="font-size: 10px; color: #00ff88; margin-bottom: 4px;" id="chat-status-target">Active Secure Channel</div>
                 <div class="chat-box" id="chatMessageList"></div>
                 <div class="chat-input-row">
-                    <input type="text" id="messageInput" placeholder="Type secure message...">
+                    <input type="text" id="messageInput" placeholder="Type encrypted message...">
                     <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="sendPhoto(event)">
                     <button class="btn-photo" onclick="document.getElementById('photoInput').click()" title="Send Photo">📷</button>
                     <button class="btn-send" onclick="sendDirectMessage()">Send</button>
@@ -495,52 +493,52 @@
             </div>
         </div>
 
-        <!-- TAB 2: Pricing & Real Secure Payments -->
+        <!-- TAB 2: Trust Wallet BTC Refills -->
         <div id="pricing-tab" class="tab-content">
             <div class="security-alert" style="margin-bottom: 10px;">
-                💳 <strong>Pagos Reales y Seguros (Real Secure Payments):</strong> Todas las transacciones de recarga se procesan mediante pasarelas de pago cifradas con protocolo SSL de grado bancario. Selecciona un paquete para recargar créditos UX de forma segura.
+                ₿ <strong>Trust Wallet Bitcoin (BTC) Payments Only:</strong> All credit top-ups are processed exclusively via BTC on-chain transactions linked to your registered Trust Wallet address. Select a package to broadcast the transaction.
             </div>
             <div class="pricing-grid">
                 <div class="price-card">
                     <h4>200 UX</h4>
-                    <p style="font-size: 11px; color: #ffaa00; margin-bottom: 6px;">$10 USD</p>
+                    <p style="font-size: 11px; color: #f7931a; margin-bottom: 6px;">0.00015 BTC</p>
                     <div class="payment-buttons-row">
-                        <button class="btn-pay-option btn-card" onclick="processPayment('200 UX ($10)', 'CARD')">Secure Pay</button>
+                        <button class="btn-pay-option btn-btc" onclick="processBtcPayment('200 UX', '0.00015 BTC')">Pay with BTC</button>
                     </div>
                 </div>
                 <div class="price-card">
                     <h4>3,666 UX</h4>
-                    <p style="font-size: 11px; color: #ffaa00; margin-bottom: 6px;">$25 USD</p>
+                    <p style="font-size: 11px; color: #f7931a; margin-bottom: 6px;">0.00035 BTC</p>
                     <div class="payment-buttons-row">
-                        <button class="btn-pay-option btn-card" onclick="processPayment('3666 UX ($25)', 'CARD')">Secure Pay</button>
+                        <button class="btn-pay-option btn-btc" onclick="processBtcPayment('3666 UX', '0.00035 BTC')">Pay with BTC</button>
                     </div>
                 </div>
                 <div class="price-card">
                     <h4>6,666 UX</h4>
-                    <p style="font-size: 11px; color: #ffaa00; margin-bottom: 6px;">$50 USD</p>
+                    <p style="font-size: 11px; color: #f7931a; margin-bottom: 6px;">0.00075 BTC</p>
                     <div class="payment-buttons-row">
-                        <button class="btn-pay-option btn-card" onclick="processPayment('6666 UX ($50)', 'CARD')">Secure Pay</button>
+                        <button class="btn-pay-option btn-btc" onclick="processBtcPayment('6666 UX', '0.00075 BTC')">Pay with BTC</button>
                     </div>
                 </div>
                 <div class="price-card">
                     <h4>16,666 UX</h4>
-                    <p style="font-size: 11px; color: #ffaa00; margin-bottom: 6px;">$100 USD</p>
+                    <p style="font-size: 11px; color: #f7931a; margin-bottom: 6px;">0.0015 BTC</p>
                     <div class="payment-buttons-row">
-                        <button class="btn-pay-option btn-card" onclick="processPayment('16666 UX ($100)', 'CARD')">Secure Pay</button>
+                        <button class="btn-pay-option btn-btc" onclick="processBtcPayment('16666 UX', '0.0015 BTC')">Pay with BTC</button>
                     </div>
                 </div>
                 <div class="price-card">
                     <h4>69,999 UX</h4>
-                    <p style="font-size: 11px; color: #ffaa00; margin-bottom: 6px;">$250 USD</p>
+                    <p style="font-size: 11px; color: #f7931a; margin-bottom: 6px;">0.0038 BTC</p>
                     <div class="payment-buttons-row">
-                        <button class="btn-pay-option btn-card" onclick="processPayment('69999 UX ($250)', 'CARD')">Secure Pay</button>
+                        <button class="btn-pay-option btn-btc" onclick="processBtcPayment('69999 UX', '0.0038 BTC')">Pay with BTC</button>
                     </div>
                 </div>
                 <div class="price-card">
                     <h4>150,000 UX</h4>
-                    <p style="font-size: 11px; color: #ffaa00; margin-bottom: 6px;">$500 USD</p>
+                    <p style="font-size: 11px; color: #f7931a; margin-bottom: 6px;">0.0075 BTC</p>
                     <div class="payment-buttons-row">
-                        <button class="btn-pay-option btn-card" onclick="processPayment('150000 UX ($500)', 'CARD')">Secure Pay</button>
+                        <button class="btn-pay-option btn-btc" onclick="processBtcPayment('150000 UX', '0.0075 BTC')">Pay with BTC</button>
                     </div>
                 </div>
             </div>
@@ -550,10 +548,10 @@
         <!-- TAB 3: Privacy & Manual -->
         <div id="manual-tab" class="tab-content">
             <div class="manual-box" style="margin-top:0; border:none;">
-                <h3>Explicación y Manual Completo:</h3>
-                <p><strong>1. Eliminación Total:</strong> Ningún mensaje se almacena. Al actualizar la pestaña o salir, todo se borra por completo.</p>
-                <p><strong>2. Cómo hablar con otros usuarios (English Manual):</strong> Type the user's numeric ID in the chat tab, click open channel, and send encrypted text/photos within the 1:30 minute timer.</p>
-                <p><strong>3. Responsabilidad:</strong> Uso estrictamente bajo la responsabilidad del usuario.</p>
+                <h3>System Privacy & Comprehensive User Manual:</h3>
+                <p><strong>1. Complete Wipe:</strong> No records are saved. Closing tabs or logging out triggers total data destruction.</p>
+                <p><strong>2. Multi-User Communication:</strong> Input target numeric IDs in the chat tab to spawn separate parallel channels, switching instantly using the top horizontal chat tabs.</p>
+                <p><strong>3. Liability:</strong> Usage is strictly under the sole responsibility of the user operator.</p>
             </div>
         </div>
 
@@ -588,7 +586,7 @@
 
             if (!customId || !password) {
                 status.style.color = '#ff3333';
-                status.innerText = 'Please enter numeric user ID and password to register.';
+                status.innerText = 'Please enter numeric user ID and secure password to register.';
                 return;
             }
 
@@ -651,16 +649,19 @@
                 sender: currentUsername,
                 recipient: activeRecipient
             });
+            document.getElementById('targetRecipient').value = '';
         }
 
         socket.on('direct_chat_opened', (data) => {
             activeRoom = data.room;
             isChatActiveArea = true;
 
-            openedChats[activeRoom] = {
-                recipient: data.recipient,
-                history: data.history || []
-            };
+            if (!openedChats[activeRoom]) {
+                openedChats[activeRoom] = {
+                    recipient: data.recipient,
+                    history: data.history || []
+                };
+            }
 
             renderChatsSidebar();
             loadActiveChatUI(activeRoom);
@@ -689,7 +690,7 @@
 
         function loadActiveChatUI(room) {
             document.getElementById('active-chat-container').style.display = 'flex';
-            document.getElementById('chat-status-target').innerText = `Active Channel: ${activeRecipient}`;
+            document.getElementById('chat-status-target').innerText = `Active Secure Channel: ${activeRecipient}`;
             const list = document.getElementById('chatMessageList');
             list.innerHTML = '';
             openedChats[room].history.forEach(msg => appendMessageToUI(msg));
@@ -773,23 +774,30 @@
             list.scrollTop = list.scrollHeight;
         }
 
-        function processPayment(packageType) {
+        function processBtcPayment(packageType, btcAmount) {
             const statusMsg = document.getElementById('payment-status-msg');
-            statusMsg.style.color = '#00ff88';
-            statusMsg.innerText = `Connecting securely to encrypted SSL payment gateway for ${packageType}...`;
+            statusMsg.style.color = '#f7931a';
+            statusMsg.innerText = `Broadcasting ${btcAmount} payment transaction via Trust Wallet on-chain...`;
 
             setTimeout(() => {
-                socket.emit('verify_payment', {
+                socket.emit('process_btc_payment', {
                     username: currentUsername,
-                    packageType: packageType
+                    packageType: packageType,
+                    btcAmount: btcAmount
                 });
-            }, 1200);
+            }, 1800);
         }
 
         socket.on('balance_updated', (data) => {
             document.getElementById('user-balance-display').innerText = `BALANCE: ${data.newBalance} UX`;
             const statusMsg = document.getElementById('payment-status-msg');
             statusMsg.style.color = '#00ff88';
+            statusMsg.innerText = data.message;
+        });
+
+        socket.on('payment_error', (data) => {
+            const statusMsg = document.getElementById('payment-status-msg');
+            statusMsg.style.color = '#ff3333';
             statusMsg.innerText = data.message;
         });
 
