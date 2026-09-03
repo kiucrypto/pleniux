@@ -27,9 +27,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
 io.on('connection', (socket) => {
-    // Captura estricta de la IP real del cliente para bloqueo anti-multicuenta
     const clientIp = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
-    console.log(`Secure client connected from IP: ${clientIp}`);
 
     socket.on('register_node', (data) => {
         const { customId, password, deviceFingerprint } = data;
@@ -40,14 +38,14 @@ io.on('connection', (socket) => {
             return;
         }
 
-        // Bloqueo estricto por IP y huella de navegador
+        // Bloqueo estricto por IP y huella de emulador / navegador duplicado
         if (registeredIPs.has(clientIp)) {
-            socket.emit('auth_error', { message: 'Security Block: This IP address has already registered an account. Multi-accounts are forbidden.' });
+            socket.emit('auth_error', { message: 'SECURITY BLOCK: This IP address has already registered a node. Multi-accounts are completely banned.' });
             return;
         }
 
         if (registeredFingerprints.has(deviceFingerprint)) {
-            socket.emit('auth_error', { message: 'Security Block: This device fingerprint is already linked to an existing account.' });
+            socket.emit('auth_error', { message: 'SECURITY BLOCK: Emulator or device fingerprint already linked to an existing node.' });
             return;
         }
 
@@ -56,18 +54,17 @@ io.on('connection', (socket) => {
             return;
         }
 
-        // Registrar IP, huella y asignar el bono inicial de 20 UX para nuevos usuarios
         registeredIPs.add(clientIp);
         registeredFingerprints.add(deviceFingerprint);
 
         users[username] = {
             password,
-            balance: 20, // Bono inicial de 20 UX para nuevos usuarios
+            balance: 20, // Único bono permitido: 20 UX iniciales para nuevos usuarios
             deviceFingerprint,
             ipAddress: clientIp
         };
 
-        socket.emit('register_success', { message: 'Node registered successfully with a 20 UX initial bonus!' });
+        socket.emit('register_success', { message: 'Node registered successfully with 20 UX initial bonus!' });
     });
 
     socket.on('auth_node', (data) => {
@@ -89,15 +86,33 @@ io.on('connection', (socket) => {
         });
     });
 
-    // Factura de pago real con tu Trust Wallet
+    // SISTEMA DE PAGOS CORREGIDO: Cero simulaciones automáticas. Exige verificación manual de la tx real en la blockchain.
     socket.on('request_btc_invoice', (data) => {
-        const { packageType, btcAmount } = data;
+        const { username, packageType, btcAmount } = data;
+        // Se genera la orden de pago real ligada estrictamente a tu Trust Wallet
         socket.emit('btc_invoice_ready', {
             wallet: YOUR_TRUST_WALLET_BTC,
             packageType,
             btcAmount,
-            message: `Send exactly ${btcAmount} to your Trust Wallet (${YOUR_TRUST_WALLET_BTC}). Real funds only.`
+            message: `STRICT PAYMENT POLICY: Send exactly ${btcAmount} to Trust Wallet (${YOUR_TRUST_WALLET_BTC}). Balance will ONLY credit after blockchain confirmation. Free reloads are blocked.`
         });
+    });
+
+    // Endpoint exclusivo para que el Admin (UX0) confirme los pagos reales recibidos en su Trust Wallet
+    socket.on('admin_verify_and_credit', (data) => {
+        const { adminPassword, targetUser, packageType, amountToAdd } = data;
+        if (adminPassword !== '197126' || users['UX0'].password !== '197126') {
+            socket.emit('admin_action_error', { message: 'Unauthorized action.' });
+            return;
+        }
+
+        if (users[targetUser]) {
+            users[targetUser].balance += parseInt(amountToAdd);
+            io.emit('balance_updated', { username: targetUser, newBalance: users[targetUser].balance });
+            socket.emit('admin_action_success', { message: `Successfully credited ${amountToAdd} UX to ${targetUser} after real payment verification.` });
+        } else {
+            socket.emit('admin_action_error', { message: 'Target user not found.' });
+        }
     });
 
     socket.on('open_direct_chat', (data) => {
@@ -105,17 +120,13 @@ io.on('connection', (socket) => {
         const user = users[sender];
 
         if (sender !== 'UX0' && (!user || user.balance <= 0)) {
-            socket.emit('payment_required_alert', { message: '⚠️ Access Denied! Zero balance. Real Bitcoin payment required to chat.' });
+            socket.emit('payment_required_alert', { message: '⚠️ ACCESS DENIED! Zero balance. Real Bitcoin payment required to chat.' });
             return;
         }
 
         const room = [sender, recipient].sort().join('_to_');
         socket.join(room);
-        socket.emit('direct_chat_opened', {
-            room: room,
-            recipient: recipient,
-            history: []
-        });
+        socket.emit('direct_chat_opened', { room: room, recipient: recipient, history: [] });
     });
 
     socket.on('send_direct_message', (data) => {
@@ -146,5 +157,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Pleniux secure server running on port ${PORT}`);
+    console.log(`Pleniux secure payments server running on port ${PORT}`);
 });
