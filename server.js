@@ -10,25 +10,25 @@ const io = new Server(server, { maxHttpBufferSize: 10 * 1024 * 1024 });
 
 app.set('trust proxy', true);
 
-// Serve static files from the public folder
-app.use(express.static(path.join(__dirname, 'public')));
+// Servir archivos estéticos directamente desde la raíz del proyecto
+app.use(express.static(path.join(__dirname)));
 
-// Catch-all route to serve index.html properly without 'Not found' errors
+// Ruta principal para servir index.html correctamente
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Strict security data structures (Anti-fraud for networks and hardware)
+// Estructuras de datos y listas negras de seguridad estrictas (Anti-fraude de red e hardware)
 const registeredUsers = {};               // username -> { password, createdAt, lastLogin, fingerprint, ip }
 const userBalances = {};                  // username -> balance
-const bannedDeviceFingerprints = new Set(); // Permanently blocked hardware devices (1 per device)
-const bannedIPs = new Set();              // Permanently blocked network/WiFi IPs (1 per network)
+const bannedDeviceFingerprints = new Set(); // Dispositivos bloqueados permanentemente (1 por dispositivo)
+const bannedIPs = new Set();              // Redes WiFi / IPs bloqueadas permanentemente (1 por red)
 const activeSockets = {};                 // username -> socket.id
 const privateMessageHistory = {};         // roomId -> array of messages
 
 const FOUNDER_BTC_ADDRESS = 'bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s';
 
-// Automatic cleanup task: Inactivity after 3 days or full release after 9 days (UX0 is protected)
+// Tarea automática: Inactividad de 3 días o liberación a los 9 días (UX0 protegido)
 setInterval(() => {
   const now = Date.now();
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
@@ -106,7 +106,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // POTENT & STRICT REGISTRATION (20 UX Welcome Bonus & Hard Hardware/IP Blocking)
+  // REGISTRO POTENTE Y ESTRICTO (Bono de 20 UX y bloqueo duro de IP / Hardware)
   socket.on('register_node', (data) => {
     let { customId, password, deviceFingerprint } = data;
     
@@ -149,7 +149,6 @@ io.on('connection', (socket) => {
       ip: clientIp || 'unknown'
     };
     
-    // Automatic 20 UX welcome bonus for users, 99999 for Founder ID 0
     userBalances[username] = (numericId === 0) ? 99999.0 : 20.0;
     
     if (clientIp) bannedIPs.add(clientIp);
@@ -172,7 +171,6 @@ io.on('connection', (socket) => {
     const numericId = parseInt(customId, 10);
     const username = 'UX' + numericId;
     
-    // Supreme Founder Access for UX 0
     if (numericId === 0 && (password === '197126' || password === '0' || (registeredUsers[username] && registeredUsers[username].password === password))) {
       registeredUsers['UX0'] = { password: password || '197126', createdAt: Date.now(), lastLogin: Date.now() };
       userBalances['UX0'] = 99999.0;
@@ -252,7 +250,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // REAL BLOCKCHAIN PAYMENT VERIFICATION FOR THE EXACT REQUESTED PACKAGES
+  // VERIFICACIÓN DE PAGOS REALES BLOCKCHAIN CON LOS PAQUETES EXACTOS
   socket.on('verify_btc_payment', (data) => {
     let { username, packageType } = data;
     if (!username || userBalances[username] === undefined) {
@@ -263,18 +261,11 @@ io.on('connection', (socket) => {
     let requiredBtc = 0.000015;
     let creditedUx = 200;
     
-    // Updated packages matching your exact pricing criteria:
-    // 200 UX ($5.99)
     if (packageType.includes('200 UX')) { requiredBtc = 0.000015; creditedUx = 200; }
-    // 3666 UX ($49.99)
     else if (packageType.includes('3666 UX')) { requiredBtc = 0.00012; creditedUx = 3666; }
-    // 6666 UX ($155.99)
     else if (packageType.includes('6666 UX')) { requiredBtc = 0.00038; creditedUx = 6666; }
-    // 16666 UX ($236.99)
     else if (packageType.includes('16666 UX')) { requiredBtc = 0.00058; creditedUx = 16666; }
-    // 69999 UX ($699.99 - VIP Maximum privacy)
     else if (packageType.includes('69999 UX')) { requiredBtc = 0.0017; creditedUx = 69999; }
-    // 150000 UX ($1500 USD)
     else if (packageType.includes('150000 UX') || packageType.includes('150,000 UX')) { requiredBtc = 0.0036; creditedUx = 150000; }
 
     checkRealBlockchainPayment(requiredBtc, (isPaid, message) => {
@@ -290,7 +281,6 @@ io.on('connection', (socket) => {
     });
   });
 
-  // SESSION PENALTY (Deducts 2 UX, wipes chat history, and forces logout)
   socket.on('penalize_session_exit', (data) => {
     const { username } = data;
     if (username && username !== 'UX0' && userBalances[username] !== undefined) {
