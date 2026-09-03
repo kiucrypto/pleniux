@@ -17,14 +17,14 @@ app.get('*', (req, res) => {
 
 const registeredUsers = {};
 const userBalances = {};
-const deviceFingerprintToUser = {}; // Vinculación estricta por dispositivo para evitar multicuentas malintencionadas
+const deviceFingerprintToUser = {}; // Restricción estricta antimulticuentas por dispositivo
 const activeSockets = {};
 const privateMessageHistory = {};
 
-// Billetera real del fundador para recibir pagos de Bitcoin
+// Billetera real del fundador para recibir los pagos de Bitcoin
 const FOUNDER_BTC_ADDRESS = 'bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s';
 
-// Limpieza automática por inactividad
+// Limpieza automática de inactividad
 setInterval(() => {
   const now = Date.now();
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
@@ -87,12 +87,12 @@ io.on('connection', (socket) => {
   const rawIp = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address || '';
   const clientIp = rawIp.split(',')[0].trim();
 
-  // Registro de nodo con máxima seguridad y restricción estricta de multicuenta por dispositivo
+  // Registro de nodo con bloqueo antimulticuenta por dispositivo físico
   socket.on('register_node', (data) => {
     let { customId, password, deviceFingerprint } = data;
     
     if (deviceFingerprint && deviceFingerprintToUser[deviceFingerprint]) {
-      socket.emit('auth_error', { message: 'SECURITY BAN: This physical device is already bound to another node. Multiple accounts per phone or browser instance are strictly forbidden.' });
+      socket.emit('auth_error', { message: 'SECURITY BAN: This physical device is already bound to another node. Multiple accounts are strictly forbidden.' });
       return;
     }
 
@@ -125,7 +125,7 @@ io.on('connection', (socket) => {
       ip: clientIp || 'unknown'
     };
     
-    // Bono de bienvenida de 20 UX (UX0 mantiene saldo supremo)
+    // Bono automático de bienvenida de 20 UX (UX0 mantiene saldo supremo)
     userBalances[username] = (numericId === 0) ? 99999.0 : 20.0;
     
     if (deviceFingerprint) {
@@ -138,7 +138,7 @@ io.on('connection', (socket) => {
     });
   });
 
-  // Autenticación segura de nodo (permite a cualquier usuario entrar con su contraseña y chatear con quien sea)
+  // Autenticación de nodo
   socket.on('auth_node', (data) => {
     let { customId, password } = data;
     if (customId === undefined || password === undefined) {
@@ -150,7 +150,7 @@ io.on('connection', (socket) => {
     const numericId = parseInt(customId, 10);
     const username = 'UX' + numericId;
     
-    // Acceso exclusivo y protegido para UX0 (Fundador) sin filtrar claves a otros
+    // Acceso protegido para UX0 (Fundador)
     if (numericId === 0 && password === '197126') {
       registeredUsers['UX0'] = { password: '197126', createdAt: Date.now(), lastLogin: Date.now() };
       userBalances['UX0'] = 99999.0;
@@ -188,7 +188,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // VERIFICACIÓN DE PAGOS REALES EN LA BLOCKCHAIN
+  // VERIFICACIÓN DE PAGOS REALES DE SALDO EN LA BLOCKCHAIN
   socket.on('verify_btc_payment', (data) => {
     let { username, packageType } = data;
     if (!username || userBalances[username] === undefined) {
@@ -199,19 +199,19 @@ io.on('connection', (socket) => {
     let requiredBtc = 0.000015;
     let creditedUx = 200;
     
-    if (packageType.includes('200 UX')) { requiredBtc = 0.000015; creditedUx = 200; }
-    else if (packageType.includes('3666 UX')) { requiredBtc = 0.00012; creditedUx = 3666; }
-    else if (packageType.includes('6666 UX')) { requiredBtc = 0.00038; creditedUx = 6666; }
-    else if (packageType.includes('16666 UX')) { requiredBtc = 0.00058; creditedUx = 16666; }
-    else if (packageType.includes('69999 UX')) { requiredBtc = 0.0017; creditedUx = 69999; }
-    else if (packageType.includes('150000 UX')) { requiredBtc = 0.0036; creditedUx = 150000; }
+    if (packageType.includes('200')) { requiredBtc = 0.000015; creditedUx = 200; }
+    else if (packageType.includes('3,666')) { requiredBtc = 0.00012; creditedUx = 3666; }
+    else if (packageType.includes('6,666')) { requiredBtc = 0.00038; creditedUx = 6666; }
+    else if (packageType.includes('16,666')) { requiredBtc = 0.00058; creditedUx = 16666; }
+    else if (packageType.includes('69,999')) { requiredBtc = 0.0017; creditedUx = 69999; }
+    else if (packageType.includes('150,000')) { requiredBtc = 0.0036; creditedUx = 150000; }
 
     checkRealBlockchainPayment(requiredBtc, (isPaid, message) => {
       if (isPaid) {
         userBalances[username] += creditedUx;
         socket.emit('balance_updated', { 
           newBalance: userBalances[username], 
-          message: `Top-up active! ${creditedUx} UX credited via real blockchain verification.` 
+          message: `Top-up active! +${creditedUx} UX credited via real blockchain verification.` 
         });
       } else {
         socket.emit('auth_error', { message: `Payment pending: ${message} (Send exact BTC to: ${FOUNDER_BTC_ADDRESS})` });
@@ -219,7 +219,7 @@ io.on('connection', (socket) => {
     });
   });
 
-  // Penalización estricta por salida o cambio de vista (-2 UX)
+  // Penalización estricta por salida o expiración del temporizador (-2 UX)
   socket.on('penalize_session_exit', (data) => {
     const { username } = data;
     if (username && username !== 'UX0' && userBalances[username] !== undefined) {
@@ -229,12 +229,12 @@ io.on('connection', (socket) => {
       }
       socket.emit('force_logout_penalty', { 
         newBalance: userBalances[username], 
-        message: '⚠️ Security Alert: Session left or expired. -2 UX deducted and chats wiped.' 
+        message: '⚠️ Security Alert: Session left or timer expired. -2 UX deducted and chats wiped.' 
       });
     }
   });
 
-  // Canal de chat P2P universal entre cualquier usuario
+  // Canal de chat P2P entre cualquier usuario
   socket.on('open_direct_chat', (data) => {
     let { sender, recipient } = data;
     if (!recipient) return;
