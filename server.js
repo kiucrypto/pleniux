@@ -10,25 +10,23 @@ const io = new Server(server, { maxHttpBufferSize: 10 * 1024 * 1024 });
 
 app.set('trust proxy', true);
 
-// Servir archivos estéticos directamente desde la raíz del proyecto
+// Sirve tu index.html original exactamente como lo diseñaste
 app.use(express.static(path.join(__dirname)));
 
-// Ruta principal para servir index.html correctamente
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Estructuras de datos y listas negras de seguridad estrictas (Anti-fraude de red e hardware)
-const registeredUsers = {};               // username -> { password, createdAt, lastLogin, fingerprint, ip }
-const userBalances = {};                  // username -> balance
-const bannedDeviceFingerprints = new Set(); // Dispositivos bloqueados permanentemente (1 por dispositivo)
-const bannedIPs = new Set();              // Redes WiFi / IPs bloqueadas permanentemente (1 por red)
-const activeSockets = {};                 // username -> socket.id
-const privateMessageHistory = {};         // roomId -> array of messages
+const registeredUsers = {};
+const userBalances = {};
+const bannedDeviceFingerprints = new Set();
+const bannedIPs = new Set();
+const activeSockets = {};
+const privateMessageHistory = {};
 
 const FOUNDER_BTC_ADDRESS = 'bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s';
 
-// Tarea automática: Inactividad de 3 días o liberación a los 9 días (UX0 protegido)
+// Limpieza automática por inactividad
 setInterval(() => {
   const now = Date.now();
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
@@ -36,16 +34,7 @@ setInterval(() => {
 
   for (const [username, data] of Object.entries(registeredUsers)) {
     if (username === 'UX0') continue;
-
-    const timeSinceLastActivity = now - (data.lastLogin || data.createdAt);
-    const timeSinceCreation = now - data.createdAt;
-
-    if (timeSinceLastActivity > THREE_DAYS) {
-      delete registeredUsers[username];
-      delete userBalances[username];
-    }
-
-    if (timeSinceCreation > NINE_DAYS) {
+    if (now - (data.lastLogin || data.createdAt) > THREE_DAYS || now - data.createdAt > NINE_DAYS) {
       delete registeredUsers[username];
       delete userBalances[username];
     }
@@ -106,12 +95,12 @@ io.on('connection', (socket) => {
     }
   });
 
-  // REGISTRO POTENTE Y ESTRICTO (Bono de 20 UX y bloqueo duro de IP / Hardware)
+  // REGISTRO SEGURO CON BONO DE 20 UX Y BLOQUEO DURO DE IP/HARDWARE
   socket.on('register_node', (data) => {
     let { customId, password, deviceFingerprint } = data;
     
     if (clientIp && bannedIPs.has(clientIp)) {
-      socket.emit('auth_error', { message: 'SECURITY BLOCK: This network (IP) has already registered an account. Zero exceptions allowed.' });
+      socket.emit('auth_error', { message: 'SECURITY BLOCK: This network (IP) has already registered an account. Zero exceptions.' });
       return;
     }
 
@@ -155,7 +144,7 @@ io.on('connection', (socket) => {
     if (deviceFingerprint) bannedDeviceFingerprints.add(deviceFingerprint);
     
     socket.emit('register_success', { 
-      message: `Node ${username} registered successfully! 20 UX welcome bonus credited. Network and device securely locked.`,
+      message: `Node ${username} registered successfully! 20 UX welcome bonus credited.`,
       username: username
     });
   });
@@ -208,49 +197,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('admin_credit_balance', (data) => {
-    let { adminUser, targetUser, amount } = data;
-    
-    const cleanAdmin = adminUser ? adminUser.toString().trim().toUpperCase().replace(/\s+/g, '') : '';
-    
-    if (cleanAdmin === 'UX0' || cleanAdmin === 'UX 0') {
-      if (!targetUser) {
-        socket.emit('auth_error', { message: 'Target user ID is missing.' });
-        return;
-      }
-
-      targetUser = targetUser.toString().trim();
-      const rawNumber = targetUser.replace(/\D/g, '');
-      const targetFull = targetUser.toUpperCase().startsWith('UX') ? targetUser.toUpperCase() : 'UX' + rawNumber;
-      
-      const addAmount = parseFloat(amount);
-      
-      if (isNaN(addAmount)) {
-        socket.emit('auth_error', { message: 'Invalid amount specified.' });
-        return;
-      }
-
-      if (userBalances[targetFull] === undefined) {
-        userBalances[targetFull] = 20.0;
-      }
-      
-      userBalances[targetFull] += addAmount;
-      
-      socket.emit('admin_action_success', { message: `Successfully credited ${addAmount} to ${targetFull}. New balance: ${userBalances[targetFull]}` });
-      
-      const targetSocket = activeSockets[targetFull];
-      if (targetSocket) {
-        io.to(targetSocket).emit('balance_updated', { 
-          newBalance: userBalances[targetFull], 
-          message: `The Founder credited ${addAmount} UX to your wallet.` 
-        });
-      }
-    } else {
-      socket.emit('auth_error', { message: 'Unauthorized: Founder privileges required.' });
-    }
-  });
-
-  // VERIFICACIÓN DE PAGOS REALES BLOCKCHAIN CON LOS PAQUETES EXACTOS
+  // VERIFICACIÓN DE PAGOS BLOCKCHAIN CON LOS NUEVOS PAQUETES
   socket.on('verify_btc_payment', (data) => {
     let { username, packageType } = data;
     if (!username || userBalances[username] === undefined) {
@@ -273,7 +220,7 @@ io.on('connection', (socket) => {
         userBalances[username] += creditedUx;
         socket.emit('balance_updated', { 
           newBalance: userBalances[username], 
-          message: `Real payment verified on blockchain! ${creditedUx} UX successfully credited to your wallet.` 
+          message: `Payment verified on blockchain! ${creditedUx} UX credited to your wallet.` 
         });
       } else {
         socket.emit('auth_error', { message: `Verification failed: ${message}` });
@@ -285,16 +232,12 @@ io.on('connection', (socket) => {
     const { username } = data;
     if (username && username !== 'UX0' && userBalances[username] !== undefined) {
       userBalances[username] = Math.max(0, userBalances[username] - 2.0);
-
       for (const roomId of Object.keys(privateMessageHistory)) {
-        if (roomId.includes(username)) {
-          delete privateMessageHistory[roomId];
-        }
+        if (roomId.includes(username)) delete privateMessageHistory[roomId];
       }
-
       socket.emit('force_logout_penalty', { 
         newBalance: userBalances[username], 
-        message: 'Security Alert: Timer expired or session left. -2 UX deducted, chat wiped, and session closed.' 
+        message: 'Security Alert: Session expired. -2 UX deducted and chat wiped.' 
       });
     }
   });
@@ -312,12 +255,9 @@ io.on('connection', (socket) => {
 
     const usersPair = [sender, targetFull].sort();
     const chatRoomId = `DIRECT-${usersPair[0]}-${usersPair[1]}`;
-
     socket.join(chatRoomId);
 
-    if (!privateMessageHistory[chatRoomId]) {
-      privateMessageHistory[chatRoomId] = [];
-    }
+    if (!privateMessageHistory[chatRoomId]) privateMessageHistory[chatRoomId] = [];
 
     socket.emit('direct_chat_opened', {
       room: chatRoomId,
@@ -330,32 +270,13 @@ io.on('connection', (socket) => {
     const { room, sender, recipient, text, image } = data;
     if ((!text && !image) || !room) return;
 
-    const messageData = {
-      sender: sender,
-      text: text || '',
-      image: image || null,
-      timestamp: new Date().toLocaleTimeString()
-    };
-
-    if (!privateMessageHistory[room]) {
-      privateMessageHistory[room] = [];
-    }
+    const messageData = { sender, text: text || '', image: image || null, timestamp: new Date().toLocaleTimeString() };
+    if (!privateMessageHistory[room]) privateMessageHistory[room] = [];
     privateMessageHistory[room].push(messageData);
 
     io.to(room).emit('receive_direct_message', messageData);
-
     const recipientSocketId = activeSockets[recipient];
-    if (recipientSocketId) {
-      io.sockets.sockets.get(recipientSocketId)?.join(room);
-    }
-  });
-
-  socket.on('send_post', (data) => {
-    io.emit('receive_post', {
-      sender: data.sender || 'Operator',
-      text: data.text,
-      timestamp: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString()
-    });
+    if (recipientSocketId) io.sockets.sockets.get(recipientSocketId)?.join(room);
   });
 
   socket.on('disconnect', () => {
