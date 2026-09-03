@@ -1,452 +1,113 @@
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-
-const app = express();
-app.use(express.json());
-
-const server = http.createServer(app);
-const io = new Server(server);
-
-// Base de datos protegida en la memoria del servidor (Inaccesible para tramposos)
-const nodeDatabase = {};
-
-// 1. Interfaz Web Front-end Unificada con Packs y Precios Reales
-app.get('/', (req, res) => {
-    res.send(`
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>pleniux.com - Secure Encrypted Vault</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pleniux.com - Elite Secure Gateway</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #02040a; color: #f3f4f6; min-height: 100vh; overflow-x: hidden; position: relative; }
-        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #02040a; pointer-events: none; }
-        .app-container { max-width: 850px; margin: 25px auto; padding: 20px; position: relative; z-index: 10; }
-        header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 30, 30, 0.3); padding-bottom: 15px; }
-        h1 { font-size: 2.6rem; letter-spacing: 3px; text-transform: uppercase; color: #ff1a1a; text-shadow: 0 0 15px rgba(255, 0, 0, 0.8); font-weight: 900; }
-        .founder-info { font-size: 0.82rem; color: #94a3b8; margin-top: 6px; letter-spacing: 2px; text-transform: uppercase; }
-        .founder-highlight { color: #ff4d4d; font-weight: 700; text-shadow: 0 0 8px rgba(255, 77, 77, 0.5); }
-        .security-banner { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 10px; padding: 10px 14px; margin-bottom: 18px; text-align: center; font-size: 0.78rem; color: #fca5a5; font-weight: 600; line-height: 1.4; }
-
-        .auth-card, .app-interface, .chat-interface { background: rgba(8, 12, 24, 0.92); border: 1px solid rgba(255, 50, 50, 0.4); border-radius: 16px; padding: 25px; max-width: 480px; margin: 0 auto 20px auto; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); }
-        h2, h3 { color: #ff4d4d; font-size: 1.2rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1.5px; }
-        p { font-size: 0.86rem; color: #94a3b8; margin-bottom: 18px; line-height: 1.5; }
-        .auth-tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid #1e293b; }
-        .auth-tab { flex: 1; background: none; border: none; color: #64748b; padding: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; text-transform: uppercase; }
-        .auth-tab.active { color: #ff4d4d; border-bottom: 2px solid #ff4d4d; background: rgba(255, 77, 77, 0.08); }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 0.8rem; color: #e2e8f0; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; }
-        .input-group-ux { display: flex; align-items: center; background: #020617; border: 1px solid #334155; border-radius: 8px; overflow: hidden; }
-        .ux-prefix { background: #0f172a; color: #ff4d4d; font-weight: 800; padding: 12px 14px; border-right: 1px solid #334155; font-size: 0.95rem; }
-        .form-control { width: 100%; background: #020617; border: 1px solid #334155; color: #fff; padding: 12px 14px; border-radius: 8px; font-size: 0.95rem; outline: none; }
-        .btn-primary { width: 100%; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 13px; border-radius: 8px; cursor: pointer; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 5px; }
-        .app-interface, .chat-interface { display: none; max-width: 680px; }
-        .status-panel { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(239, 68, 68, 0.4); padding: 12px 16px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 0.85rem; }
-        .packs-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px; }
-        .pack-card { background: #020617; border: 1px solid #334155; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .pack-info h4 { color: #f87171; font-size: 0.9rem; text-transform: uppercase; }
-        .pack-info p { font-size: 0.75rem; color: #94a3b8; margin: 0; }
-        .btn-buy { background: #10b981; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; }
-        .chat-box { background: #020617; border: 1px solid #1e293b; border-radius: 10px; height: 260px; overflow-y: auto; padding: 12px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px; }
-        .chat-msg { background: #1e293b; padding: 10px 12px; border-radius: 8px; font-size: 0.88rem; max-width: 80%; word-break: break-all; }
-        .chat-msg.self { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); align-self: flex-end; }
-        .chat-msg.peer { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); align-self: flex-start; }
-        .timer-display { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 6px; padding: 4px 8px; color: #fca5a5; font-weight: 800; font-family: monospace; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0b0614; color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
+        .container { width: 100%; max-width: 480px; background: #130b22; border: 1px solid #2d1b4e; border-radius: 12px; padding: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+        h1 { text-align: center; color: #fff; font-size: 24px; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #a78bfa; font-size: 12px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .card { background: #1a0f2e; border: 1px solid #3b2365; border-radius: 8px; padding: 15px; margin-bottom: 15px; font-size: 13px; line-height: 1.5; color: #cbd5e1; }
+        label { display: block; font-size: 12px; color: #a78bfa; margin-bottom: 5px; font-weight: bold; text-transform: uppercase; }
+        input { width: 100%; background: #0b0614; border: 1px solid #3b2365; border-radius: 6px; padding: 12px; color: #fff; font-size: 14px; margin-bottom: 15px; outline: none; }
+        input:focus { border-color: #8b5cf6; }
+        .btn-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        button { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.2s; }
+        .btn-primary { background: #7c3aed; color: #fff; }
+        .btn-primary:hover { background: #6d28d9; }
+        .btn-secondary { background: #059669; color: #fff; }
+        .btn-secondary:hover { background: #047857; }
+        .error-msg { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #fca5a5; padding: 10px; border-radius: 6px; font-size: 12px; margin-bottom: 15px; display: none; text-align: center; }
+        .footer { text-align: center; font-size: 11px; color: #64748b; margin-top: 15px; }
     </style>
 </head>
 <body>
-    <canvas id="matrix-canvas"></canvas>
-    <div class="app-container">
-        <header>
-            <h1>pleniux.com</h1>
-            <div class="founder-info">SECURE ENCRYPTED NODE NETWORK &bull; FOUNDER: <span class="founder-highlight">Lenox JG</span></div>
-        </header>
 
-        <div class="security-banner">
-            🔒 BLINDAJE TOTAL: Nodos numéricos del 2 al 1,000,000,000. Pagos reales verificados por servidor. Auto-eliminación estricta de mensajes a los 2:30 minutos sin registros.
+    <div class="container" id="auth-screen">
+        <h1>PLENIUX.COM <span style="font-size: 12px; background: #d97706; padding: 2px 6px; border-radius: 4px; vertical-align: middle;">VIP</span></h1>
+        <div class="subtitle">⚡ Elite Maximum Security Gateway</div>
+
+        <div class="card">
+            🌐 <b>Elite Protocol:</b> New registrations receive a starting bonus of 20 UX. Strict hardware and network anti-fraud protection is active.
         </div>
 
-        <!-- AUTENTICACIÓN -->
-        <div id="auth-screen" class="auth-card">
-            <div class="auth-tabs">
-                <button class="auth-tab active" id="tab-login" onclick="switchAuthMode('login')">Node Access</button>
-                <button class="auth-tab" id="tab-register" onclick="switchAuthMode('register')">New Registration</button>
-            </div>
+        <div id="error-box" class="error-msg"></div>
 
-            <div id="form-login-container">
-                <h2>Node Access</h2>
-                <p>Ingrese su número de nodo (2 a 1B) y su PIN numérico.</p>
-                <div class="form-group">
-                    <label>User Node:</label>
-                    <div class="input-group-ux">
-                        <span class="ux-prefix">UX</span>
-                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="login-node-input" class="form-control" placeholder="Ej. 777">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Passcode (Números):</label>
-                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="login-passcode-input" class="form-control" placeholder="PIN numérico">
-                </div>
-                <button class="btn-primary" onclick="handleLogin()">Access Node</button>
-            </div>
+        <label>Your UX User Number</label>
+        <input type="text" id="custom-id" placeholder="E.g. 0, 1, or custom ID">
 
-            <div id="form-register-container" style="display: none;">
-                <h2>Register Node</h2>
-                <p>Cree su nodo único (2 a 1,000,000,000) y su PIN numérico.</p>
-                <div class="form-group">
-                    <label>Node Number (2 a 1B):</label>
-                    <div class="input-group-ux">
-                        <span class="ux-prefix">UX</span>
-                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="reg-node-input" class="form-control" placeholder="Ej. 777">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Passcode (Números):</label>
-                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="reg-passcode-input" class="form-control" placeholder="PIN numérico">
-                </div>
-                <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="handleRegister()">Register Node</button>
-            </div>
+        <label>Private Password / PIN</label>
+        <input type="password" id="password" placeholder="Enter your password">
+
+        <div class="btn-group">
+            <button class="btn-secondary" onclick="registerNode()">Register (+20 UX)</button>
+            <button class="btn-primary" onclick="authNode()">Access Node</button>
         </div>
 
-        <!-- PANEL DE LA APLICACIÓN (CON PACKS Y CONEXIÓN DE SALA) -->
-        <div id="app-interface" class="app-interface">
-            <div class="status-panel">
-                <div>Node: <span style="color: #ff4d4d; font-weight: 800;" id="display-node">UX1</span></div>
-                <div>Balance: <span style="color: #ff4d4d; font-weight: 900;" id="credit-count">0</span> UX</div>
-                <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0;" onclick="forceLogout()">EXIT</button>
-            </div>
+        <div class="footer">Founder: Lenox JG | Pleniux.com VIP Secure Gateway</div>
+    </div>
 
-            <!-- SECCIÓN DE PACKS Y PRECIOS REALES -->
-            <div style="background: rgba(2, 6, 23, 0.85); border: 1px solid #1e293b; padding: 18px; border-radius: 12px; margin-bottom: 15px;">
-                <h3>Selección de Packs y Precios</h3>
-                <p>Elija un pack de recarga oficial con dinero real:</p>
-                <div class="packs-grid">
-                    <div class="pack-card">
-                        <div class="pack-info">
-                            <h4>Pack Básico</h4>
-                            <p>100 Créditos UX — $10.00 USD</p>
-                        </div>
-                        <button class="btn-buy" onclick="initRealPayment(10, 100)">Comprar</button>
-                    </div>
-                    <div class="pack-card">
-                        <div class="pack-info">
-                            <h4>Pack Avanzado</h4>
-                            <p>550 Créditos UX — $50.00 USD</p>
-                        </div>
-                        <button class="btn-buy" onclick="initRealPayment(50, 550)">Comprar</button>
-                    </div>
-                    <div class="pack-card">
-                        <div class="pack-info">
-                            <h4>Pack Pro Master</h4>
-                            <p>1,200 Créditos UX — $100.00 USD</p>
-                        </div>
-                        <button class="btn-buy" onclick="initRealPayment(100, 1200)">Comprar</button>
-                    </div>
-                </div>
-            </div>
+    <!-- Panel Interno de la Plataforma (Oculto al inicio) -->
+    <div class="container" id="app-screen" style="display: none;">
+        <h1 id="user-badge">NODE PANEL</h1>
+        <div class="subtitle" id="user-balance">Balance: 0 UX</div>
 
-            <!-- CONEXIÓN DE SALA EN VIVO -->
-            <div style="background: rgba(2, 6, 23, 0.85); border: 1px solid #1e293b; padding: 18px; border-radius: 12px; margin-bottom: 15px;">
-                <h3>Secure Room Connection</h3>
-                <p>Conéctese al instante a una sala ingresando o generando un código.</p>
-                <div class="form-group">
-                    <label>Group Room Code:</label>
-                    <input type="tel" inputmode="numeric" pattern="[0-9]*" id="room-code-input" class="form-control" placeholder="Código de sala">
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px;">
-                    <button class="btn-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);" onclick="generateRoomCode()">🎲 Generar Código</button>
-                    <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="joinRoom()">🔗 Conectar Sala</button>
-                </div>
-            </div>
+        <div class="card">
+            <b>Secure Direct P2P Chat & Packages</b><br>
+            Active packages available: 200 UX, 3666 UX, 6666 UX, 16666 UX, 69999 UX, 150000 UX.
         </div>
 
-        <!-- CHAT INSTANTÁNEO EN VIVO -->
-        <div id="chat-interface" class="chat-interface">
-            <div class="status-panel">
-                <div>Sala: <span style="color: #38bdf8; font-weight: 800;" id="active-room-display">#000000</span></div>
-                <div>⏳ Auto-Wipe: <span id="chat-timer-display" class="timer-display">02:30</span></div>
-                <button class="btn-primary" style="width: auto; padding: 6px 12px; margin:0; background: linear-gradient(135deg, #dc2626, #991b1b);" onclick="leaveRoom()">Desconectar</button>
-            </div>
-            <div class="chat-box" id="chat-messages-box"></div>
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="chat-input-msg" class="form-control" placeholder="Escriba mensaje cifrado..." onkeydown="if(event.key === 'Enter') sendWebSocketMessage()">
-                <button class="btn-primary" style="width: 95px; margin:0;" onclick="sendWebSocketMessage()">Enviar</button>
-            </div>
+        <div class="btn-group">
+            <button class="btn-primary" onclick="location.reload()">Lock / Logout</button>
         </div>
     </div>
 
     <script>
-        let socket = null;
-        let activeNodeNumber = "";
-        let activeNodeId = "";
-        let activeRoomCode = "";
-        let timerInterval = null;
+        const socket = io();
 
-        // Fondo Matrix
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-        const letters = "0123456789PLENIUX";
-        const fontSize = 14;
-        const drops = Array(Math.floor(canvas.width / fontSize)).fill(1);
-        setInterval(() => {
-            ctx.fillStyle = "rgba(2, 4, 10, 0.12)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#ff1a1a";
-            ctx.font = fontSize + "px monospace";
-            drops.forEach((y, i) => {
-                const text = letters.charAt(Math.floor(Math.random() * letters.length));
-                ctx.fillText(text, i * fontSize, y * fontSize);
-                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            });
-        }, 50);
-
-        function switchAuthMode(mode) {
-            document.getElementById('form-login-container').style.display = mode === 'login' ? 'block' : 'none';
-            document.getElementById('form-register-container').style.display = mode === 'register' ? 'block' : 'none';
-            document.getElementById('tab-login').classList.toggle('active', mode === 'login');
-            document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+        function showError(msg) {
+            const box = document.getElementById('error-box');
+            box.innerText = msg;
+            box.style.display = 'block';
         }
 
-        async function handleRegister() {
-            let node = document.getElementById('reg-node-input').value.trim();
-            let pass = document.getElementById('reg-passcode-input').value.trim();
-            
-            try {
-                let res = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ node, pass })
-                });
-                let data = await res.json();
-                if (!res.ok) throw new Error(data.error);
-                alert("✅ " + data.message);
-                switchAuthMode('login');
-            } catch (err) {
-                alert("❌ Error: " + err.message);
-            }
+        function registerNode() {
+            const customId = document.getElementById('custom-id').value;
+            const password = document.getElementById('password').value;
+            const deviceFingerprint = navigator.userAgent + '-' + screen.width + 'x' + screen.height;
+            socket.emit('register_node', { customId, password, deviceFingerprint });
         }
 
-        async function handleLogin() {
-            let node = document.getElementById('login-node-input').value.trim();
-            let pass = document.getElementById('login-passcode-input').value.trim();
-
-            try {
-                let res = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ node, pass })
-                });
-                let data = await res.json();
-                if (!res.ok) throw new Error(data.error);
-
-                activeNodeNumber = node;
-                activeNodeId = data.nodeId;
-                document.getElementById('display-node').innerText = activeNodeId;
-                document.getElementById('credit-count').innerText = data.credits;
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('app-interface').style.display = 'block';
-
-                socket = io();
-                initSocketListeners();
-            } catch (err) {
-                alert("❌ Error: " + err.message);
-            }
+        function authNode() {
+            const customId = document.getElementById('custom-id').value;
+            const password = document.getElementById('password').value;
+            socket.emit('auth_node', { customId, password });
         }
 
-        function forceLogout() { location.reload(); }
+        socket.on('register_success', (data) => {
+            alert(data.message);
+            authNode();
+        });
 
-        // Simulación de redirección segura a pasarela de pagos real (Aquí conectas tu API de pagos)
-        function initRealPayment(usdAmount, credits) {
-            alert(\`🔒 Redirigiendo a pasarela segura de pago por $\${usdAmount} USD para acreditar \${credits} créditos al nodo UX\${activeNodeNumber}. El saldo se actualizará automáticamente al verificarse el depósito real.\`);
-            // Ejemplo de llamada de prueba al webhook del servidor para simular el depósito real de la pasarela:
-            fetch('/api/webhook/payment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    secretApiKey: "TUPASARELA_API_SECRET_KEY_SEGURO",
-                    nodeNumber: activeNodeNumber,
-                    amountPaid: usdAmount,
-                    creditsToAdd: credits
-                })
-            }).then(res => res.json()).then(data => {
-                if(data.success) {
-                    document.getElementById('credit-count').innerText = data.newBalance;
-                    alert("✅ ¡Pago recibido y verificado por el servidor! Créditos añadidos con éxito.");
-                }
-            }).catch(err => console.error(err));
-        }
+        socket.on('auth_success', (data) => {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('app-screen').style.display = 'block';
+            document.getElementById('user-badge').innerText = data.badge;
+            document.getElementById('user-balance').innerText = `Balance: ${data.balance} UX`;
+        });
 
-        function generateRoomCode() {
-            let code = Math.floor(Math.random() * 900000) + 100000;
-            document.getElementById('room-code-input').value = code;
-        }
+        socket.on('auth_error', (data) => {
+            showError(data.message);
+        });
 
-        function joinRoom() {
-            let roomCode = document.getElementById('room-code-input').value.trim();
-            if (!roomCode) { alert("❌ Ingrese un código de sala válido."); return; }
-
-            activeRoomCode = roomCode;
-            socket.emit('join_room', { roomCode, nodeId: activeNodeId });
-
-            document.getElementById('app-interface').style.display = 'none';
-            document.getElementById('chat-interface').style.display = 'block';
-            document.getElementById('active-room-display').innerText = '#' + roomCode;
-            document.getElementById('chat-messages-box').innerHTML = '';
-
-            startTimer();
-        }
-
-        function initSocketListeners() {
-            socket.on('server_message', (data) => {
-                appendMessage("SYSTEM", data.text, "SYSTEM");
-            });
-
-            socket.on('receive_message', (data) => {
-                let isSelf = (data.sender === activeNodeId);
-                appendMessage(data.sender, data.text, isSelf ? 'self' : 'peer');
-            });
-        }
-
-        function appendMessage(sender, text, type) {
-            let box = document.getElementById('chat-messages-box');
-            let msgDiv = document.createElement('div');
-            msgDiv.className = type === 'self' ? 'chat-msg self' : (type === 'peer' ? 'chat-msg peer' : 'chat-msg');
-            if(type === 'SYSTEM') {
-                msgDiv.style.color = '#38bdf8';
-                msgDiv.innerHTML = \`[Sistema]: \${text}\`;
-            } else {
-                msgDiv.innerHTML = \`<strong>\${sender}:</strong> \${text}\`;
-            }
-            box.appendChild(msgDiv);
-            box.scrollTop = box.scrollHeight;
-        }
-
-        function sendWebSocketMessage() {
-            let input = document.getElementById('chat-input-msg');
-            let message = input.value.trim();
-            if (!message || !activeRoomCode) return;
-
-            socket.emit('send_message', { roomCode: activeRoomCode, nodeId: activeNodeId, message });
-            input.value = '';
-        }
-
-        function startTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-            let timeLeft = 150; // Exactos 2 minutos y 30 segundos
-            timerInterval = setInterval(() => {
-                let mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-                let secs = String(timeLeft % 60).padStart(2, '0');
-                document.getElementById('chat-timer-display').innerText = \`\${mins}:\${secs}\`;
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    alert("⏳ Sesión destruida automáticamente (Auto-Wipe de 2:30 min). Cero registros en servidor.");
-                    leaveRoom();
-                }
-                timeLeft--;
-            }, 1000);
-        }
-
-        function leaveRoom() {
-            if (timerInterval) clearInterval(timerInterval);
-            if (socket) socket.disconnect();
-            location.reload();
-        }
+        socket.on('security_lockout', (data) => {
+            showError(data.message);
+            document.body.innerHTML = `<h2 style="color:red; text-align:center; margin-top:20vh;">${data.message}</h2>`;
+        });
     </script>
 </body>
 </html>
-    `);
-});
-
-// 2. Registro Seguro (Valida estrictamente de 2 a 1,000,000,000)
-app.post('/api/register', (req, res) => {
-    const { node, pass } = req.body;
-    const num = parseInt(node);
-
-    if (isNaN(num) || num < 2 || num > 1000000000) {
-        return res.status(400).json({ error: "El nodo debe estar estrictamente entre 2 y 1,000,000,000." });
-    }
-    if (!pass || isNaN(pass)) {
-        return res.status(400).json({ error: "La contraseña debe ser exclusivamente numérica." });
-    }
-    if (nodeDatabase[num]) {
-        return res.status(400).json({ error: "Este número de nodo ya está registrado." });
-    }
-
-    nodeDatabase[num] = { pass: String(pass), credits: 0 };
-    return res.json({ success: true, message: `Nodo UX${num} registrado correctamente.` });
-});
-
-// 3. Inicio de Sesión
-app.post('/api/login', (req, res) => {
-    const { node, pass } = req.body;
-    const num = parseInt(node);
-
-    if (!nodeDatabase[num] || nodeDatabase[num].pass !== String(pass)) {
-        return res.status(401).json({ error: "Nodo o contraseña numérica incorrectos." });
-    }
-
-    return res.json({ 
-        success: true, 
-        nodeId: `UX${num}`, 
-        credits: nodeDatabase[num].credits 
-    });
-});
-
-// 4. Webhook Real para Pagos (Verificación de Dinero Real sin Fraudes)
-app.post('/api/webhook/payment', (req, res) => {
-    const { secretApiKey, nodeNumber, amountPaid, creditsToAdd } = req.body;
-    
-    // Validación de llave secreta del servidor de pagos
-    if (secretApiKey !== "TUPASARELA_API_SECRET_KEY_SEGURO") {
-        return res.status(403).json({ error: "Acceso no autorizado." });
-    }
-
-    const num = parseInt(nodeNumber);
-    if (!nodeDatabase[num]) {
-        return res.status(404).json({ error: "Nodo no encontrado." });
-    }
-
-    // El servidor suma los créditos únicamente cuando el pago es validado de forma real
-    nodeDatabase[num].credits += parseInt(creditsToAdd);
-
-    console.log(`[PAGO REAL] Ingresaron $${amountPaid} USD. Se acreditaron ${creditsToAdd} créditos al nodo UX${num}`);
-    return res.json({ success: true, newBalance: nodeDatabase[num].credits });
-});
-
-// 5. Canal de WebSockets en Tiempo Real con Auto-Eliminación (Privacidad Absoluta)
-io.on('connection', (socket) => {
-    socket.on('join_room', (data) => {
-        const { roomCode, nodeId } = data;
-        socket.join(roomCode);
-        
-        io.to(roomCode).emit('server_message', {
-            text: `Nodo ${nodeId} conectado de forma cifrada a la sala.`
-        });
-    });
-
-    socket.on('send_message', (data) => {
-        const { roomCode, nodeId, message } = data;
-        // Mensajería instantánea en memoria RAM (efímera, sin guardar bases de datos de texto)
-        io.to(roomCode).emit('receive_message', {
-            sender: nodeId,
-            text: message
-        });
-    });
-
-    socket.on('disconnect', () => {
-        // Cierre limpio de sesión sin rastro
-    });
-});
-
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`[Pleniux Core] Servidor seguro activo en el puerto ${PORT}`);
-});
