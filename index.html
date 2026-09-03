@@ -7,12 +7,31 @@
     <script src="/socket.io/socket.io.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #0b0614; color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
-        .container { width: 100%; max-width: 480px; background: #130b22; border: 1px solid #2d1b4e; border-radius: 12px; padding: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+        
+        /* Fondo en movimiento animado */
+        body { 
+            background: linear-gradient(135deg, #0b0614, #1a0f2e, #07030d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #f3f4f6; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 15px; 
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container { width: 100%; max-width: 520px; background: rgba(19, 11, 34, 0.95); border: 1px solid #2d1b4e; border-radius: 12px; padding: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); backdrop-filter: blur(8px); }
         h1 { text-align: center; color: #fff; font-size: 24px; margin-bottom: 5px; }
         .subtitle { text-align: center; color: #a78bfa; font-size: 12px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
-        .card { background: #1a0f2e; border: 1px solid #3b2365; border-radius: 8px; padding: 15px; margin-bottom: 15px; font-size: 12px; line-height: 1.5; color: #cbd5e1; }
-        .manual-card { background: #0f071a; border: 1px dashed #7c3aed; border-radius: 8px; padding: 12px; margin-top: 15px; font-size: 11px; color: #94a3b8; line-height: 1.4; }
+        .card { background: rgba(26, 15, 46, 0.8); border: 1px solid #3b2365; border-radius: 8px; padding: 15px; margin-bottom: 15px; font-size: 12px; line-height: 1.5; color: #cbd5e1; }
+        .manual-card { background: rgba(15, 7, 26, 0.9); border: 1px dashed #7c3aed; border-radius: 8px; padding: 12px; margin-top: 15px; font-size: 11px; color: #94a3b8; line-height: 1.4; }
         .manual-card b { color: #c4b5fd; }
         label { display: block; font-size: 12px; color: #a78bfa; margin-bottom: 5px; font-weight: bold; text-transform: uppercase; }
         
@@ -29,74 +48,141 @@
         .btn-secondary { background: #059669; color: #fff; }
         .btn-secondary:hover { background: #047857; }
         .error-msg { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #fca5a5; padding: 10px; border-radius: 6px; font-size: 12px; margin-bottom: 15px; display: none; text-align: center; }
+        
+        /* Chat y Temporizador */
+        .timer-badge { background: rgba(217, 119, 6, 0.2); border: 1px solid #d97706; color: #f59e0b; padding: 6px; border-radius: 4px; text-align: center; font-size: 12px; margin-bottom: 10px; font-weight: bold; }
+        .chat-box { background: #0b0614; border: 1px solid #3b2365; border-radius: 6px; height: 180px; overflow-y: auto; padding: 10px; margin-bottom: 10px; font-size: 13px; display: flex; flex-direction: column; gap: 6px; }
+        .chat-msg { background: #1a0f2e; padding: 8px; border-radius: 4px; border-left: 3px solid #7c3aed; }
+        .chat-msg img { max-width: 100%; border-radius: 4px; margin-top: 5px; }
         .footer { text-align: center; font-size: 11px; color: #64748b; margin-top: 15px; }
     </style>
 </head>
 <body>
 
+    <!-- Pantalla de Inicio / Registro -->
     <div class="container" id="auth-screen">
         <h1>PLENIUX.COM <span style="font-size: 12px; background: #d97706; padding: 2px 6px; border-radius: 4px; vertical-align: middle;">VIP</span></h1>
         <div class="subtitle">⚡ Elite Maximum Security Gateway</div>
 
         <div class="card">
-            🛡️ <b>Maximum Security Protocol:</b> Zero data storage. All session info, messages, and states are permanently purged instantly upon refreshing the tab, closing the app, or switching background processes. Anti-fraud hardware protection strictly blocks multiple accounts per device/network.
+            🛡️ <b>Protocolo de Máxima Seguridad:</b> Nuevos registros reciben un <b>crédito automático de +20 UX</b>. Cero almacenamiento: sesiones y mensajes se autodestruyen al expirar el temporizador o salir.
         </div>
 
         <div id="error-box" class="error-msg"></div>
 
-        <label>Your UX User Number</label>
+        <label>Tu Número de Usuario UX</label>
         <div class="input-group">
             <span class="input-prefix">UX</span>
-            <input type="number" id="custom-id" placeholder="Enter number (e.g. 123)" min="0" max="1000000">
+            <input type="number" id="custom-id" placeholder="Ej. 0, 1, 123" pattern="[0-9]*" inputmode="numeric">
         </div>
 
-        <label>Private Password / PIN</label>
-        <input type="password" id="password" placeholder="Enter your secret PIN">
+        <label>Contraseña / PIN Privado</label>
+        <input type="password" id="password" placeholder="PIN secreto (Ej. 197126 para UX0)" pattern="[0-9]*" inputmode="numeric">
 
         <div class="btn-group">
-            <button class="btn-secondary" onclick="registerNode()">Register (+20 UX)</button>
-            <button class="btn-primary" onclick="authNode()">Access Node</button>
+            <button class="btn-secondary" onclick="registerNode()">Registrarse (+20 UX)</button>
+            <button class="btn-primary" onclick="authNode()">Acceder al Nodo</button>
         </div>
 
-        <!-- Manual de Uso Integrado -->
+        <!-- Manual de Usuario con fondo en movimiento -->
         <div class="manual-card">
-            <b>📖 Quick User Manual:</b><br>
-            1. <b>Register:</b> Type your desired ID number (UX is prefixed automatically) and a secure PIN. You get an instant +20 UX bonus.<br>
-            2. <b>Access:</b> Log in with your assigned ID and PIN.<br>
-            3. <b>Security:</b> Do not refresh or switch apps or your session self-destructs instantly. Strict 1-account limit per device. Real blockchain Bitcoin verification is active for balance packages.
+            <b>📖 Manual Oficial de Conexión Pleniux:</b><br>
+            1. <b>Registro y Crédito:</b> Regístrate ingresando cualquier número de usuario y PIN. Recibirás de forma automática un bono de <b>+20 UX</b> en tu saldo.<br>
+            2. <b>Cómo Conectarse con otra Persona:</b> Dentro del panel, dirígete a la sección de chat, coloca el <b>número exacto del usuario</b> con el que deseas hablar (el prefijo UX se agrega solo) y presiona <i>Abrir Chat Directo</i>.<br>
+            3. <b>Mensajes y Fotos en Vivo:</b> Podrás chatear al instante y enviar imágenes reales cifradas de manera segura.<br>
+            4. <b>Temporizador de Seguridad:</b> Cada sesión cuenta con un límite estricto de 1:30 min. Al cumplirse, se cerrará la sesión aplicando una penalización de -2 UX y eliminando conversaciones por privacidad.
         </div>
 
         <div class="footer">Founder: Lenox JG | Pleniux.com VIP Secure Gateway</div>
     </div>
 
-    <!-- Panel Interno de la Plataforma (Oculto al inicio) -->
+    <!-- Panel Interno y Chat P2P -->
     <div class="container" id="app-screen" style="display: none;">
-        <h1 id="user-badge">NODE PANEL</h1>
-        <div class="subtitle" id="user-balance">Balance: 0 UX</div>
+        <h1 id="user-badge">PANEL DE NODO</h1>
+        <div class="subtitle" id="user-balance">Saldo: 0 UX</div>
+
+        <div class="timer-badge" id="session-timer">⏱️ Tiempo restante de sesión: 01:30</div>
 
         <div class="card">
-            <b>Secure Direct P2P Chat & Blockchain Packages</b><br>
-            Verified Bitcoin network payments active. Packages: 200 UX, 3666 UX, 6666 UX, 16666 UX, 69999 UX, 150000 UX.
+            <b>Chat P2P Directo y En Vivo</b><br>
+            Conéctate con cualquier usuario digitando su número abajo.
         </div>
 
-        <div class="btn-group">
-            <button class="btn-primary" onclick="location.reload()">Self-Destruct / Logout</button>
+        <label>Número de Destino</label>
+        <div class="input-group">
+            <span class="input-prefix">UX</span>
+            <input type="number" id="target-id" placeholder="Número (Ej. 0)" pattern="[0-9]*" inputmode="numeric">
+        </div>
+        <button class="btn-primary" style="width:100%; margin-bottom: 15px;" onclick="openChat()">Abrir Chat Directo</button>
+
+        <div id="chat-container" style="display:none;">
+            <div class="subtitle" id="chat-room-title">Chat Activo: Ninguno</div>
+            <div class="chat-box" id="chat-messages"></div>
+            
+            <div class="input-group" style="margin-bottom: 8px;">
+                <input type="text" id="chat-input" placeholder="Escribe mensaje en vivo...">
+                <button class="btn-secondary" style="flex:0; padding:0 15px;" onclick="sendMessage()">Enviar</button>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <input type="file" id="image-file" accept="image/*" style="font-size: 11px; color: #a78bfa; width: 100%;">
+                <button class="btn-primary" style="width:100%; margin-top: 5px; font-size: 12px; padding: 8px;" onclick="sendPhoto()">Enviar Foto en Vivo 📷</button>
+            </div>
+        </div>
+
+        <!-- Paquetes de Saldo con Precios Reales -->
+        <div class="card" style="margin-top: 15px;">
+            <b>Paquetes de Saldo (Pago Real Bitcoin)</b><br>
+            Selecciona tu paquete para verificar en la blockchain:<br>
+            <button class="btn-secondary" style="width:100%; margin-top:6px; font-size:12px;" onclick="buyPackage('200 UX')">Comprar 200 UX (0.000015 BTC)</button>
+            <button class="btn-secondary" style="width:100%; margin-top:6px; font-size:12px;" onclick="buyPackage('3666 UX')">Comprar 3,666 UX (0.00012 BTC)</button>
+            <button class="btn-secondary" style="width:100%; margin-top:6px; font-size:12px;" onclick="buyPackage('6666 UX')">Comprar 6,666 UX (0.00038 BTC)</button>
+            <button class="btn-secondary" style="width:100%; margin-top:6px; font-size:12px;" onclick="buyPackage('16666 UX')">Comprar 16,666 UX (0.00058 BTC)</button>
+            <button class="btn-secondary" style="width:100%; margin-top:6px; font-size:12px;" onclick="buyPackage('69999 UX')">Comprar 69,999 UX (0.0017 BTC)</button>
+            <button class="btn-secondary" style="width:100%; margin-top:6px; font-size:12px;" onclick="buyPackage('150000 UX')">Comprar 150,000 UX (0.0036 BTC)</button>
+        </div>
+
+        <div class="btn-group" style="margin-top: 15px;">
+            <button class="btn-primary" onclick="location.reload()">Cerrar Sesión / Autodestruir</button>
         </div>
     </div>
 
     <script>
         const socket = io();
+        let currentRoom = null;
+        let myUsername = null;
+        let sessionInterval = null;
+        let timeLeft = 90; // 1 minuto y 30 segundos exactos
 
-        // Auto-eliminación exprés al cambiar de pestaña, minimizar o salir
+        function startSessionTimer() {
+            clearInterval(sessionInterval);
+            timeLeft = 90;
+            sessionInterval = setInterval(() => {
+                timeLeft--;
+                let mins = Math.floor(timeLeft / 60);
+                let secs = timeLeft % 60;
+                document.getElementById('session-timer').innerText = `⏱️ Tiempo restante de sesión: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(sessionInterval);
+                    socket.emit('penalize_session_exit', { username: myUsername });
+                    alert('Temporizador expirado: Sesión cerrada y -2 UX aplicados.');
+                    location.reload();
+                }
+            }, 1000);
+        }
+
         document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                socket.emit('penalize_session_exit', { username: window.currentUsername });
+            if (document.hidden && myUsername) {
+                socket.emit('penalize_session_exit', { username: myUsername });
                 location.reload();
             }
         });
 
         window.addEventListener('beforeunload', () => {
-            socket.emit('penalize_session_exit', { username: window.currentUsername });
+            if (myUsername) {
+                socket.emit('penalize_session_exit', { username: myUsername });
+            }
         });
 
         function showError(msg) {
@@ -107,7 +193,6 @@
 
         function registerNode() {
             const rawId = document.getElementById('custom-id').value;
-            const customId = 'UX' + rawId;
             const password = document.getElementById('password').value;
             const deviceFingerprint = navigator.userAgent + '-' + screen.width + 'x' + screen.height;
             socket.emit('register_node', { customId: rawId, password, deviceFingerprint });
@@ -115,10 +200,46 @@
 
         function authNode() {
             const rawId = document.getElementById('custom-id').value;
-            const customId = 'UX' + rawId;
             const password = document.getElementById('password').value;
-            window.currentUsername = 'UX' + rawId;
             socket.emit('auth_node', { customId: rawId, password });
+        }
+
+        function openChat() {
+            const targetRaw = document.getElementById('target-id').value;
+            if (!targetRaw) {
+                alert('Por favor ingresa el número de destino.');
+                return;
+            }
+            const recipient = 'UX' + targetRaw;
+            socket.emit('open_direct_chat', { sender: myUsername, recipient: recipient });
+        }
+
+        function sendMessage() {
+            const text = document.getElementById('chat-input').value;
+            if (!text || !currentRoom) return;
+            const recipient = currentRoom.replace('DIRECT-', '').replace(myUsername, '').replace('-', '');
+            socket.emit('send_direct_message', { room: currentRoom, sender: myUsername, recipient: recipient, text: text, image: null });
+            document.getElementById('chat-input').value = '';
+        }
+
+        function sendPhoto() {
+            const fileInput = document.getElementById('image-file');
+            if (fileInput.files && fileInput.files[0] && currentRoom) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    const recipient = currentRoom.replace('DIRECT-', '').replace(myUsername, '').replace('-', '');
+                    socket.emit('send_direct_message', { room: currentRoom, sender: myUsername, recipient: recipient, text: '', image: base64Image });
+                    fileInput.value = '';
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                alert('Selecciona una imagen primero.');
+            }
+        }
+
+        function buyPackage(pkg) {
+            socket.emit('verify_btc_payment', { username: myUsername, packageType: pkg });
         }
 
         socket.on('register_success', (data) => {
@@ -127,11 +248,38 @@
         });
 
         socket.on('auth_success', (data) => {
+            myUsername = data.username;
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('app-screen').style.display = 'block';
             document.getElementById('user-badge').innerText = data.badge;
-            document.getElementById('user-balance').innerText = `Balance: ${data.balance} UX`;
-            window.currentUsername = data.username;
+            document.getElementById('user-balance').innerText = `Saldo: ${data.balance} UX`;
+            startSessionTimer();
+        });
+
+        socket.on('direct_chat_opened', (data) => {
+            currentRoom = data.room;
+            document.getElementById('chat-container').style.display = 'block';
+            document.getElementById('chat-room-title').innerText = `Chat en vivo con: ${data.recipient}`;
+            const box = document.getElementById('chat-messages');
+            box.innerHTML = '';
+            data.history.forEach(m => {
+                let content = m.text ? `<div>${m.text}</div>` : '';
+                if (m.image) content += `<img src="${m.image}">`;
+                box.innerHTML += `<div class="chat-msg"><b>${m.sender}:</b> ${content} <span style="font-size:9px; color:#888; float:right;">${m.timestamp}</span></div>`;
+            });
+        });
+
+        socket.on('receive_direct_message', (data) => {
+            const box = document.getElementById('chat-messages');
+            let content = data.text ? `<div>${data.text}</div>` : '';
+            if (data.image) content += `<img src="${data.image}">`;
+            box.innerHTML += `<div class="chat-msg"><b>${data.sender}:</b> ${content} <span style="font-size:9px; color:#888; float:right;">${data.timestamp}</span></div>`;
+            box.scrollTop = box.scrollHeight;
+        });
+
+        socket.on('balance_updated', (data) => {
+            document.getElementById('user-balance').innerText = `Saldo: ${data.newBalance} UX`;
+            alert(data.message);
         });
 
         socket.on('auth_error', (data) => {
