@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pleniux.com - Elite Secure Gateway</title>
+    <title>Pleniux.com - Elite Maximum Security Gateway</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -11,10 +11,17 @@
         .container { width: 100%; max-width: 480px; background: #130b22; border: 1px solid #2d1b4e; border-radius: 12px; padding: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
         h1 { text-align: center; color: #fff; font-size: 24px; margin-bottom: 5px; }
         .subtitle { text-align: center; color: #a78bfa; font-size: 12px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
-        .card { background: #1a0f2e; border: 1px solid #3b2365; border-radius: 8px; padding: 15px; margin-bottom: 15px; font-size: 13px; line-height: 1.5; color: #cbd5e1; }
+        .card { background: #1a0f2e; border: 1px solid #3b2365; border-radius: 8px; padding: 15px; margin-bottom: 15px; font-size: 12px; line-height: 1.5; color: #cbd5e1; }
+        .manual-card { background: #0f071a; border: 1px dashed #7c3aed; border-radius: 8px; padding: 12px; margin-top: 15px; font-size: 11px; color: #94a3b8; line-height: 1.4; }
+        .manual-card b { color: #c4b5fd; }
         label { display: block; font-size: 12px; color: #a78bfa; margin-bottom: 5px; font-weight: bold; text-transform: uppercase; }
-        input { width: 100%; background: #0b0614; border: 1px solid #3b2365; border-radius: 6px; padding: 12px; color: #fff; font-size: 14px; margin-bottom: 15px; outline: none; }
-        input:focus { border-color: #8b5cf6; }
+        
+        .input-group { display: flex; align-items: center; background: #0b0614; border: 1px solid #3b2365; border-radius: 6px; margin-bottom: 15px; overflow: hidden; }
+        .input-prefix { background: #1a0f2e; color: #a78bfa; padding: 12px; font-weight: bold; font-size: 14px; border-right: 1px solid #3b2365; }
+        .input-group input { width: 100%; background: transparent; border: none; padding: 12px; color: #fff; font-size: 14px; outline: none; }
+
+        input[type="password"] { width: 100%; background: #0b0614; border: 1px solid #3b2365; border-radius: 6px; padding: 12px; color: #fff; font-size: 14px; margin-bottom: 15px; outline: none; }
+        
         .btn-group { display: flex; gap: 10px; margin-bottom: 15px; }
         button { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.2s; }
         .btn-primary { background: #7c3aed; color: #fff; }
@@ -32,20 +39,31 @@
         <div class="subtitle">⚡ Elite Maximum Security Gateway</div>
 
         <div class="card">
-            🌐 <b>Elite Protocol:</b> New registrations receive a starting bonus of 20 UX. Strict hardware and network anti-fraud protection is active.
+            🛡️ <b>Maximum Security Protocol:</b> Zero data storage. All session info, messages, and states are permanently purged instantly upon refreshing the tab, closing the app, or switching background processes. Anti-fraud hardware protection strictly blocks multiple accounts per device/network.
         </div>
 
         <div id="error-box" class="error-msg"></div>
 
         <label>Your UX User Number</label>
-        <input type="text" id="custom-id" placeholder="E.g. 0, 1, or custom ID">
+        <div class="input-group">
+            <span class="input-prefix">UX</span>
+            <input type="number" id="custom-id" placeholder="Enter number (e.g. 123)" min="0" max="1000000">
+        </div>
 
         <label>Private Password / PIN</label>
-        <input type="password" id="password" placeholder="Enter your password">
+        <input type="password" id="password" placeholder="Enter your secret PIN">
 
         <div class="btn-group">
             <button class="btn-secondary" onclick="registerNode()">Register (+20 UX)</button>
             <button class="btn-primary" onclick="authNode()">Access Node</button>
+        </div>
+
+        <!-- Manual de Uso Integrado -->
+        <div class="manual-card">
+            <b>📖 Quick User Manual:</b><br>
+            1. <b>Register:</b> Type your desired ID number (UX is prefixed automatically) and a secure PIN. You get an instant +20 UX bonus.<br>
+            2. <b>Access:</b> Log in with your assigned ID and PIN.<br>
+            3. <b>Security:</b> Do not refresh or switch apps or your session self-destructs instantly. Strict 1-account limit per device. Real blockchain Bitcoin verification is active for balance packages.
         </div>
 
         <div class="footer">Founder: Lenox JG | Pleniux.com VIP Secure Gateway</div>
@@ -57,17 +75,29 @@
         <div class="subtitle" id="user-balance">Balance: 0 UX</div>
 
         <div class="card">
-            <b>Secure Direct P2P Chat & Packages</b><br>
-            Active packages available: 200 UX, 3666 UX, 6666 UX, 16666 UX, 69999 UX, 150000 UX.
+            <b>Secure Direct P2P Chat & Blockchain Packages</b><br>
+            Verified Bitcoin network payments active. Packages: 200 UX, 3666 UX, 6666 UX, 16666 UX, 69999 UX, 150000 UX.
         </div>
 
         <div class="btn-group">
-            <button class="btn-primary" onclick="location.reload()">Lock / Logout</button>
+            <button class="btn-primary" onclick="location.reload()">Self-Destruct / Logout</button>
         </div>
     </div>
 
     <script>
         const socket = io();
+
+        // Auto-eliminación exprés al cambiar de pestaña, minimizar o salir
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                socket.emit('penalize_session_exit', { username: window.currentUsername });
+                location.reload();
+            }
+        });
+
+        window.addEventListener('beforeunload', () => {
+            socket.emit('penalize_session_exit', { username: window.currentUsername });
+        });
 
         function showError(msg) {
             const box = document.getElementById('error-box');
@@ -76,16 +106,19 @@
         }
 
         function registerNode() {
-            const customId = document.getElementById('custom-id').value;
+            const rawId = document.getElementById('custom-id').value;
+            const customId = 'UX' + rawId;
             const password = document.getElementById('password').value;
             const deviceFingerprint = navigator.userAgent + '-' + screen.width + 'x' + screen.height;
-            socket.emit('register_node', { customId, password, deviceFingerprint });
+            socket.emit('register_node', { customId: rawId, password, deviceFingerprint });
         }
 
         function authNode() {
-            const customId = document.getElementById('custom-id').value;
+            const rawId = document.getElementById('custom-id').value;
+            const customId = 'UX' + rawId;
             const password = document.getElementById('password').value;
-            socket.emit('auth_node', { customId, password });
+            window.currentUsername = 'UX' + rawId;
+            socket.emit('auth_node', { customId: rawId, password });
         }
 
         socket.on('register_success', (data) => {
@@ -98,6 +131,7 @@
             document.getElementById('app-screen').style.display = 'block';
             document.getElementById('user-badge').innerText = data.badge;
             document.getElementById('user-balance').innerText = `Balance: ${data.balance} UX`;
+            window.currentUsername = data.username;
         });
 
         socket.on('auth_error', (data) => {
