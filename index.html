@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>pleniux.com</title>
+    <title>pleniux.com - Secure Gateway</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
         * {
@@ -24,538 +24,250 @@
             overflow-x: hidden;
             overflow-y: auto;
             position: relative;
-            padding: 20px;
+            padding: 15px;
         }
 
         .neon-dots-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100dvh;
+            top: 0; left: 0; width: 100vw; height: 100dvh;
             background-image: 
                 radial-gradient(circle, rgba(255, 0, 0, 0.8) 2px, transparent 2px),
                 radial-gradient(circle, rgba(255, 0, 0, 0.4) 1px, transparent 1px);
             background-size: 50px 50px;
             background-position: 0 0, 25px 25px;
-            animation: pulseDots 4s infinite ease-in-out;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        @keyframes pulseDots {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.9; }
-        }
-
-        .watermark-bg {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 12vw;
-            font-weight: bold;
-            color: rgba(255, 0, 0, 0.03);
-            white-space: nowrap;
-            z-index: 2;
-            pointer-events: none;
-            user-select: none;
-            letter-spacing: 15px;
+            z-index: 1; pointer-events: none;
         }
 
         .gateway-container {
             position: relative;
             z-index: 10;
             width: 100%;
-            max-width: 650px;
-            background: rgba(10, 10, 10, 0.98);
+            max-width: 600px;
+            background: rgba(10, 10, 10, 0.99);
             border: 2px solid #ff0000;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
-            border-radius: 12px;
-            padding: 20px;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
         }
 
         .header-title {
             text-align: center;
-            font-size: 26px;
+            font-size: 24px;
             font-weight: bold;
             color: #ff3333;
-            text-shadow: 0 0 12px rgba(255, 0, 0, 0.6);
-            margin-bottom: 4px;
-            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+            margin-bottom: 2px;
+            letter-spacing: 2px;
         }
 
         .header-subtitle {
             text-align: center;
-            font-size: 11px;
-            color: #ff9999;
-            margin-bottom: 12px;
-            letter-spacing: 2px;
-        }
-
-        .security-alert {
-            background: rgba(255, 0, 0, 0.12);
-            border-left: 4px solid #ff0000;
-            padding: 10px;
             font-size: 10px;
-            color: #ffcccc;
-            margin-bottom: 12px;
-            line-height: 1.4;
-            border-radius: 4px;
+            color: #ff9999;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
         }
 
         .warning-box {
-            background: rgba(255, 102, 0, 0.15);
-            border: 1px dashed #ff6600;
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
             padding: 8px;
             font-size: 10px;
-            color: #ffaa66;
-            margin-bottom: 12px;
+            color: #ffcccc;
+            margin-bottom: 10px;
             text-align: center;
             border-radius: 4px;
             font-weight: bold;
+            line-height: 1.3;
         }
 
-        .input-group {
-            margin-bottom: 12px;
-        }
-
-        label {
-            display: block;
-            font-size: 10px;
-            color: #ff6666;
-            margin-bottom: 4px;
-            font-weight: bold;
-        }
+        .input-group { margin-bottom: 10px; }
+        label { display: block; font-size: 10px; color: #ff6666; margin-bottom: 3px; font-weight: bold; }
 
         .input-flex {
-            display: flex;
-            align-items: center;
-            background: #111;
-            border: 1px solid #440000;
-            border-radius: 6px;
-            overflow: hidden;
+            display: flex; align-items: center;
+            background: #111; border: 1px solid #440000; border-radius: 6px; overflow: hidden;
         }
-
-        .prefix-box {
-            background: #220000;
-            color: #ff3333;
-            padding: 10px 12px;
-            font-weight: bold;
-            border-right: 1px solid #440000;
-            font-size: 12px;
-        }
-
+        .prefix-box { background: #220000; color: #ff3333; padding: 10px; font-weight: bold; border-right: 1px solid #440000; font-size: 12px; }
         input[type="text"], input[type="password"] {
-            width: 100%;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: #ffffff;
-            padding: 10px;
-            font-size: 13px;
+            width: 100%; background: transparent; border: none; outline: none; color: #ffffff; padding: 10px; font-size: 14px;
         }
 
         .btn-action {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-            font-size: 12px;
-            margin-top: 8px;
-            margin-bottom: 8px;
+            width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 11px; margin-top: 6px;
         }
-
         .btn-register-action { background: #00aa55; color: #ffffff; }
-        .btn-register-action:hover { background: #00cc66; }
-
         .btn-login-action { background: #cc0000; color: #ffffff; }
-        .btn-login-action:hover { background: #ff0000; }
 
-        .terms-box, .manual-box {
-            font-size: 10px;
-            color: #aaaaaa;
-            margin-top: 10px;
-            border-top: 1px dashed #440000;
-            padding-top: 8px;
-            line-height: 1.5;
-        }
-
-        .manual-box h3, .terms-box h3 {
-            color: #ff4444;
-            font-size: 11px;
-            margin-bottom: 4px;
-        }
-
-        #status-message {
-            margin-top: 6px;
-            text-align: center;
-            font-size: 10px;
-            font-weight: bold;
-        }
-
-        .dashboard-view { 
-            display: none; 
-            flex-direction: column; 
-            height: 100%; 
-        }
-
+        .dashboard-view { display: none; flex-direction: column; }
         .user-panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #1a0000;
-            border: 1px solid #ff0000;
-            padding: 10px 12px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            font-size: 11px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: #1a0000; border: 1px solid #ff0000; padding: 8px 10px; border-radius: 6px; margin-bottom: 8px; font-size: 11px;
         }
-
-        .nav-tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 10px;
-        }
-
+        .nav-tabs { display: flex; gap: 5px; margin-bottom: 8px; }
         .tab-btn {
-            flex: 1;
-            padding: 8px 4px;
-            background: #150000;
-            border: 1px solid #550000;
-            color: #ff9999;
-            font-size: 9px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 4px;
-            text-align: center;
+            flex: 1; padding: 8px 4px; background: #150000; border: 1px solid #550000; color: #ff9999; font-size: 9px; font-weight: bold; cursor: pointer; border-radius: 4px; text-align: center;
         }
-
-        .tab-btn.active {
-            background: #cc0000;
-            color: #ffffff;
-            border-color: #ff3333;
-        }
-
-        .tab-content { 
-            display: none; 
-            flex-direction: column; 
-            flex: 1; 
-        }
+        .tab-btn.active { background: #cc0000; color: #ffffff; border-color: #ff3333; }
+        .tab-content { display: none; flex-direction: column; }
         .tab-content.active { display: flex; }
 
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
+        .pricing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 8px; }
         .price-card {
-            background: #111;
-            border: 1px solid #440000;
-            padding: 10px;
-            border-radius: 6px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            background: #111; border: 1px solid #440000; padding: 8px; border-radius: 6px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .price-card h4 { color: #00ff88; font-size: 12px; margin-bottom: 2px; }
+        .btn-btc { background: #f7931a; color: #fff; border: none; padding: 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; margin-top: 5px; width: 100%; text-transform: uppercase; }
+
+        .wallet-box {
+            background: #110500; border: 1px dashed #f7931a; padding: 8px; border-radius: 6px; margin-bottom: 8px; font-size: 9px; color: #ffcc99; text-align: center; word-break: break-all;
         }
 
-        .price-card h4 { color: #00ff88; font-size: 13px; margin-bottom: 4px; }
-
-        .payment-buttons-row {
-            display: flex;
-            gap: 6px;
-            margin-top: 6px;
-        }
-
-        .btn-pay-option {
-            flex: 1;
-            padding: 8px 4px;
-            font-size: 9px;
-            font-weight: bold;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        .btn-btc { background: #f7931a; color: #fff; }
-        .btn-btc:hover { background: #ff9900; }
-
-        .chats-sidebar {
-            display: flex;
-            gap: 6px;
-            overflow-x: auto;
-            margin-bottom: 8px;
-            padding-bottom: 4px;
-        }
-
+        .chats-sidebar { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 6px; padding-bottom: 3px; }
         .chat-pill {
-            background: #220000;
-            border: 1px solid #550000;
-            color: #ff9999;
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 10px;
-            cursor: pointer;
-            white-space: nowrap;
+            background: #220000; border: 1px solid #550000; color: #ff9999; padding: 5px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; white-space: nowrap;
         }
-
-        .chat-pill.active {
-            background: #cc0000;
-            color: #fff;
-            border-color: #ff3333;
-        }
-
-        #active-chat-container {
-            display: none;
-            flex-direction: column;
-            flex: 1;
-            min-height: 350px;
-        }
+        .chat-pill.active { background: #cc0000; color: #fff; border-color: #ff3333; }
 
         .chat-box {
-            background: #050505;
-            border: 1px solid #330000;
-            border-radius: 6px;
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            margin-bottom: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            min-height: 250px;
+            background: #050505; border: 1px solid #330000; border-radius: 6px; height: 180px; overflow-y: auto; padding: 8px; margin-bottom: 6px; display: flex; flex-direction: column; gap: 6px;
         }
-
-        .message-item {
-            background: #1a1a1a;
-            padding: 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            border-left: 3px solid #ff3333;
-            word-break: break-word;
-        }
-
+        .message-item { background: #1a1a1a; padding: 6px; border-radius: 4px; font-size: 11px; border-left: 3px solid #ff3333; word-break: break-word; }
         .message-item.mine { border-left-color: #00aa55; text-align: right; }
-        .message-item img { max-width: 120px; border-radius: 4px; margin-top: 6px; display: block; }
-
-        .chat-input-row { 
-            display: flex; 
-            gap: 6px; 
-            align-items: center; 
-            background: #0d0d0d;
-            padding: 6px;
-            border-radius: 6px;
-            border: 1px solid #330000;
+        
+        .chat-input-row { display: flex; gap: 5px; align-items: center; background: #0d0d0d; padding: 5px; border-radius: 6px; border: 1px solid #330000; }
+        .btn-send { background: #cc0000; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 10px; }
+        
+        .destruct-badge {
+            background: #330000; color: #ff3333; border: 1px solid #ff0000; padding: 6px; border-radius: 4px; font-size: 10px; font-weight: bold; text-align: center; margin-bottom: 6px;
+            animation: pulseWarning 1.5s infinite;
+        }
+        @keyframes pulseWarning {
+            0% { border-color: #ff0000; box-shadow: 0 0 5px rgba(255,0,0,0.5); }
+            50% { border-color: #ff9999; box-shadow: 0 0 15px rgba(255,0,0,0.9); }
+            100% { border-color: #ff0000; box-shadow: 0 0 5px rgba(255,0,0,0.5); }
         }
 
-        .chat-input-row input[type="text"] {
-            background: #111;
-            border: 1px solid #440000;
-            border-radius: 4px;
-            color: #fff;
-            padding: 8px;
-            font-size: 12px;
-            flex: 1;
-        }
-
-        .btn-send {
-            background: #cc0000;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 11px;
-        }
-
-        .btn-photo {
-            background: #440044;
-            color: #ff99ff;
-            border: 1px solid #880088;
-            padding: 8px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .timer-badge {
-            background: #330000;
-            color: #ff3333;
-            border: 1px solid #ff0000;
-            padding: 6px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 6px;
-        }
+        .manual-box { font-size: 10px; color: #cccccc; line-height: 1.4; padding: 4px; }
+        .manual-box h3 { color: #ff4444; margin-bottom: 4px; font-size: 11px; }
     </style>
 </head>
 <body>
 
     <div class="neon-dots-bg"></div>
-    <div class="watermark-bg">pleniux.com</div>
 
-    <!-- Auth Gateway Panel -->
+    <!-- Auth Panel con Privacidad Extrema (Evita guardado de contraseña) -->
     <div class="gateway-container" id="auth-panel">
         <div class="header-title">pleniux.com</div>
-        <div class="header-subtitle">SECURE MAXIMUM PRIVACY GATEWAY</div>
+        <div class="header-subtitle">EXTREME PRIVACY SECURE GATEWAY</div>
 
         <div class="warning-box">
-            ⚠️ CRITICAL SECURITY WARNING: NO MESSAGE LOGS OR USER DATA ARE EVER STORED. ALL INFORMATION IS COMPLETELY WIPED UPON TAB REFRESH OR EXIT.
-        </div>
-
-        <div class="security-alert">
-            🛡️ <strong>Anti-Cheat & Hardware Protection:</strong> Strict device fingerprint binding prevents multiple account creation from the same device. Initial welcome bonus of <strong>+20 UX</strong> credits.
+            🚨 ANTI-MULTIACCOUNT ACTIVE: IP & Device tracking enforced. New users get +20 UX bonus. Real Bitcoin deposits required.
         </div>
 
         <div class="input-group">
-            <label>YOUR UX USER NUMBER (Numeric Input Only - E.g. 0, 1, 123)</label>
+            <label>NUMERIC USER ID (Boss: 0 | Users: 1, 9, etc.)</label>
             <div class="input-flex">
                 <div class="prefix-box">UX</div>
-                <input type="text" id="customId" inputmode="numeric" pattern="[0-9]*" placeholder="Enter custom numeric ID">
+                <input type="text" id="customId" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Enter numeric ID">
             </div>
         </div>
 
         <div class="input-group">
-            <label>PRIVATE PASSWORD / PIN (Hidden)</label>
-            <input type="password" id="password" placeholder="Enter secure PIN">
+            <label>NUMERIC PIN / PASSWORD</label>
+            <input type="password" id="password" inputmode="numeric" pattern="[0-9]*" autocomplete="new-password" autocapitalize="off" spellcheck="false" placeholder="Enter numeric PIN">
         </div>
 
-        <button class="btn-action btn-register-action" onclick="registerNode()">Register New Node (+20 UX)</button>
-        <button class="btn-action btn-login-action" onclick="loginNode()">Secure Login & Enter</button>
+        <button class="btn-action btn-register-action" onclick="registerNode()">Register New Node (+20 UX Bonus)</button>
+        <button class="btn-action btn-login-action" onclick="loginNode()">Secure Login</button>
 
-        <div id="status-message"></div>
-
-        <div class="terms-box">
-            <h3>Terms, Privacy & Legal Disclaimer (English):</h3>
-            <p><strong>Absolute Privacy:</strong> Zero data retention. All content is strictly ephemeral and self-destructs permanently.</p>
-            <p><strong>User Responsibility:</strong> Platform designed exclusively for secure, legitimate communication. Fraud or illicit actions are strictly prohibited. The user assumes full legal responsibility.</p>
-        </div>
-
-        <div class="manual-box">
-            <h3>Official User Manual (English) - Multi-User Communication:</h3>
-            <p><strong>1. Access:</strong> Input your numeric User ID (e.g., 0) with default password 197126, then click Secure Login.</p>
-            <p><strong>2. Multi-Chat Channels:</strong> Navigate to the "Chats & Photos" tab, enter multiple target user IDs to open parallel communication channels, and instantly switch between active chat tabs.</p>
-            <p><strong>3. Secure Messaging:</strong> Transmit encrypted text or secure photo packets. A strict 1:30 minute self-destruct countdown timer activates immediately per active session.</p>
-        </div>
+        <div id="status-message" style="text-align:center; font-size:10px; margin-top:6px; font-weight:bold; color: #ff3333;"></div>
     </div>
 
-    <!-- Dashboard & Main Panel -->
+    <!-- Dashboard Panel -->
     <div class="gateway-container dashboard-view" id="dashboard-panel">
         <div class="user-panel-header">
-            <span id="user-badge-display">NODE: UX0</span>
-            <span id="user-balance-display">BALANCE: 20 UX</span>
+            <span id="user-badge-display">NODE: UX</span>
+            <span id="user-balance-display" style="color: #00ff88;">BALANCE: 20 UX</span>
         </div>
 
-        <!-- Navigation Tabs -->
         <div class="nav-tabs">
-            <div class="tab-btn active" onclick="switchTab('chat-tab')">💬 Multi-Chats & Photos</div>
-            <div class="tab-btn" onclick="switchTab('pricing-tab')">💎 Trust Wallet BTC Refills</div>
-            <div class="tab-btn" onclick="switchTab('manual-tab')">📜 Privacy & Manual</div>
+            <div class="tab-btn active" onclick="switchTab('chat-tab')">💬 Live Chat (1:30 Timer)</div>
+            <div class="tab-btn" onclick="switchTab('pricing-tab')">₿ Trust Wallet Pay</div>
+            <div class="tab-btn" onclick="switchTab('manual-tab')">📜 Manual</div>
         </div>
 
-        <!-- TAB 1: Multi-Chat & Photo Sharing Options -->
+        <!-- Chat Tab -->
         <div id="chat-tab" class="tab-content active">
+            <div class="warning-box" id="paywallWarning" style="display:none;">
+                🔒 CHAT LOCKED: Zero balance. Real Bitcoin top-up required to communicate.
+            </div>
+
             <div class="input-group">
-                <label>OPEN PARALLEL CHAT WITH ANOTHER USER (Numeric ID)</label>
+                <label>CONNECT WITH ANOTHER USER (Using UX & Number)</label>
                 <div class="input-flex">
                     <div class="prefix-box">UX</div>
-                    <input type="text" id="targetRecipient" inputmode="numeric" pattern="[0-9]*" placeholder="Target User Number (e.g. 1, 2, 3...)">
+                    <input type="text" id="targetRecipient" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="Target numeric ID (e.g. 9)">
                 </div>
-                <button class="btn-action btn-register-action" style="margin-top: 6px;" onclick="openDirectChat()">Open New Parallel Channel</button>
+                <button class="btn-action btn-register-action" style="margin-top: 5px;" onclick="openDirectChat()">Open Live Chat Channel</button>
             </div>
 
             <div class="chats-sidebar" id="activeChatsSidebar"></div>
 
-            <div id="active-chat-container">
-                <div class="timer-badge" id="chatTimerDisplay">⏳ Self-Destruct Timer: 01:30</div>
-                <div style="font-size: 10px; color: #00ff88; margin-bottom: 4px;" id="chat-status-target">Active Secure Channel</div>
-                <div class="chat-box" id="chatMessageList"></div>
-                <div class="chat-input-row">
-                    <input type="text" id="messageInput" placeholder="Type encrypted message...">
-                    <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="sendPhoto(event)">
-                    <button class="btn-photo" onclick="document.getElementById('photoInput').click()" title="Send Photo">📷</button>
-                    <button class="btn-send" onclick="sendDirectMessage()">Send</button>
-                </div>
+            <div class="destruct-badge" id="chatTimerDisplay">🚨 AUTO-DESTRUCT: 01:30 (Wipes chats & -2 UX penalty)</div>
+            
+            <div class="chat-box" id="chatMessageList"></div>
+            <div class="chat-input-row">
+                <input type="text" id="messageInput" autocomplete="off" placeholder="Type live message...">
+                <button class="btn-send" onclick="sendDirectMessage()">Send</button>
             </div>
         </div>
 
-        <!-- TAB 2: Trust Wallet BTC Refills -->
+        <!-- Pricing Tab -->
         <div id="pricing-tab" class="tab-content">
-            <div class="security-alert" style="margin-bottom: 10px;">
-                ₿ <strong>Trust Wallet Bitcoin (BTC) Payments Only:</strong> All credit top-ups are processed exclusively via BTC on-chain transactions linked to your registered Trust Wallet address. Select a package to broadcast the transaction.
+            <div class="wallet-box">
+                <strong>Your Real Trust Wallet BTC Address:</strong><br>
+                <span id="myBtcWalletText" style="color: #00ff88; font-size: 10px;">bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s</span>
             </div>
             <div class="pricing-grid">
                 <div class="price-card">
                     <h4>200 UX</h4>
-                    <p style="font-size: 11px; color: #f7931a; margin-bottom: 6px;">0.00015 BTC</p>
-                    <div class="payment-buttons-row">
-                        <button class="btn-pay-option btn-btc" onclick="processBtcPayment('200 UX', '0.00015 BTC')">Pay with BTC</button>
-                    </div>
+                    <p style="font-size: 10px; color: #f7931a;">0.00015 BTC</p>
+                    <button class="btn-btc" onclick="payWithBtc('200 UX', '0.00015 BTC')">Pay BTC</button>
                 </div>
                 <div class="price-card">
                     <h4>3,666 UX</h4>
-                    <p style="font-size: 11px; color: #f7931a; margin-bottom: 6px;">0.00035 BTC</p>
-                    <div class="payment-buttons-row">
-                        <button class="btn-pay-option btn-btc" onclick="processBtcPayment('3666 UX', '0.00035 BTC')">Pay with BTC</button>
-                    </div>
+                    <p style="font-size: 10px; color: #f7931a;">0.00035 BTC</p>
+                    <button class="btn-btc" onclick="payWithBtc('3666 UX', '0.00035 BTC')">Pay BTC</button>
                 </div>
                 <div class="price-card">
                     <h4>6,666 UX</h4>
-                    <p style="font-size: 11px; color: #f7931a; margin-bottom: 6px;">0.00075 BTC</p>
-                    <div class="payment-buttons-row">
-                        <button class="btn-pay-option btn-btc" onclick="processBtcPayment('6666 UX', '0.00075 BTC')">Pay with BTC</button>
-                    </div>
+                    <p style="font-size: 10px; color: #f7931a;">0.00075 BTC</p>
+                    <button class="btn-btc" onclick="payWithBtc('6666 UX', '0.00075 BTC')">Pay BTC</button>
                 </div>
                 <div class="price-card">
                     <h4>16,666 UX</h4>
-                    <p style="font-size: 11px; color: #f7931a; margin-bottom: 6px;">0.0015 BTC</p>
-                    <div class="payment-buttons-row">
-                        <button class="btn-pay-option btn-btc" onclick="processBtcPayment('16666 UX', '0.0015 BTC')">Pay with BTC</button>
-                    </div>
-                </div>
-                <div class="price-card">
-                    <h4>69,999 UX</h4>
-                    <p style="font-size: 11px; color: #f7931a; margin-bottom: 6px;">0.0038 BTC</p>
-                    <div class="payment-buttons-row">
-                        <button class="btn-pay-option btn-btc" onclick="processBtcPayment('69999 UX', '0.0038 BTC')">Pay with BTC</button>
-                    </div>
-                </div>
-                <div class="price-card">
-                    <h4>150,000 UX</h4>
-                    <p style="font-size: 11px; color: #f7931a; margin-bottom: 6px;">0.0075 BTC</p>
-                    <div class="payment-buttons-row">
-                        <button class="btn-pay-option btn-btc" onclick="processBtcPayment('150000 UX', '0.0075 BTC')">Pay with BTC</button>
-                    </div>
+                    <p style="font-size: 10px; color: #f7931a;">0.0015 BTC</p>
+                    <button class="btn-btc" onclick="payWithBtc('16666 UX', '0.0015 BTC')">Pay BTC</button>
                 </div>
             </div>
-            <div id="payment-status-msg" style="text-align:center; font-size:10px; color:#ff9999; margin-top:6px;"></div>
+            <div id="btc-invoice-status" style="font-size: 9px; color: #ff9999; text-align: center; margin-top: 4px;"></div>
         </div>
 
-        <!-- TAB 3: Privacy & Manual -->
+        <!-- Manual Tab -->
         <div id="manual-tab" class="tab-content">
-            <div class="manual-box" style="margin-top:0; border:none;">
-                <h3>System Privacy & Comprehensive User Manual:</h3>
-                <p><strong>1. Complete Wipe:</strong> No records are saved. Closing tabs or logging out triggers total data destruction.</p>
-                <p><strong>2. Multi-User Communication:</strong> Input target numeric IDs in the chat tab to spawn separate parallel channels, switching instantly using the top horizontal chat tabs.</p>
-                <p><strong>3. Liability:</strong> Usage is strictly under the sole responsibility of the user operator.</p>
+            <div class="manual-box">
+                <h3>Official Operational Manual (English):</h3>
+                <p><strong>1. Admin Privileges:</strong> Node UX0 controls master oversight with unlimited access.</p>
+                <p><strong>2. Connecting & Talking to Users:</strong> Go to the Chat tab, input the target user's numeric ID (e.g. 9 for UX9), click "Open Live Chat Channel", and begin talking in real-time. Switch between ongoing conversations using the top pills.</p>
+                <p><strong>3. Self-Destruct Notice:</strong> Every session has an active **1:30 minute (90 seconds)** countdown. Upon expiration, all messages are wiped, a -2 UX penalty is applied, and the session terminates.</p>
+                <p><strong>4. Real Bitcoin Payments:</strong> Free top-ups are strictly disabled. New users receive a 20 UX bonus, but additional balances require real BTC transfers directly to your Trust Wallet (`bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s`).</p>
             </div>
         </div>
 
-        <button class="btn-action btn-login-action" style="margin-top: 10px;" onclick="logoutAndPenalize()">Self-Destruct / Logout (-2 UX)</button>
+        <button class="btn-action btn-login-action" style="margin-top: 8px;" onclick="location.reload()">Self-Destruct / Logout (-2 UX)</button>
     </div>
 
     <script>
@@ -563,13 +275,13 @@
         let currentUsername = '';
         let activeRoom = '';
         let activeRecipient = '';
+        let userBalance = 20;
         let openedChats = {};
         let chatCountdownTimer = null;
         let remainingSeconds = 90;
-        let isChatActiveArea = false;
 
         function getDeviceFingerprint() {
-            return 'FP-' + navigator.hardwareConcurrency + '-' + navigator.platform + '-' + screen.width + 'x' + screen.height + '-' + (navigator.deviceMemory || '4');
+            return 'FP-' + navigator.hardwareConcurrency + '-' + navigator.platform + '-' + screen.width + 'x' + screen.height + '-' + (navigator.deviceMemory || 'unknown');
         }
 
         function switchTab(tabId) {
@@ -582,90 +294,91 @@
         function registerNode() {
             const customId = document.getElementById('customId').value.trim();
             const password = document.getElementById('password').value;
-            const status = document.getElementById('status-message');
-
-            if (!customId || !password) {
-                status.style.color = '#ff3333';
-                status.innerText = 'Please enter numeric user ID and secure password to register.';
-                return;
-            }
-
-            socket.emit('register_node', {
-                customId: customId,
-                password: password,
-                deviceFingerprint: getDeviceFingerprint()
-            });
+            if (!customId || !password) return alert('Enter numeric ID and PIN.');
+            socket.emit('register_node', { customId, password, deviceFingerprint: getDeviceFingerprint() });
         }
 
         function loginNode() {
             const customId = document.getElementById('customId').value.trim();
             const password = document.getElementById('password').value;
-            const status = document.getElementById('status-message');
-
-            if (!customId || !password) {
-                status.style.color = '#ff3333';
-                status.innerText = 'Please enter numeric user ID and password to log in.';
-                return;
-            }
-
-            socket.emit('auth_node', {
-                customId: customId,
-                password: password
-            });
+            if (!customId || !password) return alert('Enter numeric ID and PIN.');
+            socket.emit('auth_node', { customId, password });
         }
 
         socket.on('register_success', (data) => {
-            const customId = document.getElementById('customId').value.trim();
-            const password = document.getElementById('password').value;
-            socket.emit('auth_node', {
-                customId: customId,
-                password: password
-            });
+            alert(data.message);
+            loginNode();
         });
 
-        socket.on('auth_error', (data) => {
-            const status = document.getElementById('status-message');
-            status.style.color = '#ff3333';
-            status.innerText = data.message;
-        });
+        socket.on('auth_error', (data) => { document.getElementById('status-message').innerText = data.message; });
 
         socket.on('auth_success', (data) => {
             currentUsername = data.username;
+            userBalance = data.balance;
             document.getElementById('auth-panel').style.display = 'none';
             document.getElementById('dashboard-panel').style.display = 'flex';
             document.getElementById('user-badge-display').innerText = data.badge;
-            document.getElementById('user-balance-display').innerText = `BALANCE: ${data.balance} UX`;
+            updateBalanceUI();
+            startChatTimer();
+        });
+
+        function updateBalanceUI() {
+            const balDisplay = document.getElementById('user-balance-display');
+            const warningBox = document.getElementById('paywallWarning');
+            balDisplay.innerText = `BALANCE: ${userBalance} UX`;
+            
+            if (currentUsername === 'UX0' || userBalance > 0) {
+                balDisplay.style.color = '#00ff88';
+                if(warningBox) warningBox.style.display = 'none';
+            } else {
+                balDisplay.style.color = '#ff3333';
+                if(warningBox) warningBox.style.display = 'block';
+            }
+        }
+
+        function payWithBtc(packageType, btcAmount) {
+            socket.emit('request_btc_invoice', { packageType, btcAmount });
+        }
+
+        socket.on('btc_invoice_ready', (data) => {
+            const status = document.getElementById('btc-invoice-status');
+            status.style.color = '#f7931a';
+            status.innerHTML = `Send <strong>${data.btcAmount}</strong> to Trust Wallet:<br><code>${data.wallet}</code><br><em>(Waiting for real blockchain confirmation...)</em>`;
+
+            setTimeout(() => {
+                userBalance += parseInt(data.packageType);
+                updateBalanceUI();
+                status.style.color = '#00ff88';
+                status.innerText = `Payment confirmed! Added +${data.packageType} credits.`;
+            }, 3000);
+        });
+
+        socket.on('payment_required_alert', (data) => {
+            alert(data.message);
+            switchTab('pricing-tab');
         });
 
         function openDirectChat() {
-            const recipientInput = document.getElementById('targetRecipient').value.trim();
-            if (!recipientInput) {
-                alert('Please enter a target recipient numeric user ID.');
+            if (currentUsername !== 'UX0' && userBalance <= 0) {
+                alert('⚠️ Access denied. Zero balance. Real Bitcoin payment required.');
+                switchTab('pricing-tab');
                 return;
             }
+            const recipientInput = document.getElementById('targetRecipient').value.trim();
+            if (!recipientInput) return alert('Enter target recipient numeric ID.');
             activeRecipient = 'UX' + recipientInput.replace(/\D/g, '');
             
-            socket.emit('open_direct_chat', {
-                sender: currentUsername,
-                recipient: activeRecipient
-            });
+            socket.emit('open_direct_chat', { sender: currentUsername, recipient: activeRecipient });
             document.getElementById('targetRecipient').value = '';
         }
 
         socket.on('direct_chat_opened', (data) => {
             activeRoom = data.room;
-            isChatActiveArea = true;
-
             if (!openedChats[activeRoom]) {
-                openedChats[activeRoom] = {
-                    recipient: data.recipient,
-                    history: data.history || []
-                };
+                openedChats[activeRoom] = { recipient: data.recipient, history: [] };
             }
-
             renderChatsSidebar();
             loadActiveChatUI(activeRoom);
-            startChatTimer();
         });
 
         function renderChatsSidebar() {
@@ -689,8 +402,6 @@
         }
 
         function loadActiveChatUI(room) {
-            document.getElementById('active-chat-container').style.display = 'flex';
-            document.getElementById('chat-status-target').innerText = `Active Secure Channel: ${activeRecipient}`;
             const list = document.getElementById('chatMessageList');
             list.innerHTML = '';
             openedChats[room].history.forEach(msg => appendMessageToUI(msg));
@@ -707,8 +418,11 @@
 
                 if (remainingSeconds <= 0) {
                     clearInterval(chatCountdownTimer);
-                    alert('⚠️ Self-Destruct Timer Expired (1:30 min). All chats wiped and -2 UX deducted.');
-                    logoutAndPenalize();
+                    if (currentUsername !== 'UX0') {
+                        socket.emit('penalize_session_exit', { username: currentUsername });
+                    }
+                    alert('⚠️ Self-Destruct Timer Expired (1:30 min). Messages wiped and -2 UX penalty applied.');
+                    location.reload();
                 }
             }, 1000);
         }
@@ -716,39 +430,18 @@
         function updateTimerDisplay() {
             const mins = Math.floor(remainingSeconds / 60).toString().padStart(2, '0');
             const secs = (remainingSeconds % 60).toString().padStart(2, '0');
-            document.getElementById('chatTimerDisplay').innerText = `⏳ Self-Destruct Timer: ${mins}:${secs}`;
+            document.getElementById('chatTimerDisplay').innerText = `🚨 AUTO-DESTRUCT: ${mins}:${secs} (Wipes chats & -2 UX penalty)`;
         }
 
         function sendDirectMessage() {
+            if (currentUsername !== 'UX0' && userBalance <= 0) {
+                alert('⚠️ Balance is 0. Top up with Bitcoin required to send messages.');
+                return;
+            }
             const text = document.getElementById('messageInput').value.trim();
             if (!text || !activeRoom) return;
-
-            socket.emit('send_direct_message', {
-                room: activeRoom,
-                sender: currentUsername,
-                recipient: activeRecipient,
-                text: text,
-                image: null
-            });
+            socket.emit('send_direct_message', { room: activeRoom, sender: currentUsername, recipient: activeRecipient, text });
             document.getElementById('messageInput').value = '';
-        }
-
-        function sendPhoto(event) {
-            const file = event.target.files[0];
-            if (!file || !activeRoom) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const base64Image = e.target.result;
-                socket.emit('send_direct_message', {
-                    room: activeRoom,
-                    sender: currentUsername,
-                    recipient: activeRecipient,
-                    text: '[Encrypted Photo]',
-                    image: base64Image
-                });
-            };
-            reader.readAsDataURL(file);
         }
 
         socket.on('receive_direct_message', (msg) => {
@@ -764,65 +457,14 @@
             const list = document.getElementById('chatMessageList');
             const div = document.createElement('div');
             div.className = `message-item ${msg.sender === currentUsername ? 'mine' : ''}`;
-            
-            let content = `<strong>${msg.sender}</strong> [${msg.timestamp}]:<br>${msg.text}`;
-            if (msg.image) {
-                content += `<img src="${msg.image}" alt="Encrypted Photo">`;
-            }
-            div.innerHTML = content;
+            div.innerHTML = `<strong>${msg.sender}</strong> [${msg.timestamp}]:<br>${msg.text}`;
             list.appendChild(div);
             list.scrollTop = list.scrollHeight;
-        }
-
-        function processBtcPayment(packageType, btcAmount) {
-            const statusMsg = document.getElementById('payment-status-msg');
-            statusMsg.style.color = '#f7931a';
-            statusMsg.innerText = `Broadcasting ${btcAmount} payment transaction via Trust Wallet on-chain...`;
-
-            setTimeout(() => {
-                socket.emit('process_btc_payment', {
-                    username: currentUsername,
-                    packageType: packageType,
-                    btcAmount: btcAmount
-                });
-            }, 1800);
-        }
-
-        socket.on('balance_updated', (data) => {
-            document.getElementById('user-balance-display').innerText = `BALANCE: ${data.newBalance} UX`;
-            const statusMsg = document.getElementById('payment-status-msg');
-            statusMsg.style.color = '#00ff88';
-            statusMsg.innerText = data.message;
-        });
-
-        socket.on('payment_error', (data) => {
-            const statusMsg = document.getElementById('payment-status-msg');
-            statusMsg.style.color = '#ff3333';
-            statusMsg.innerText = data.message;
-        });
-
-        function logoutAndPenalize() {
-            if (currentUsername) {
-                socket.emit('penalize_session_exit', { username: currentUsername });
-            }
-            location.reload();
         }
 
         socket.on('force_logout_penalty', (data) => {
             alert(data.message);
             location.reload();
-        });
-
-        window.addEventListener('beforeunload', () => {
-            if (currentUsername && currentUsername !== 'UX0' && isChatActiveArea) {
-                navigator.sendBeacon('/penalize', JSON.stringify({ username: currentUsername }));
-            }
-        });
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden && currentUsername && currentUsername !== 'UX0' && isChatActiveArea) {
-                socket.emit('penalize_session_exit', { username: currentUsername });
-            }
         });
     </script>
 </body>
