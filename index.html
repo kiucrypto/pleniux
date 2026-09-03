@@ -27,15 +27,59 @@
             padding: 15px;
         }
 
-        .neon-dots-bg {
+        /* FONDO DINÁMICO: Planeta en rotación, estrellas titilantes y puntos rojos de neón en movimiento */
+        .space-bg {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100dvh;
+            background: radial-gradient(circle at center, #1a0005 0%, #000000 100%);
+            z-index: 1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        /* Estrellas titilantes */
+        .stars {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
-                radial-gradient(circle, rgba(255, 0, 0, 0.8) 2px, transparent 2px),
-                radial-gradient(circle, rgba(255, 0, 0, 0.4) 1px, transparent 1px);
-            background-size: 50px 50px;
-            background-position: 0 0, 25px 25px;
-            z-index: 1; pointer-events: none;
+                radial-gradient(white 1px, transparent 1px),
+                radial-gradient(rgba(255,255,255,0.8) 1.5px, transparent 1.5px);
+            background-size: 150px 150px, 200px 200px;
+            background-position: 0 0, 50px 50px;
+            animation: twinkle 4s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.4; }
+            100% { opacity: 0.9; }
+        }
+
+        /* Puntos rojos de neón en movimiento */
+        .neon-dots-moving {
+            position: absolute;
+            top: 0; left: 0; width: 200%; height: 200%;
+            background-image: radial-gradient(circle, rgba(255, 0, 0, 0.9) 2px, transparent 2px);
+            background-size: 60px 60px;
+            animation: moveDots 20s linear infinite;
+        }
+        @keyframes moveDots {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-50px, -50px); }
+        }
+
+        /* Planeta en movimiento / rotación de fondo */
+        .planet {
+            position: absolute;
+            bottom: -150px; right: -150px;
+            width: 450px; height: 450px;
+            background: radial-gradient(circle at 30% 30%, #ff1a1a 0%, #660000 50%, #110000 100%);
+            border-radius: 50%;
+            box-shadow: inset -30px -30px 60px rgba(0,0,0,0.9), 0 0 40px rgba(255, 0, 0, 0.4);
+            animation: rotatePlanet 40s linear infinite;
+            opacity: 0.6;
+        }
+        @keyframes rotatePlanet {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .gateway-container {
@@ -43,9 +87,9 @@
             z-index: 10;
             width: 100%;
             max-width: 600px;
-            background: rgba(10, 10, 10, 0.99);
+            background: rgba(10, 10, 10, 0.95);
             border: 2px solid #ff0000;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.6);
             border-radius: 10px;
             padding: 15px;
             display: flex;
@@ -57,7 +101,7 @@
             font-size: 24px;
             font-weight: bold;
             color: #ff3333;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
             margin-bottom: 2px;
             letter-spacing: 2px;
         }
@@ -71,7 +115,7 @@
         }
 
         .warning-box {
-            background: rgba(255, 0, 0, 0.2);
+            background: rgba(255, 0, 0, 0.25);
             border: 1px solid #ff0000;
             padding: 8px;
             font-size: 10px;
@@ -82,6 +126,18 @@
             font-weight: bold;
             line-height: 1.3;
         }
+
+        /* Pestañas de separación estricta para Registro e Inicio de Sesión */
+        .auth-switch-tabs {
+            display: flex; gap: 5px; margin-bottom: 10px;
+        }
+        .auth-tab-btn {
+            flex: 1; padding: 10px; background: #1a0000; border: 1px solid #660000; color: #ff9999; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 6px; text-align: center; text-transform: uppercase;
+        }
+        .auth-tab-btn.active { background: #cc0000; color: #ffffff; border-color: #ff3333; }
+
+        .auth-form-section { display: none; flex-direction: column; }
+        .auth-form-section.active { display: flex; }
 
         .input-group { margin-bottom: 10px; }
         label { display: block; font-size: 10px; color: #ff6666; margin-bottom: 3px; font-weight: bold; }
@@ -156,34 +212,65 @@
 </head>
 <body>
 
-    <div class="neon-dots-bg"></div>
+    <!-- FONDO ESPACIAL CON PLANETA, ESTRELLAS Y PUNTOS ROJOS NEÓN -->
+    <div class="space-bg">
+        <div class="stars"></div>
+        <div class="neon-dots-moving"></div>
+        <div class="planet"></div>
+    </div>
 
-    <!-- Auth Panel con Privacidad Extrema (Evita guardado de contraseña) -->
+    <!-- Panel de Autenticación con separación estricta y sin guardado de contraseñas -->
     <div class="gateway-container" id="auth-panel">
         <div class="header-title">pleniux.com</div>
-        <div class="header-subtitle">EXTREME PRIVACY SECURE GATEWAY</div>
+        <div class="header-subtitle">SECURE GATEWAY - STRICT REAL PAYMENTS</div>
 
         <div class="warning-box">
-            🚨 ANTI-MULTIACCOUNT ACTIVE: IP & Device tracking enforced. New users get +20 UX bonus. Real Bitcoin deposits required.
+            🚨 STRICT SECURITY: IP & Emulator blocking active. Zero free reloads allowed. Real Bitcoin payments enforced.
         </div>
 
-        <div class="input-group">
-            <label>NUMERIC USER ID (Boss: 0 | Users: 1, 9, etc.)</label>
-            <div class="input-flex">
-                <div class="prefix-box">UX</div>
-                <input type="text" id="customId" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Enter numeric ID">
+        <!-- Pestañas separadas para INICIO DE SESIÓN y CREAR CUENTA -->
+        <div class="auth-switch-tabs">
+            <div class="auth-tab-btn active" id="tabLoginBtn" onclick="switchAuthMode('login')">🔒 Sign In</div>
+            <div class="auth-tab-btn" id="tabRegisterBtn" onclick="switchAuthMode('register')">📝 Create Node</div>
+        </div>
+
+        <!-- SECCIÓN DE INICIO DE SESIÓN -->
+        <div class="auth-form-section active" id="loginSection">
+            <div class="input-group">
+                <label>NODE ID</label>
+                <div class="input-flex">
+                    <div class="prefix-box">UX</div>
+                    <input type="text" id="loginCustomId" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Enter ID (e.g. 0 or 1)">
+                </div>
             </div>
+
+            <div class="input-group">
+                <label>PIN / PASSWORD</label>
+                <input type="password" id="loginPassword" inputmode="numeric" pattern="[0-9]*" autocomplete="new-password" autocapitalize="off" spellcheck="false" placeholder="Enter PIN">
+            </div>
+
+            <button class="btn-action btn-login-action" onclick="loginNode()">Sign In Securely</button>
         </div>
 
-        <div class="input-group">
-            <label>NUMERIC PIN / PASSWORD</label>
-            <input type="password" id="password" inputmode="numeric" pattern="[0-9]*" autocomplete="new-password" autocapitalize="off" spellcheck="false" placeholder="Enter numeric PIN">
+        <!-- SECCIÓN DE CREAR NUEVA CUENTA -->
+        <div class="auth-form-section" id="registerSection">
+            <div class="input-group">
+                <label>CHOOSE NEW NODE ID</label>
+                <div class="input-flex">
+                    <div class="prefix-box">UX</div>
+                    <input type="text" id="regCustomId" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Choose unique ID">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>SET NEW PIN / PASSWORD</label>
+                <input type="password" id="regPassword" inputmode="numeric" pattern="[0-9]*" autocomplete="new-password" autocapitalize="off" spellcheck="false" placeholder="Choose secure PIN">
+            </div>
+
+            <button class="btn-action btn-register-action" onclick="registerNode()">Register Node (+20 UX Bonus)</button>
         </div>
 
-        <button class="btn-action btn-register-action" onclick="registerNode()">Register New Node (+20 UX Bonus)</button>
-        <button class="btn-action btn-login-action" onclick="loginNode()">Secure Login</button>
-
-        <div id="status-message" style="text-align:center; font-size:10px; margin-top:6px; font-weight:bold; color: #ff3333;"></div>
+        <div id="status-message" style="text-align:center; font-size:10px; margin-top:8px; font-weight:bold; color: #ff3333;"></div>
     </div>
 
     <!-- Dashboard Panel -->
@@ -194,9 +281,9 @@
         </div>
 
         <div class="nav-tabs">
-            <div class="tab-btn active" onclick="switchTab('chat-tab')">💬 Live Chat (1:30 Timer)</div>
-            <div class="tab-btn" onclick="switchTab('pricing-tab')">₿ Trust Wallet Pay</div>
-            <div class="tab-btn" onclick="switchTab('manual-tab')">📜 Manual</div>
+            <div class="tab-btn active" onclick="switchDashboardTab('chat-tab')">💬 Live Chat (1:30 Timer)</div>
+            <div class="tab-btn" onclick="switchDashboardTab('pricing-tab')">₿ Trust Wallet Pay</div>
+            <div class="tab-btn" onclick="switchDashboardTab('manual-tab')">📜 Manual</div>
         </div>
 
         <!-- Chat Tab -->
@@ -229,7 +316,7 @@
         <div id="pricing-tab" class="tab-content">
             <div class="wallet-box">
                 <strong>Your Real Trust Wallet BTC Address:</strong><br>
-                <span id="myBtcWalletText" style="color: #00ff88; font-size: 10px;">bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s</span>
+                <span style="color: #00ff88; font-size: 10px;">bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s</span>
             </div>
             <div class="pricing-grid">
                 <div class="price-card">
@@ -254,16 +341,24 @@
                 </div>
             </div>
             <div id="btc-invoice-status" style="font-size: 9px; color: #ff9999; text-align: center; margin-top: 4px;"></div>
+            
+            <!-- Panel exclusivo para Administrador validar pagos reales -->
+            <div id="adminVerificationPanel" style="display:none; margin-top: 10px; background: #150000; border: 1px solid #ff0000; padding: 8px; border-radius: 6px;">
+                <h4 style="color: #ff3333; font-size: 10px; margin-bottom: 4px;">👑 ADMIN VERIFICATION PANEL (Trust Wallet Sync)</h4>
+                <input type="text" id="adminTargetUser" placeholder="Target user (e.g. UX9)" style="width:100%; background:#050505; border:1px solid #440000; color:#fff; padding:6px; font-size:10px; margin-bottom:4px;">
+                <input type="text" id="adminAmountToAdd" placeholder="UX Amount to credit" style="width:100%; background:#050505; border:1px solid #440000; color:#fff; padding:6px; font-size:10px; margin-bottom:4px;">
+                <button class="btn-action btn-register-action" style="margin-top:2px; padding:6px;" onclick="adminConfirmPayment()">Verify & Credit Balance</button>
+            </div>
         </div>
 
         <!-- Manual Tab -->
         <div id="manual-tab" class="tab-content">
             <div class="manual-box">
                 <h3>Official Operational Manual (English):</h3>
-                <p><strong>1. Admin Privileges:</strong> Node UX0 controls master oversight with unlimited access.</p>
-                <p><strong>2. Connecting & Talking to Users:</strong> Go to the Chat tab, input the target user's numeric ID (e.g. 9 for UX9), click "Open Live Chat Channel", and begin talking in real-time. Switch between ongoing conversations using the top pills.</p>
-                <p><strong>3. Self-Destruct Notice:</strong> Every session has an active **1:30 minute (90 seconds)** countdown. Upon expiration, all messages are wiped, a -2 UX penalty is applied, and the session terminates.</p>
-                <p><strong>4. Real Bitcoin Payments:</strong> Free top-ups are strictly disabled. New users receive a 20 UX bonus, but additional balances require real BTC transfers directly to your Trust Wallet (`bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s`).</p>
+                <p><strong>1. Admin Privileges:</strong> Node UX0 controls master oversight and verifies incoming real Bitcoin payments.</p>
+                <p><strong>2. Connecting & Talking to Users:</strong> Go to the Chat tab, input target user's numeric ID (e.g. 9 for UX9), click "Open Live Chat Channel", and talk in real-time.</p>
+                <p><strong>3. Self-Destruct Notice:</strong> Every session has an active **1:30 minute** countdown. Upon expiration, messages wipe, a -2 UX penalty is applied, and session terminates.</p>
+                <p><strong>4. Strict Real Payments:</strong> Free reloads are completely blocked. Balances update only after real BTC is confirmed in your Trust Wallet (`bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s`).</p>
             </div>
         </div>
 
@@ -284,7 +379,23 @@
             return 'FP-' + navigator.hardwareConcurrency + '-' + navigator.platform + '-' + screen.width + 'x' + screen.height + '-' + (navigator.deviceMemory || 'unknown');
         }
 
-        function switchTab(tabId) {
+        function switchAuthMode(mode) {
+            document.getElementById('loginSection').classList.remove('active');
+            document.getElementById('registerSection').classList.remove('active');
+            document.getElementById('tabLoginBtn').classList.remove('active');
+            document.getElementById('tabRegisterBtn').classList.remove('active');
+
+            if (mode === 'login') {
+                document.getElementById('loginSection').classList.add('active');
+                document.getElementById('tabLoginBtn').classList.add('active');
+            } else {
+                document.getElementById('registerSection').classList.add('active');
+                document.getElementById('tabRegisterBtn').classList.add('active');
+            }
+            document.getElementById('status-message').innerText = '';
+        }
+
+        function switchDashboardTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
@@ -292,22 +403,22 @@
         }
 
         function registerNode() {
-            const customId = document.getElementById('customId').value.trim();
-            const password = document.getElementById('password').value;
+            const customId = document.getElementById('regCustomId').value.trim();
+            const password = document.getElementById('regPassword').value;
             if (!customId || !password) return alert('Enter numeric ID and PIN.');
             socket.emit('register_node', { customId, password, deviceFingerprint: getDeviceFingerprint() });
         }
 
         function loginNode() {
-            const customId = document.getElementById('customId').value.trim();
-            const password = document.getElementById('password').value;
+            const customId = document.getElementById('loginCustomId').value.trim();
+            const password = document.getElementById('loginPassword').value;
             if (!customId || !password) return alert('Enter numeric ID and PIN.');
             socket.emit('auth_node', { customId, password });
         }
 
         socket.on('register_success', (data) => {
             alert(data.message);
-            loginNode();
+            switchAuthMode('login');
         });
 
         socket.on('auth_error', (data) => { document.getElementById('status-message').innerText = data.message; });
@@ -318,6 +429,11 @@
             document.getElementById('auth-panel').style.display = 'none';
             document.getElementById('dashboard-panel').style.display = 'flex';
             document.getElementById('user-badge-display').innerText = data.badge;
+            
+            if (data.isAdmin) {
+                document.getElementById('adminVerificationPanel').style.display = 'block';
+            }
+
             updateBalanceUI();
             startChatTimer();
         });
@@ -337,31 +453,44 @@
         }
 
         function payWithBtc(packageType, btcAmount) {
-            socket.emit('request_btc_invoice', { packageType, btcAmount });
+            socket.emit('request_btc_invoice', { username: currentUsername, packageType, btcAmount });
         }
 
         socket.on('btc_invoice_ready', (data) => {
             const status = document.getElementById('btc-invoice-status');
             status.style.color = '#f7931a';
-            status.innerHTML = `Send <strong>${data.btcAmount}</strong> to Trust Wallet:<br><code>${data.wallet}</code><br><em>(Waiting for real blockchain confirmation...)</em>`;
-
-            setTimeout(() => {
-                userBalance += parseInt(data.packageType);
-                updateBalanceUI();
-                status.style.color = '#00ff88';
-                status.innerText = `Payment confirmed! Added +${data.packageType} credits.`;
-            }, 3000);
+            status.innerHTML = `Send <strong>${data.btcAmount}</strong> to Trust Wallet:<br><code>${data.wallet}</code><br><em>🔒 Strict Payment Policy: Free reloads disabled. Awaiting real blockchain verification by admin.</em>`;
         });
+
+        socket.on('balance_updated', (data) => {
+            if (data.username === currentUsername) {
+                userBalance = data.newBalance;
+                updateBalanceUI();
+                alert(`✅ Payment verified! Your balance has been updated to ${userBalance} UX.`);
+            }
+        });
+
+        function adminConfirmPayment() {
+            const targetUser = 'UX' + document.getElementById('adminTargetUser').value.replace(/^UX/i, '').trim();
+            const amountToAdd = document.getElementById('adminAmountToAdd').value.trim();
+            const adminPassword = '197126'; // PIN de UX0
+
+            if (!targetUser || !amountToAdd) return alert('Enter target user and amount.');
+            socket.emit('admin_verify_and_credit', { adminPassword, targetUser, packageType: 'CUSTOM', amountToAdd });
+        }
+
+        socket.on('admin_action_success', (data) => { alert(data.message); });
+        socket.on('admin_action_error', (data) => { alert(data.message); });
 
         socket.on('payment_required_alert', (data) => {
             alert(data.message);
-            switchTab('pricing-tab');
+            switchDashboardTab('pricing-tab');
         });
 
         function openDirectChat() {
             if (currentUsername !== 'UX0' && userBalance <= 0) {
                 alert('⚠️ Access denied. Zero balance. Real Bitcoin payment required.');
-                switchTab('pricing-tab');
+                switchDashboardTab('pricing-tab');
                 return;
             }
             const recipientInput = document.getElementById('targetRecipient').value.trim();
