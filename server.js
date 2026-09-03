@@ -10,7 +10,6 @@ const io = new Server(server, { maxHttpBufferSize: 10 * 1024 * 1024 });
 
 app.set('trust proxy', true);
 
-// Sirve tu index.html original exactamente como lo diseñaste
 app.use(express.static(path.join(__dirname)));
 
 app.get('*', (req, res) => {
@@ -26,7 +25,6 @@ const privateMessageHistory = {};
 
 const FOUNDER_BTC_ADDRESS = 'bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s';
 
-// Limpieza automática por inactividad
 setInterval(() => {
   const now = Date.now();
   const THREE_DAYS = 3 * 24 * 60 * 60 * 1000;
@@ -95,7 +93,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // REGISTRO SEGURO CON BONO DE 20 UX Y BLOQUEO DURO DE IP/HARDWARE
   socket.on('register_node', (data) => {
     let { customId, password, deviceFingerprint } = data;
     
@@ -197,7 +194,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // VERIFICACIÓN DE PAGOS BLOCKCHAIN CON LOS NUEVOS PAQUETES
   socket.on('verify_btc_payment', (data) => {
     let { username, packageType } = data;
     if (!username || userBalances[username] === undefined) {
