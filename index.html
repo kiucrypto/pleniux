@@ -66,13 +66,15 @@
             position: relative;
             z-index: 10;
             width: 100%;
-            max-width: 480px;
-            background: rgba(10, 10, 10, 0.9);
+            max-width: 520px;
+            background: rgba(10, 10, 10, 0.92);
             border: 2px solid #ff0000;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
             border-radius: 12px;
             padding: 25px;
             margin: 20px;
+            max-height: 95vh;
+            overflow-y: auto;
         }
 
         .header-title {
@@ -88,7 +90,7 @@
             text-align: center;
             font-size: 12px;
             color: #ff9999;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             letter-spacing: 1px;
         }
 
@@ -98,19 +100,19 @@
             padding: 10px;
             font-size: 11px;
             color: #ffcccc;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             line-height: 1.4;
         }
 
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         label {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             color: #ff6666;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             font-weight: bold;
         }
 
@@ -126,7 +128,7 @@
         .prefix-box {
             background: #220000;
             color: #ff3333;
-            padding: 12px 15px;
+            padding: 10px 12px;
             font-weight: bold;
             border-right: 1px solid #440000;
         }
@@ -137,18 +139,12 @@
             border: none;
             outline: none;
             color: #ffffff;
-            padding: 12px;
-            font-size: 14px;
+            padding: 10px;
+            font-size: 13px;
         }
 
-        .btn-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        button {
-            flex: 1;
+        .btn-action {
+            width: 100%;
             padding: 12px;
             border: none;
             border-radius: 6px;
@@ -157,57 +153,123 @@
             transition: 0.3s;
             text-transform: uppercase;
             font-size: 12px;
+            margin-top: 8px;
         }
 
-        .btn-register {
+        .btn-register-action {
             background: #00aa55;
             color: #ffffff;
         }
+        .btn-register-action:hover { background: #00cc66; }
 
-        .btn-register:hover {
-            background: #00cc66;
-            box-shadow: 0 0 10px rgba(0, 170, 85, 0.6);
-        }
-
-        .btn-login {
+        .btn-login-action {
             background: #cc0000;
             color: #ffffff;
         }
+        .btn-login-action:hover { background: #ff0000; }
 
-        .btn-login:hover {
-            background: #ff0000;
-            box-shadow: 0 0 10px rgba(204, 0, 0, 0.6);
+        .terms-box {
+            font-size: 10px;
+            color: #aaaaaa;
+            margin-top: 15px;
+            border-top: 1px dashed #440000;
+            padding-top: 10px;
+            line-height: 1.4;
         }
 
         .manual-box {
-            margin-top: 25px;
+            margin-top: 15px;
             border-top: 1px dashed #440000;
-            padding-top: 15px;
-            font-size: 11px;
+            padding-top: 10px;
+            font-size: 10px;
             color: #cccccc;
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         .manual-box h3 {
             color: #ff4444;
-            font-size: 12px;
-            margin-bottom: 5px;
+            font-size: 11px;
+            margin-bottom: 4px;
         }
 
         #status-message {
-            margin-top: 15px;
+            margin-top: 10px;
             text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* Dashboard / Chat styles */
+        .dashboard-view {
+            display: none;
+        }
+
+        .user-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1a0000;
+            border: 1px solid #ff0000;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
             font-size: 12px;
+        }
+
+        .chat-box {
+            background: #050505;
+            border: 1px solid #330000;
+            border-radius: 6px;
+            height: 250px;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .message-item {
+            background: #1a1a1a;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            border-left: 3px solid #ff3333;
+        }
+
+        .message-item.mine {
+            border-left-color: #00aa55;
+            text-align: right;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 5px;
+        }
+
+        .chat-input-row input {
+            background: #111;
+            border: 1px solid #440000;
+            border-radius: 4px;
+            color: #fff;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        .btn-send {
+            background: #cc0000;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
             font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <!-- Neon Red Pulsing Dots Background -->
     <div class="neon-dots-bg"></div>
-
-    <!-- Background Watermark -->
     <div class="watermark-bg">PLENIUX.COM</div>
 
     <div class="gateway-container" id="auth-panel">
@@ -215,43 +277,74 @@
         <div class="header-subtitle">⚡ ELITE MAXIMUM SECURITY GATEWAY</div>
 
         <div class="security-alert">
-            🛡️ <strong>Maximum Security Protocol:</strong> New registrations receive an automatic welcome bonus of <strong>+20 UX</strong>. Strict anti-multi-account protection is enabled. Sessions and chats self-destruct upon switching apps, web changes, or timer expiration.
+            🛡️ <strong>Strict Anti-Fraud & Security Protocol:</strong> One account per hardware device & IP. Automatic welcome bonus of <strong>+20 UX</strong>. Sessions self-destruct upon switching web views, exiting, or timer expiration (-2 UX penalty).
         </div>
 
         <div class="input-group">
-            <label>YOUR UX USER NUMBER</label>
+            <label>YOUR UX USER NUMBER (E.g. 101, 777)</label>
             <div class="input-flex">
                 <div class="prefix-box">UX</div>
-                <input type="text" id="customId" placeholder="E.g. 0, 1, 123">
+                <input type="text" id="customId" placeholder="Enter your custom number">
             </div>
         </div>
 
         <div class="input-group">
-            <label>PASSWORD / PRIVATE PIN</label>
-            <input type="password" id="password" placeholder="Secret PIN (E.g. 197126 for UX0)">
+            <label>PRIVATE PASSWORD / PIN</label>
+            <input type="password" id="password" placeholder="Create or enter your secure PIN">
         </div>
 
-        <div class="btn-container">
-            <button class="btn-register" onclick="registerNode()">Register (+20 UX)</button>
-            <button class="btn-login" onclick="loginNode()">Secure Login</button>
-        </div>
+        <button class="btn-action btn-register-action" onclick="registerNode()">Register New Account (+20 UX)</button>
+        <button class="btn-action btn-login-action" onclick="loginNode()">Secure Login & Enter Chat</button>
 
         <div id="status-message"></div>
 
+        <div class="terms-box">
+            <strong>Terms & Conditions:</strong> Unauthorized multi-account creation, bad faith interaction, tampering with encryption, or attempting to bypass security hardware identifiers will result in a permanent network ban and balance forfeiture.
+        </div>
+
         <div class="manual-box">
             <h3>Official Pleniux Connection Manual:</h3>
-            <p><strong>1. Registration & Credit:</strong> Register by entering any user number and PIN. You will instantly receive +20 UX in your balance.</p>
-            <p><strong>2. Direct P2P Chat:</strong> Inside the panel, enter the recipient's exact user number and click Open Direct Chat to send encrypted live messages and photos.</p>
-            <p><strong>3. Security Timer:</strong> Active sessions enforce strict monitoring. Switching apps, leaving the web view, or letting the timer run out deducts <strong>-2 UX</strong> and destroys session data instantly.</p>
+            <p><strong>1. Registration:</strong> Enter your desired number and PIN, then click Register. You will receive +20 UX instantly and enter the system directly.</p>
+            <p><strong>2. Direct P2P Chat:</strong> Enter any other user's exact number (e.g., 5 or UX5) and click Open Chat to exchange encrypted messages and real photos securely.</p>
+            <p><strong>3. Security Notice:</strong> Each device is locked to its specific web instance to protect user integrity and prevent spoofing.</p>
         </div>
+    </div>
+
+    <div class="gateway-container dashboard-view" id="dashboard-panel">
+        <div class="user-panel-header">
+            <span id="user-badge-display">NODE: UX0</span>
+            <span id="user-balance-display">BALANCE: 20 UX</span>
+        </div>
+
+        <div class="input-group">
+            <label>CONNECT WITH TARGET USER (Recipient ID)</label>
+            <div class="input-flex">
+                <div class="prefix-box">UX</div>
+                <input type="text" id="targetRecipient" placeholder="Target User Number (e.g. 0)">
+            </div>
+            <button class="btn-action btn-register-action" style="margin-top: 5px;" onclick="openDirectChat()">Open Encrypted Chat Channel</button>
+        </div>
+
+        <div id="active-chat-container" style="display:none;">
+            <div style="font-size: 11px; color: #00ff88; margin-bottom: 5px;" id="chat-status-target">Secure Channel Active</div>
+            <div class="chat-box" id="chatMessageList"></div>
+            <div class="chat-input-row">
+                <input type="text" id="messageInput" placeholder="Type secure message..." style="flex:1;">
+                <button class="btn-send" onclick="sendDirectMessage()">Send</button>
+            </div>
+        </div>
+
+        <button class="btn-action btn-login-action" style="margin-top: 15px;" onclick="logoutAndPenalize()">Self-Destruct / Logout (-2 UX)</button>
     </div>
 
     <script>
         const socket = io();
+        let currentUsername = '';
+        let activeRoom = '';
+        let activeRecipient = '';
 
-        // Device fingerprint generator for maximum multi-account prevention
         function getDeviceFingerprint() {
-            return 'FP-' + navigator.hardwareConcurrency + '-' + navigator.platform + '-' + screen.width + 'x' + screen.height;
+            return 'FP-' + navigator.hardwareConcurrency + '-' + navigator.platform + '-' + screen.width + 'x' + screen.height + '-' + (navigator.deviceMemory || '4');
         }
 
         function registerNode() {
@@ -261,7 +354,7 @@
 
             if (!customId || !password) {
                 status.style.color = '#ff3333';
-                status.innerText = 'Please enter both your user ID and password.';
+                status.innerText = 'Please enter both your user ID and password to register.';
                 return;
             }
 
@@ -290,9 +383,12 @@
         }
 
         socket.on('register_success', (data) => {
-            const status = document.getElementById('status-message');
-            status.style.color = '#00ff88';
-            status.innerText = data.message;
+            currentUsername = data.username;
+            // Ingresar directamente al panel tras registrarse con éxito
+            socket.emit('auth_node', {
+                customId: currentUsername.replace('UX', ''),
+                password: document.getElementById('password').value
+            });
         });
 
         socket.on('auth_error', (data) => {
@@ -302,18 +398,81 @@
         });
 
         socket.on('auth_success', (data) => {
-            alert(`Authentication Successful!\nRole: ${data.badge}\nBalance: ${data.balance} UX`);
-            // Here you can transition to your dashboard view in subsequent updates.
+            currentUsername = data.username;
+            document.getElementById('auth-panel').style.display = 'none';
+            document.getElementById('dashboard-panel').style.display = 'block';
+            document.getElementById('user-badge-display').innerText = data.badge;
+            document.getElementById('user-balance-display').innerText = `BALANCE: ${data.balance} UX`;
         });
 
-        // Strict penalty detection for app switching, tab changes, or leaving web view
+        function openDirectChat() {
+            const recipientInput = document.getElementById('targetRecipient').value.trim();
+            if (!recipientInput) {
+                alert('Please enter a target recipient user number.');
+                return;
+            }
+            activeRecipient = recipientInput.toUpperCase().startsWith('UX') ? recipientInput.toUpperCase() : 'UX' + recipientInput.replace(/\D/g, '');
+            
+            socket.emit('open_direct_chat', {
+                sender: currentUsername,
+                recipient: activeRecipient
+            });
+        }
+
+        socket.on('direct_chat_opened', (data) => {
+            activeRoom = data.room;
+            document.getElementById('active-chat-container').style.display = 'block';
+            document.getElementById('chat-status-target').innerText = `Secure Channel with: ${data.recipient}`;
+            
+            const list = document.getElementById('chatMessageList');
+            list.innerHTML = '';
+            data.history.forEach(msg => {
+                appendMessageToUI(msg);
+            });
+        });
+
+        function sendDirectMessage() {
+            const text = document.getElementById('messageInput').value.trim();
+            if (!text || !activeRoom) return;
+
+            socket.emit('send_direct_message', {
+                room: activeRoom,
+                sender: currentUsername,
+                recipient: activeRecipient,
+                text: text,
+                image: null
+            });
+            document.getElementById('messageInput').value = '';
+        }
+
+        socket.on('receive_direct_message', (msg) => {
+            appendMessageToUI(msg);
+        });
+
+        function appendMessageToUI(msg) {
+            const list = document.getElementById('chatMessageList');
+            const div = document.createElement('div');
+            div.className = `message-item ${msg.sender === currentUsername ? 'mine' : ''}`;
+            div.innerHTML = `<strong>${msg.sender}</strong> [${msg.timestamp}]:<br>${msg.text}`;
+            list.appendChild(div);
+            list.scrollTop = list.scrollHeight;
+        }
+
+        function logoutAndPenalize() {
+            if (currentUsername) {
+                socket.emit('penalize_session_exit', { username: currentUsername });
+            }
+            location.reload();
+        }
+
+        socket.on('force_logout_penalty', (data) => {
+            alert(data.message);
+            location.reload();
+        });
+
         document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                const customId = document.getElementById('customId').value.trim();
-                if (customId) {
-                    const username = 'UX' + customId.replace(/\D/g, '');
-                    socket.emit('penalize_session_exit', { username: username });
-                }
+            if (document.hidden && currentUsername && currentUsername !== 'UX0') {
+                socket.emit('penalize_session_exit', { username: currentUsername });
             }
         });
     </script>
