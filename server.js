@@ -54,7 +54,7 @@ db.serialize(() => {
     });
 });
 
-// Interfaz con fondo negro y puntos neón cayendo en movimiento fluido
+// Interfaz con fondo negro y puntos neón altamente activos y dinámicos
 app.get('/', (req, res) => {
     res.send(`<!DOCTYPE html>
 <html lang="en">
@@ -329,7 +329,7 @@ app.get('/', (req, res) => {
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        // Animación de Puntos Neón Cayendo (Efecto Fluido en Canvas)
+        // Animación de Puntos Neón Altamente Activos (Mayor velocidad, cantidad y destello)
         const canvas = document.getElementById('neon-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -341,17 +341,18 @@ app.get('/', (req, res) => {
         resizeCanvas();
 
         const drops = [];
-        const numDrops = 60;
-        const colors = ['#38bdf8', '#818cf8', '#4ade80', '#a855f7', '#f43f5e'];
+        const numDrops = 110; // Más cantidad de puntos en pantalla
+        const colors = ['#38bdf8', '#818cf8', '#4ade80', '#a855f7', '#f43f5e', '#facc15', '#06b6d4'];
 
         for (let i = 0; i < numDrops; i++) {
             drops.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                radius: Math.random() * 2 + 1,
-                speed: Math.random() * 2 + 1.5,
+                radius: Math.random() * 2.5 + 0.8, // Tamaños variados
+                speed: Math.random() * 4 + 2.5,    // Mayor velocidad de caída
                 color: colors[Math.floor(Math.random() * colors.length)],
-                alpha: Math.random() * 0.7 + 0.3
+                alpha: Math.random() * 0.8 + 0.2,
+                pulse: Math.random() * 0.05 + 0.01 // Efecto de parpadeo dinámico
             });
         }
 
@@ -363,15 +364,19 @@ app.get('/', (req, res) => {
                 ctx.arc(drop.x, drop.y, drop.radius, 0, Math.PI * 2);
                 ctx.fillStyle = drop.color;
                 ctx.globalAlpha = drop.alpha;
-                ctx.shadowBlur = 8;
+                ctx.shadowBlur = 12; // Brillo neón más intenso
                 ctx.shadowColor = drop.color;
                 ctx.fill();
                 ctx.closePath();
 
+                // Movimiento y parpadeo activo
                 drop.y += drop.speed;
+                drop.alpha += Math.sin(Date.now() * drop.pulse) * 0.02;
+
                 if (drop.y > canvas.height) {
                     drop.y = -10;
                     drop.x = Math.random() * canvas.width;
+                    drop.speed = Math.random() * 4 + 2.5;
                 }
             });
 
