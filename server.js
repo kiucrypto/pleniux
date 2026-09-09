@@ -54,25 +54,26 @@ db.serialize(() => {
     });
 });
 
-// Interfaz con fondo negro y puntos neón altamente activos y dinámicos
+// Interfaz con rediseño visual moderno, tipografía elegante y puntos neón más activos
 app.get('/', (req, res) => {
     res.send(`<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pleniux.com - Secure Ecosystem</title>
+    <title>Pleniux.com - Next-Gen Ecosystem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
         
         body { 
-            background: #000000;
-            color: #f8fafc; 
+            background: #030712;
+            color: #f1f5f9; 
             min-height: 100vh; 
             display: flex; 
             flex-direction: column; 
             justify-content: space-between; 
-            padding: 12px;
+            padding: 16px;
             overflow-x: hidden;
             position: relative;
         }
@@ -90,66 +91,75 @@ app.get('/', (req, res) => {
         .container { 
             position: relative;
             z-index: 1;
-            max-width: 750px; 
-            margin: 10px auto; 
-            padding: 18px; 
-            background: rgba(5, 5, 10, 0.85); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(56, 189, 248, 0.25); 
-            border-radius: 20px; 
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9); 
+            max-width: 800px; 
+            margin: 20px auto; 
+            padding: 24px; 
+            background: rgba(10, 15, 30, 0.75); 
+            backdrop-filter: blur(25px); 
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(56, 189, 248, 0.2); 
+            border-radius: 24px; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.1); 
             width: 100%; 
         }
 
         h1 { 
             text-align: center; 
-            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            background: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #ec4899 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 18px; 
-            font-size: 26px; 
-            font-weight: 900;
-            letter-spacing: 1px; 
+            margin-bottom: 24px; 
+            font-size: 32px; 
+            font-weight: 800;
+            letter-spacing: 1.5px; 
             text-transform: uppercase; 
         }
 
         h2 { 
             color: #38bdf8; 
-            font-size: 15px; 
-            margin-bottom: 8px; 
+            font-size: 16px; 
+            margin-bottom: 12px; 
             font-weight: 700;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .auth-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media(min-width: 550px) { .auth-grid { grid-template-columns: 1fr 1fr; } }
+        .auth-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media(min-width: 600px) { .auth-grid { grid-template-columns: 1fr 1fr; } }
 
         .auth-box, .dashboard-box { 
             display: flex; 
             flex-direction: column; 
-            gap: 10px; 
-            background: rgba(15, 23, 42, 0.6); 
-            padding: 16px; 
-            border-radius: 14px; 
-            border: 1px solid rgba(255, 255, 255, 0.06); 
+            gap: 12px; 
+            background: rgba(15, 23, 42, 0.65); 
+            padding: 20px; 
+            border-radius: 18px; 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
         input, button { 
-            padding: 12px 14px; 
-            border-radius: 10px; 
-            border: 1px solid rgba(51, 65, 85, 0.9); 
-            background: rgba(2, 6, 23, 0.85); 
+            padding: 14px 16px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(51, 65, 85, 0.8); 
+            background: rgba(2, 6, 23, 0.9); 
             color: #fff; 
             font-size: 14px; 
             outline: none; 
-            transition: all 0.2s ease; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
             width: 100%; 
+        }
+
+        input {
+            font-family: 'Outfit', sans-serif;
         }
 
         input:focus { 
             border-color: #38bdf8; 
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25); 
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2); 
+            background: rgba(15, 23, 42, 0.95);
         }
 
         button { 
@@ -157,13 +167,14 @@ app.get('/', (req, res) => {
             cursor: pointer; 
             font-weight: 700; 
             border: none; 
-            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
-            transition: all 0.2s; 
+            box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
+            letter-spacing: 0.5px;
         }
 
         button:hover { 
             background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); 
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5);
         }
 
         button:active { transform: translateY(0); }
@@ -171,54 +182,59 @@ app.get('/', (req, res) => {
         .hidden { display: none !important; }
 
         .wallet-section { 
-            margin-top: 15px; 
-            padding: 16px; 
-            background: rgba(10, 15, 30, 0.9); 
-            border-radius: 14px; 
+            margin-top: 20px; 
+            padding: 20px; 
+            background: rgba(10, 15, 30, 0.85); 
+            border-radius: 18px; 
             border: 1px solid rgba(56, 189, 248, 0.3); 
         }
 
         .crypto-box {
-            background: rgba(2, 6, 23, 0.9);
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 8px;
+            background: rgba(2, 6, 23, 0.95);
+            padding: 12px 14px;
+            border-radius: 10px;
+            margin-bottom: 10px;
             font-size: 12px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             word-break: break-all;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         footer { 
             position: relative;
             z-index: 1;
             text-align: center; 
-            padding: 15px; 
-            font-size: 12px; 
+            padding: 20px; 
+            font-size: 13px; 
             color: #94a3b8; 
-            line-height: 1.5; 
+            line-height: 1.6; 
         }
 
         footer .founder { color: #38bdf8; font-weight: 600; }
 
         .chat-container { 
-            height: 200px; 
-            background: rgba(2, 6, 23, 0.9); 
+            height: 220px; 
+            background: rgba(2, 6, 23, 0.95); 
             border: 1px solid rgba(51, 65, 85, 0.8); 
-            border-radius: 10px; 
+            border-radius: 12px; 
             overflow-y: auto; 
-            padding: 10px; 
-            margin: 6px 0; 
+            padding: 12px; 
+            margin: 8px 0; 
             display: flex; 
             flex-direction: column; 
-            gap: 8px; 
+            gap: 10px; 
             font-size: 13px;
         }
 
         .btn-action {
-            padding: 10px 14px;
+            padding: 10px 16px;
             font-size: 13px;
-            border-radius: 8px;
+            border-radius: 10px;
             width: auto;
+        }
+
+        .dashboard-box {
+            gap: 16px;
         }
     </style>
 </head>
@@ -233,48 +249,48 @@ app.get('/', (req, res) => {
             <div class="auth-grid">
                 <!-- Sign In -->
                 <div class="auth-box">
-                    <h2>Sign In</h2>
+                    <h2>🔐 Sign In</h2>
                     <input type="tel" id="login-ux" placeholder="UX Number" inputmode="numeric" pattern="[0-9]*">
                     <input type="password" id="login-pass" placeholder="Password">
                     <button onclick="intentarLogin()">Enter System</button>
                 </div>
                 <!-- Register -->
                 <div class="auth-box">
-                    <h2>Register (20 UX Bonus)</h2>
+                    <h2>🚀 Register (20 UX Bonus)</h2>
                     <input type="tel" id="reg-ux" placeholder="Desired UX Number" inputmode="numeric" pattern="[0-9]*">
                     <input type="password" id="reg-pass" placeholder="Password">
                     <input type="text" id="reg-nickname" placeholder="Visible Nickname">
-                    <button onclick="intentarRegistro()" style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); box-shadow: 0 4px 14px rgba(22, 163, 74, 0.4);">Create Account</button>
+                    <button onclick="intentarRegistro()" style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); box-shadow: 0 4px 16px rgba(22, 163, 74, 0.4);">Create Account</button>
                 </div>
             </div>
-            <p id="auth-msg" style="text-align: center; color: #f43f5e; margin-top: 12px; font-size: 13px; font-weight: 600;"></p>
+            <p id="auth-msg" style="text-align: center; color: #f43f5e; margin-top: 16px; font-size: 13px; font-weight: 600;"></p>
         </div>
 
         <!-- LIVE DASHBOARD -->
         <div id="dashboard-section" class="hidden dashboard-box">
-            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(30, 41, 59, 0.8); padding: 10px 14px; border-radius: 10px; font-size: 13px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(30, 41, 59, 0.7); padding: 12px 18px; border-radius: 12px; font-size: 13px; border: 1px solid rgba(255,255,255,0.05);">
                 <div>
-                    <span id="user-info-text" style="font-weight: bold; color: #38bdf8;"></span> | 
-                    Balance: <span id="user-balance" style="color: #4ade80; font-weight: bold;">0</span> UX
+                    <span id="user-info-text" style="font-weight: 700; color: #38bdf8;"></span> | 
+                    Balance: <span id="user-balance" style="color: #4ade80; font-weight: 700;">0</span> UX
                 </div>
-                <button onclick="location.reload()" class="btn-action" style="background: #dc2626; box-shadow: none; padding: 6px 10px;">Sign Out</button>
+                <button onclick="location.reload()" class="btn-action" style="background: #dc2626; box-shadow: none; padding: 6px 12px;">Sign Out</button>
             </div>
 
             <!-- Admin Panel (UX 0) -->
-            <div id="admin-panel" class="hidden" style="background: rgba(202, 138, 4, 0.1); border: 1px solid rgba(202, 138, 4, 0.3); padding: 12px; border-radius: 10px;">
-                <h3 style="color: #facc15; margin-bottom: 8px; font-size: 14px;">Admin Panel (UX 0)</h3>
+            <div id="admin-panel" class="hidden" style="background: rgba(202, 138, 4, 0.1); border: 1px solid rgba(202, 138, 4, 0.3); padding: 14px; border-radius: 12px;">
+                <h3 style="color: #facc15; margin-bottom: 8px; font-size: 14px; font-weight: 700;">⚡ Admin Panel (UX 0)</h3>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <input type="tel" id="admin-target-ux" placeholder="Target UX" style="flex: 1; font-size: 13px;" inputmode="numeric">
                     <input type="number" id="admin-amount" placeholder="Amount" style="flex: 1; font-size: 13px;">
                     <button onclick="enviarSaldoAdmin()" class="btn-action" style="background: #ca8a04;">Credit</button>
                 </div>
-                <p id="admin-response" style="font-size: 12px; color: #fde047; margin-top: 6px;"></p>
+                <p id="admin-response" style="font-size: 12px; color: #fde047; margin-top: 8px;"></p>
             </div>
 
             <!-- Real-Time Live Chat -->
             <div>
-                <h2>Live Real-Time Chat</h2>
-                <input type="tel" id="chat-destinatario" placeholder="Recipient UX Number" style="margin-bottom: 6px; font-size: 13px;" inputmode="numeric">
+                <h2>💬 Live Real-Time Chat</h2>
+                <input type="tel" id="chat-destinatario" placeholder="Recipient UX Number" style="margin-bottom: 8px; font-size: 13px;" inputmode="numeric">
                 <div id="chat-mensajes" class="chat-container"></div>
                 <div style="display: flex; gap: 8px; align-items: center;">
                     <input type="text" id="chat-texto" placeholder="Type message..." style="flex: 1; font-size: 13px;" onkeydown="if(event.key==='Enter') enviarMensajeText()">
@@ -286,14 +302,14 @@ app.get('/', (req, res) => {
 
             <!-- 24/7 Permanent Mailbox -->
             <div>
-                <h2>24/7 Permanent Mailbox</h2>
-                <div id="buzon-contenido" style="background: rgba(2, 6, 23, 0.9); padding: 10px; border-radius: 10px; min-height: 50px; font-size: 13px; color: #cbd5e1; max-height: 150px; overflow-y: auto; border: 1px solid rgba(51, 65, 85, 0.8);">No stored messages.</div>
+                <h2>📥 24/7 Permanent Mailbox</h2>
+                <div id="buzon-contenido" style="background: rgba(2, 6, 23, 0.95); padding: 12px; border-radius: 12px; min-height: 60px; font-size: 13px; color: #cbd5e1; max-height: 160px; overflow-y: auto; border: 1px solid rgba(51, 65, 85, 0.8);">No stored messages.</div>
             </div>
 
             <!-- UX Launch Plans & Clear Wallet Info -->
             <div class="wallet-section">
-                <h2>UX Launch Plans & Payment Wallets</h2>
-                <p style="font-size: 12px; margin-bottom: 10px; color: #94a3b8; line-height: 1.5;">
+                <h2>💎 UX Launch Plans & Payment Wallets</h2>
+                <p style="font-size: 12px; margin-bottom: 12px; color: #94a3b8; line-height: 1.5;">
                     Send your payment to one of the addresses below, then forward your receipt to <b style="color: #38bdf8;">po80payments@gmail.com</b>
                 </p>
                 
@@ -310,13 +326,13 @@ app.get('/', (req, res) => {
                     <code>0x4ABCf532fed9D9CFD0d3C4654cDFB56D02cFF21c</code>
                 </div>
 
-                <ul style="font-size: 13px; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px; color: #e2e8f0; margin-top: 12px;">
-                    <li>🔹 1,200 UX - $6.99</li>
-                    <li>🔹 2,500 UX - $13.99</li>
-                    <li>🔹 5,000 UX - $25.99</li>
-                    <li>🔹 10,000 UX - $49.99</li>
-                    <li>🔹 50,000 UX - $199.99</li>
-                    <li>🔹 100,666 UX - $266.99</li>
+                <ul style="font-size: 13px; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; color: #e2e8f0; margin-top: 14px;">
+                    <li style="background: rgba(15,23,42,0.6); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">🔹 1,200 UX - $6.99</li>
+                    <li style="background: rgba(15,23,42,0.6); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">🔹 2,500 UX - $13.99</li>
+                    <li style="background: rgba(15,23,42,0.6); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">🔹 5,000 UX - $25.99</li>
+                    <li style="background: rgba(15,23,42,0.6); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">🔹 10,000 UX - $49.99</li>
+                    <li style="background: rgba(15,23,42,0.6); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">🔹 50,000 UX - $199.99</li>
+                    <li style="background: rgba(15,23,42,0.6); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">🔹 100,666 UX - $266.99</li>
                 </ul>
             </div>
         </div>
@@ -329,7 +345,7 @@ app.get('/', (req, res) => {
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        // Animación de Puntos Neón Altamente Activos (Mayor velocidad, cantidad y destello)
+        // Animación de Puntos Neón Ultra-Activos y Dinámicos
         const canvas = document.getElementById('neon-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -341,18 +357,18 @@ app.get('/', (req, res) => {
         resizeCanvas();
 
         const drops = [];
-        const numDrops = 110; // Más cantidad de puntos en pantalla
-        const colors = ['#38bdf8', '#818cf8', '#4ade80', '#a855f7', '#f43f5e', '#facc15', '#06b6d4'];
+        const numDrops = 130; // Mayor densidad de puntos en movimiento
+        const colors = ['#38bdf8', '#818cf8', '#4ade80', '#a855f7', '#ec4899', '#facc15', '#06b6d4'];
 
         for (let i = 0; i < numDrops; i++) {
             drops.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                radius: Math.random() * 2.5 + 0.8, // Tamaños variados
-                speed: Math.random() * 4 + 2.5,    // Mayor velocidad de caída
+                radius: Math.random() * 2.8 + 1,
+                speed: Math.random() * 4.5 + 2,
                 color: colors[Math.floor(Math.random() * colors.length)],
-                alpha: Math.random() * 0.8 + 0.2,
-                pulse: Math.random() * 0.05 + 0.01 // Efecto de parpadeo dinámico
+                alpha: Math.random() * 0.85 + 0.15,
+                pulse: Math.random() * 0.06 + 0.02
             });
         }
 
@@ -364,19 +380,18 @@ app.get('/', (req, res) => {
                 ctx.arc(drop.x, drop.y, drop.radius, 0, Math.PI * 2);
                 ctx.fillStyle = drop.color;
                 ctx.globalAlpha = drop.alpha;
-                ctx.shadowBlur = 12; // Brillo neón más intenso
+                ctx.shadowBlur = 14; // Brillo neón profundo
                 ctx.shadowColor = drop.color;
                 ctx.fill();
                 ctx.closePath();
 
-                // Movimiento y parpadeo activo
                 drop.y += drop.speed;
-                drop.alpha += Math.sin(Date.now() * drop.pulse) * 0.02;
+                drop.alpha += Math.sin(Date.now() * drop.pulse) * 0.025;
 
                 if (drop.y > canvas.height) {
                     drop.y = -10;
                     drop.x = Math.random() * canvas.width;
-                    drop.speed = Math.random() * 4 + 2.5;
+                    drop.speed = Math.random() * 4.5 + 2;
                 }
             });
 
