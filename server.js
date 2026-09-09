@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const users = new Map(); 
 const sessions = new Map(); 
 
-// Default Founder User (UX 0)
+// Usuario Administrador por defecto (UX 0)
 users.set('0', { password: '197126', nickname: 'Founder (Jhon Gonzales)', balance: 999999, ip: 'admin_system' });
 
 io.on('connection', (socket) => {
@@ -29,7 +29,7 @@ io.on('connection', (socket) => {
             return socket.emit('error_auth', 'Security Block: Multi-account detected from this network.');
         }
 
-        users.set(ux, { password, nickname, balance: 20, ip: clientIp, mailbox: [] });
+        users.set(ux, { password, nickname, balance: 20, ip: clientIp });
         socket.emit('exito_auth', 'Registration successful! 20 UX bonus credited.');
     });
 
