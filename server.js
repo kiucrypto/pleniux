@@ -54,7 +54,7 @@ db.serialize(() => {
     });
 });
 
-// Interfaz con rediseño visual moderno, tipografía elegante y puntos neón más activos
+// Interfaz con rediseño visual moderno, tipografía elegante, puntos neón activos y Manual de Usuario
 app.get('/', (req, res) => {
     res.send(`<!DOCTYPE html>
 <html lang="en">
@@ -181,7 +181,7 @@ app.get('/', (req, res) => {
 
         .hidden { display: none !important; }
 
-        .wallet-section { 
+        .wallet-section, .manual-section { 
             margin-top: 20px; 
             padding: 20px; 
             background: rgba(10, 15, 30, 0.85); 
@@ -236,6 +236,31 @@ app.get('/', (req, res) => {
         .dashboard-box {
             gap: 16px;
         }
+
+        .manual-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        @media(min-width: 600px) {
+            .manual-grid { grid-template-columns: 1fr 1fr; }
+        }
+        .manual-card {
+            background: rgba(2, 6, 23, 0.9);
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+        .manual-card strong {
+            color: #38bdf8;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -264,6 +289,30 @@ app.get('/', (req, res) => {
                 </div>
             </div>
             <p id="auth-msg" style="text-align: center; color: #f43f5e; margin-top: 16px; font-size: 13px; font-weight: 600;"></p>
+
+            <!-- MANUAL DE USUARIO / GUÍA RÁPIDA -->
+            <div class="manual-section">
+                <h2>📖 Pleniux User Manual & Guide</h2>
+                <p style="font-size: 12px; color: #94a3b8; margin-bottom: 8px;">Learn how to navigate and make the most of the next-gen ecosystem:</p>
+                <div class="manual-grid">
+                    <div class="manual-card">
+                        <strong>1. Account & UX Balance</strong>
+                        Registering gives you an initial bonus of <b>20 UX</b>. Your UX number is your unique ID across the ecosystem. Keep your credentials safe.
+                    </div>
+                    <div class="manual-card">
+                        <strong>2. Live Real-Time Chat</strong>
+                        To talk with another user, type their <b>UX Number</b> in the recipient box, write your message or attach an image 📷, and hit send. Communication is instantaneous.
+                    </div>
+                    <div class="manual-card">
+                        <strong>3. 24/7 Permanent Mailbox</strong>
+                        Even if the other user is offline, incoming messages and replies are securely saved in your permanent mailbox so you never lose any communication.
+                    </div>
+                    <div class="manual-card">
+                        <strong>4. Session & Security</strong>
+                        Active sessions consume resources. Closing your session or leaving the platform applies a standard <b>3 UX</b> session fee to protect the network integrity.
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- LIVE DASHBOARD -->
@@ -273,7 +322,7 @@ app.get('/', (req, res) => {
                     <span id="user-info-text" style="font-weight: 700; color: #38bdf8;"></span> | 
                     Balance: <span id="user-balance" style="color: #4ade80; font-weight: 700;">0</span> UX
                 </div>
-                <button onclick="location.reload()" class="btn-action" style="background: #dc2626; box-shadow: none; padding: 6px 12px;">Sign Out</button>
+                <button onclick="cerrarSesionVoluntaria()" class="btn-action" style="background: #dc2626; box-shadow: none; padding: 6px 12px;">Sign Out</button>
             </div>
 
             <!-- Admin Panel (UX 0) -->
@@ -357,7 +406,7 @@ app.get('/', (req, res) => {
         resizeCanvas();
 
         const drops = [];
-        const numDrops = 130; // Mayor densidad de puntos en movimiento
+        const numDrops = 130; 
         const colors = ['#38bdf8', '#818cf8', '#4ade80', '#a855f7', '#ec4899', '#facc15', '#06b6d4'];
 
         for (let i = 0; i < numDrops; i++) {
@@ -380,7 +429,7 @@ app.get('/', (req, res) => {
                 ctx.arc(drop.x, drop.y, drop.radius, 0, Math.PI * 2);
                 ctx.fillStyle = drop.color;
                 ctx.globalAlpha = drop.alpha;
-                ctx.shadowBlur = 14; // Brillo neón profundo
+                ctx.shadowBlur = 14; 
                 ctx.shadowColor = drop.color;
                 ctx.fill();
                 ctx.closePath();
@@ -415,6 +464,11 @@ app.get('/', (req, res) => {
                 ux: document.getElementById('login-ux').value,
                 password: document.getElementById('login-pass').value
             });
+        }
+
+        function cerrarSesionVoluntaria() {
+            socket.emit('cerrar_sesion');
+            location.reload();
         }
 
         socket.on('error_auth', (msg) => { document.getElementById('auth-msg').innerText = msg; });
@@ -558,6 +612,7 @@ app.get('/', (req, res) => {
 });
 
 const activeSessions = new Map();
+const pendingDisconnects = new Map(); // Control para evitar cobros al actualizar la página
 
 io.on('connection', (socket) => {
     const clientIp = socket.handshake.address;
@@ -584,6 +639,12 @@ io.on('connection', (socket) => {
         db.get(`SELECT * FROM users WHERE ux = ? AND password = ?`, [ux, password], (err, user) => {
             if (!user) return socket.emit('error_auth', 'Incorrect UX or password.');
 
+            // Si el usuario ya tenía una desconexión pendiente (por refrescar), la cancelamos para que no cobre doble
+            if (pendingDisconnects.has(ux)) {
+                clearTimeout(pendingDisconnects.get(ux));
+                pendingDisconnects.delete(ux);
+            }
+
             activeSessions.set(socket.id, ux);
             socket.ux = ux;
 
@@ -592,15 +653,38 @@ io.on('connection', (socket) => {
             });
 
             const sessionTimer = setTimeout(() => {
-                db.run(`UPDATE users SET balance = MAX(0, balance - 1) WHERE ux = ?`, [ux], () => {
-                    socket.emit('sesion_expirada', 'Your security comes first: Session closed due to time limit (-1 UX).');
+                db.run(`UPDATE users SET balance = MAX(0, balance - 3) WHERE ux = ?`, [ux], () => {
+                    socket.emit('sesion_expirada', 'Your security comes first: Session closed due to time limit (-3 UX).');
                     socket.disconnect();
                 });
             }, 5 * 60 * 1000);
 
+            socket.on('cerrar_sesion', () => {
+                clearTimeout(sessionTimer);
+                if (activeSessions.has(socket.id)) {
+                    db.run(`UPDATE users SET balance = MAX(0, balance - 3) WHERE ux = ?`, [ux], () => {
+                        console.log(`User ${ux} signed out: -3 UX applied.`);
+                    });
+                    activeSessions.delete(socket.id);
+                }
+            });
+
             socket.on('disconnect', () => {
                 clearTimeout(sessionTimer);
-                activeSessions.delete(socket.id);
+                if (activeSessions.has(socket.id)) {
+                    activeSessions.delete(socket.id);
+                    
+                    // Damos un margen de 3.5 segundos. Si el usuario solo actualizó la página (F5), se reconectará 
+                    // antes de que expire este tiempo y el cobro será cancelado. Si cerró la pestaña, se descontarán los 3 UX.
+                    const disconnectTimer = setTimeout(() => {
+                        db.run(`UPDATE users SET balance = MAX(0, balance - 3) WHERE ux = ?`, [ux], () => {
+                            console.log(`User ${ux} left/closed web: -3 UX applied.`);
+                        });
+                        pendingDisconnects.delete(ux);
+                    }, 3500);
+
+                    pendingDisconnects.set(ux, disconnectTimer);
+                }
             });
 
             socket.emit('login_exitoso', {
