@@ -6,11 +6,13 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    maxHttpBufferSize: 1e7 // Límite seguro de 10MB para transferencia multimedia fluida
+});
 
 app.use(express.json({ limit: '10mb' }));
 
-// Base de datos SQLite persistente en vivo
+// Base de datos SQLite persistente
 const dbPath = path.resolve(__dirname, 'pleniux.db');
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) console.error('Database error:', err.message);
@@ -40,10 +42,11 @@ db.serialize(() => {
         sender TEXT,
         recipient TEXT,
         content TEXT,
+        type TEXT DEFAULT 'texto',
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Administrador principal por defecto (UX 0)
+    // Administrador principal (UX 0)
     db.get(`SELECT * FROM users WHERE ux = '0'`, (err, row) => {
         if (!row) {
             db.run(`INSERT INTO users (ux, password, nickname, balance, ip) VALUES ('0', '197126', 'Founder (Jhon Gonzales)', 999999, 'admin_system')`);
@@ -51,32 +54,160 @@ db.serialize(() => {
     });
 });
 
-// Servir la interfaz limpia y rediseñada desde la raíz
+// Interfaz ultra elegante, moderna y de alto rendimiento adaptada para móviles
 app.get('/', (req, res) => {
     res.send(`<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pleniux.com - High Security Real-Time System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pleniux.com - Secure Ecosystem</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: radial-gradient(circle at center, #0f172a 0%, #020617 100%); color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
-        .container { max-width: 850px; margin: 30px auto; padding: 25px; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.7); width: 92%; }
-        h1 { text-align: center; color: #38bdf8; margin-bottom: 25px; font-size: 28px; letter-spacing: 1px; text-transform: uppercase; }
-        h2 { color: #38bdf8; font-size: 20px; margin-bottom: 15px; border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 8px; }
-        .auth-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
-        .auth-box, .dashboard-box { display: flex; flex-direction: column; gap: 12px; background: rgba(30, 41, 59, 0.5); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); }
-        input, button, select { padding: 12px 15px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 15px; outline: none; transition: border-color 0.3s; width: 100%; }
-        input:focus { border-color: #38bdf8; }
-        button { background: #0284c7; cursor: pointer; font-weight: bold; border: none; transition: background 0.3s, transform 0.1s; }
-        button:hover { background: #0ea5e9; }
-        button:active { transform: scale(0.98); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        
+        body { 
+            background: #020617;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(129, 140, 248, 0.12) 0px, transparent 50%);
+            color: #f8fafc; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            padding: 12px;
+        }
+
+        .container { 
+            max-width: 750px; 
+            margin: 10px auto; 
+            padding: 18px; 
+            background: rgba(15, 23, 42, 0.85); 
+            backdrop-filter: blur(24px); 
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(56, 189, 248, 0.2); 
+            border-radius: 20px; 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8); 
+            width: 100%; 
+        }
+
+        h1 { 
+            text-align: center; 
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 18px; 
+            font-size: 26px; 
+            font-weight: 900;
+            letter-spacing: 1px; 
+            text-transform: uppercase; 
+        }
+
+        h2 { 
+            color: #38bdf8; 
+            font-size: 15px; 
+            margin-bottom: 8px; 
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .auth-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media(min-width: 550px) { .auth-grid { grid-template-columns: 1fr 1fr; } }
+
+        .auth-box, .dashboard-box { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            background: rgba(30, 41, 59, 0.5); 
+            padding: 16px; 
+            border-radius: 14px; 
+            border: 1px solid rgba(255, 255, 255, 0.06); 
+        }
+
+        input, button { 
+            padding: 12px 14px; 
+            border-radius: 10px; 
+            border: 1px solid rgba(51, 65, 85, 0.9); 
+            background: rgba(2, 6, 23, 0.7); 
+            color: #fff; 
+            font-size: 14px; 
+            outline: none; 
+            transition: all 0.2s ease; 
+            width: 100%; 
+        }
+
+        input:focus { 
+            border-color: #38bdf8; 
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25); 
+        }
+
+        button { 
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); 
+            cursor: pointer; 
+            font-weight: 700; 
+            border: none; 
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+            transition: all 0.2s; 
+        }
+
+        button:hover { 
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); 
+            transform: translateY(-1px);
+        }
+
+        button:active { transform: translateY(0); }
+
         .hidden { display: none !important; }
-        .wallet-section { margin-top: 20px; padding: 15px; background: rgba(15, 23, 42, 0.6); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
-        footer { text-align: center; padding: 25px 20px; background: rgba(2, 6, 23, 0.95); border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 13px; color: #94a3b8; line-height: 1.6; }
-        footer .founder { color: #38bdf8; font-weight: bold; }
-        .chat-container { height: 220px; background: #020617; border: 1px solid #334155; border-radius: 8px; overflow-y: auto; padding: 12px; margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
+
+        /* Contenedor de billetera limpio y claro para pagos */
+        .wallet-section { 
+            margin-top: 15px; 
+            padding: 16px; 
+            background: rgba(15, 23, 42, 0.9); 
+            border-radius: 14px; 
+            border: 1px solid rgba(56, 189, 248, 0.3); 
+        }
+
+        .crypto-box {
+            background: rgba(2, 6, 23, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            word-break: break-all;
+        }
+
+        footer { 
+            text-align: center; 
+            padding: 15px; 
+            font-size: 12px; 
+            color: #64748b; 
+            line-height: 1.5; 
+        }
+
+        footer .founder { color: #38bdf8; font-weight: 600; }
+
+        .chat-container { 
+            height: 200px; 
+            background: rgba(2, 6, 23, 0.85); 
+            border: 1px solid rgba(51, 65, 85, 0.8); 
+            border-radius: 10px; 
+            overflow-y: auto; 
+            padding: 10px; 
+            margin: 6px 0; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            font-size: 13px;
+        }
+
+        .btn-action {
+            padding: 10px 14px;
+            font-size: 13px;
+            border-radius: 8px;
+            width: auto;
+        }
     </style>
 </head>
 <body>
@@ -89,71 +220,83 @@ app.get('/', (req, res) => {
                 <!-- Sign In -->
                 <div class="auth-box">
                     <h2>Sign In</h2>
-                    <input type="tel" id="login-ux" placeholder="UX Number (Numbers only)" inputmode="numeric" pattern="[0-9]*">
+                    <input type="tel" id="login-ux" placeholder="UX Number" inputmode="numeric" pattern="[0-9]*">
                     <input type="password" id="login-pass" placeholder="Password">
                     <button onclick="intentarLogin()">Enter System</button>
                 </div>
                 <!-- Register -->
                 <div class="auth-box">
                     <h2>Register (20 UX Bonus)</h2>
-                    <input type="tel" id="reg-ux" placeholder="Desired UX Number (Numbers only)" inputmode="numeric" pattern="[0-9]*">
+                    <input type="tel" id="reg-ux" placeholder="Desired UX Number" inputmode="numeric" pattern="[0-9]*">
                     <input type="password" id="reg-pass" placeholder="Password">
                     <input type="text" id="reg-nickname" placeholder="Visible Nickname">
-                    <button onclick="intentarRegistro()" style="background: #16a34a;">Create Account</button>
+                    <button onclick="intentarRegistro()" style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); box-shadow: 0 4px 14px rgba(22, 163, 74, 0.4);">Create Account</button>
                 </div>
             </div>
-            <p id="auth-msg" style="text-align: center; color: #f43f5e; margin-top: 15px; font-weight: 500;"></p>
+            <p id="auth-msg" style="text-align: center; color: #f43f5e; margin-top: 12px; font-size: 13px; font-weight: 600;"></p>
         </div>
 
         <!-- LIVE DASHBOARD -->
         <div id="dashboard-section" class="hidden dashboard-box">
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 12px 18px; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(30, 41, 59, 0.8); padding: 10px 14px; border-radius: 10px; font-size: 13px;">
                 <div>
                     <span id="user-info-text" style="font-weight: bold; color: #38bdf8;"></span> | 
-                    UX Balance: <span id="user-balance" style="color: #4ade80; font-weight: bold;">0</span>
+                    Balance: <span id="user-balance" style="color: #4ade80; font-weight: bold;">0</span> UX
                 </div>
-                <button onclick="location.reload()" style="background: #dc2626; padding: 6px 14px; font-size: 13px; width: auto;">Sign Out</button>
+                <button onclick="location.reload()" class="btn-action" style="background: #dc2626; box-shadow: none; padding: 6px 10px;">Sign Out</button>
             </div>
 
             <!-- Admin Panel (UX 0) -->
-            <div id="admin-panel" class="hidden" style="background: rgba(202, 138, 4, 0.1); border: 1px solid rgba(202, 138, 4, 0.3); padding: 15px; border-radius: 8px; margin-top: 5px;">
-                <h3 style="color: #facc15; margin-bottom: 10px; font-size: 16px;">Exclusive Admin Panel (UX 0)</h3>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <input type="tel" id="admin-target-ux" placeholder="Target UX" style="flex: 1;" inputmode="numeric">
-                    <input type="number" id="admin-amount" placeholder="Amount" style="flex: 1;">
-                    <button onclick="enviarSaldoAdmin()" style="background: #ca8a04; width: auto;">Credit Balance</button>
+            <div id="admin-panel" class="hidden" style="background: rgba(202, 138, 4, 0.1); border: 1px solid rgba(202, 138, 4, 0.3); padding: 12px; border-radius: 10px;">
+                <h3 style="color: #facc15; margin-bottom: 8px; font-size: 14px;">Admin Panel (UX 0)</h3>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <input type="tel" id="admin-target-ux" placeholder="Target UX" style="flex: 1; font-size: 13px;" inputmode="numeric">
+                    <input type="number" id="admin-amount" placeholder="Amount" style="flex: 1; font-size: 13px;">
+                    <button onclick="enviarSaldoAdmin()" class="btn-action" style="background: #ca8a04;">Credit</button>
                 </div>
-                <p id="admin-response" style="font-size: 13px; color: #fde047; margin-top: 8px;"></p>
+                <p id="admin-response" style="font-size: 12px; color: #fde047; margin-top: 6px;"></p>
             </div>
 
             <!-- Real-Time Live Chat -->
-            <div style="margin-top: 10px;">
-                <h2 style="font-size: 16px; margin-bottom: 8px;">Live Real-Time Chat</h2>
-                <input type="tel" id="chat-destinatario" placeholder="Recipient UX Number" style="margin-bottom: 8px;" inputmode="numeric">
+            <div>
+                <h2>Live Real-Time Chat</h2>
+                <input type="tel" id="chat-destinatario" placeholder="Recipient UX Number" style="margin-bottom: 6px; font-size: 13px;" inputmode="numeric">
                 <div id="chat-mensajes" class="chat-container"></div>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <input type="text" id="chat-texto" placeholder="Type your live message..." style="flex: 1; min-width: 200px;" onkeydown="if(event.key==='Enter') enviarMensajeText()">
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <input type="text" id="chat-texto" placeholder="Type message..." style="flex: 1; font-size: 13px;" onkeydown="if(event.key==='Enter') enviarMensajeText()">
                     <input type="file" id="chat-foto" accept="image/*" style="display: none;" onchange="enviarFoto(this)">
-                    <button onclick="document.getElementById('chat-foto').click()" style="background: #475569; width: auto;">📷 Photo</button>
-                    <button onclick="enviarMensajeText()" style="width: auto;">Send Live</button>
+                    <button onclick="document.getElementById('chat-foto').click()" class="btn-action" style="background: #475569;" title="Send Photo">📷</button>
+                    <button onclick="enviarMensajeText()" class="btn-action">Send</button>
                 </div>
             </div>
 
             <!-- 24/7 Permanent Mailbox -->
-            <div style="margin-top: 10px;">
-                <h2 style="font-size: 16px; margin-bottom: 8px;">24/7 Permanent Mailbox</h2>
-                <div id="buzon-contenido" style="background: #020617; padding: 10px; border-radius: 8px; min-height: 50px; font-size: 14px; color: #cbd5e1; max-height: 180px; overflow-y: auto;">No stored messages.</div>
+            <div>
+                <h2>24/7 Permanent Mailbox</h2>
+                <div id="buzon-contenido" style="background: rgba(2, 6, 23, 0.9); padding: 10px; border-radius: 10px; min-height: 50px; font-size: 13px; color: #cbd5e1; max-height: 150px; overflow-y: auto; border: 1px solid rgba(51, 65, 85, 0.8);">No stored messages.</div>
             </div>
 
-            <!-- UX Launch Plans -->
+            <!-- UX Launch Plans & Clear Wallet Info -->
             <div class="wallet-section">
-                <h2 style="font-size: 16px; margin-bottom: 8px;">UX Launch Plans</h2>
-                <p style="font-size: 13px; margin-bottom: 10px; color: #94a3b8;">
-                    BTC: <code style="color: #f59e0b;">bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s</code><br>
-                    SOL: <code>F66a36aKwwvZaaaCSTyfWja4P2dNMmYHK7W2nMBVm6h1</code> | ETH: <code>0x4ABCf532fed9D9CFD0d3C4654cDFB56D02cFF21c</code><br>
-                    Send receipt to: <b style="color: #38bdf8;">po80payments@gmail.com</b>
+                <h2>UX Launch Plans & Payment Wallets</h2>
+                <p style="font-size: 12px; margin-bottom: 10px; color: #94a3b8; line-height: 1.5;">
+                    Send your payment to one of the addresses below, then forward your receipt to <b style="color: #38bdf8;">po80payments@gmail.com</b>
                 </p>
-                <ul style="font-size: 13px; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px; color: #cbd5e1;">
+                
+                <div class="crypto-box">
+                    <strong style="color: #f59e0b;">Bitcoin (BTC):</strong><br>
+                    <code>bc1qep3ntxf6lz037ny04706u88jsl364p0ny4776s</code>
+                </div>
+                <div class="crypto-box">
+                    <strong style="color: #38bdf8;">Solana (SOL):</strong><br>
+                    <code>F66a36aKwwvZaaaCSTyfWja4P2dNMmYHK7W2nMBVm6h1</code>
+                </div>
+                <div class="crypto-box">
+                    <strong style="color: #a855f7;">Ethereum (ETH):</strong><br>
+                    <code>0x4ABCf532fed9D9CFD0d3C4654cDFB56D02cFF21c</code>
+                </div>
+
+                <ul style="font-size: 13px; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px; color: #e2e8f0; margin-top: 12px;">
                     <li>🔹 1,200 UX - $6.99</li>
                     <li>🔹 2,500 UX - $13.99</li>
                     <li>🔹 5,000 UX - $25.99</li>
@@ -166,9 +309,8 @@ app.get('/', (req, res) => {
     </div>
 
     <footer>
-        <p><b>Pleniux.com</b> is fully built live with high security systems and true real-time communication.</p>
-        <p>Creator: <span class="founder">Jhon Gonzales</span> (known as <span class="founder">Lenox JG</span>).</p>
-        <p style="margin-top: 4px; color: #64748b;">© 2026 Pleniux.com - Your security comes first.</p>
+        <p><b>Pleniux.com</b> | Secure Ecosystem & Real-Time Communication</p>
+        <p>Creator: <span class="founder">Jhon Gonzales</span> (<span class="founder">Lenox JG</span>)</p>
     </footer>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -222,46 +364,71 @@ app.get('/', (req, res) => {
             document.getElementById('chat-texto').value = '';
         }
 
+        // Compresión optimizada para que las fotos de la galería vuelen en tiempo real sin congelar el móvil
         function enviarFoto(input) {
             const dest = document.getElementById('chat-destinatario').value;
             if (!dest || !input.files[0]) return;
+            const file = input.files[0];
             const reader = new FileReader();
+            
             reader.onload = function(e) {
-                socket.emit('enviar_mensaje', { destinatarioUx: dest, contenido: e.target.result, tipo: 'foto' });
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 500;
+                    const MAX_HEIGHT = 500;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    } else {
+                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.65);
+                    socket.emit('enviar_mensaje', { destinatarioUx: dest, contenido: compressedDataUrl, tipo: 'foto' });
+                };
+                img.src = e.target.result;
             };
-            reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(file);
+            input.value = '';
         }
 
         socket.on('recibir_mensaje', (data) => {
             const box = document.getElementById('chat-mensajes');
-            let contentHtml = data.tipo === 'foto' ? '<img src="' + data.contenido + '" style="max-width: 120px; border-radius: 6px;">' : data.contenido;
+            let contentHtml = data.tipo === 'foto' ? '<img src="' + data.contenido + '" style="max-width: 140px; border-radius: 8px; margin-top: 4px; display: block;">' : escapeHtml(data.contenido);
             box.innerHTML += '<div style="color: #38bdf8;"><b>[' + data.de + ']:</b> ' + contentHtml + '</div>';
             box.scrollTop = box.scrollHeight;
         });
 
         socket.on('mensaje_enviado', (data) => {
             const box = document.getElementById('chat-mensajes');
-            let contentHtml = data.tipo === 'foto' ? '<img src="' + data.contenido + '" style="max-width: 120px; border-radius: 6px;">' : data.contenido;
+            let contentHtml = data.tipo === 'foto' ? '<img src="' + data.contenido + '" style="max-width: 140px; border-radius: 8px; margin-top: 4px; display: block;">' : escapeHtml(data.contenido);
             box.innerHTML += '<div style="color: #4ade80;"><b>[You]:</b> ' + contentHtml + '</div>';
             box.scrollTop = box.scrollHeight;
         });
 
-        // Cargar el buzón con su cajita de respuesta desplegable interna en cada mensaje
         socket.on('cargar_buzon', (mails) => {
             const box = document.getElementById('buzon-contenido');
             if (mails && mails.length > 0) {
                 box.innerHTML = mails.map((m, index) => \`
-                    <div style="border-bottom: 1px solid #334155; padding: 8px 0; display: flex; flex-direction: column; gap: 6px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                    <div style="border-bottom: 1px solid rgba(51,65,85,0.4); padding: 8px 0; display: flex; flex-direction: column; gap: 4px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
                             <div>
-                                <b style="color: #38bdf8;">[From \${m.sender}]:</b> \${m.content} 
+                                <b style="color: #38bdf8;">[\${m.sender}]:</b> \${m.type === 'foto' ? '📷 [Photo Received]' : escapeHtml(m.content)} 
                                 <span style="font-size: 10px; color: #94a3b8;">(\${m.timestamp})</span>
                             </div>
-                            <button onclick="toggleReplyBox(\${index})" style="background: #0284c7; padding: 4px 10px; font-size: 11px; width: auto; border-radius: 4px;">Reply</button>
+                            <button onclick="toggleReplyBox(\` + index + \`)" class="btn-action" style="padding: 4px 10px; font-size: 11px;">Reply</button>
                         </div>
                         <div id="reply-box-\${index}" class="hidden" style="display: flex; gap: 6px; margin-top: 4px;">
-                            <input type="text" id="reply-text-\${index}" placeholder="Type reply to \${m.sender}..." style="font-size: 13px; padding: 8px;">
-                            <button onclick="enviarReply('\${m.sender}', \${index})" style="background: #16a34a; padding: 8px 14px; font-size: 13px; width: auto; border-radius: 6px;">Send</button>
+                            <input type="text" id="reply-text-\${index}" placeholder="Reply..." style="font-size: 12px; padding: 8px;">
+                            <button onclick="enviarReply('\${m.sender}', \` + index + \`)" class="btn-action" style="background: #16a34a; padding: 8px 12px; font-size: 12px;">Send</button>
                         </div>
                     </div>
                 \`).join('');
@@ -270,24 +437,26 @@ app.get('/', (req, res) => {
             }
         });
 
-        // Mostrar u ocultar la cajita de respuesta directa del buzón
         function toggleReplyBox(index) {
-            const replyBox = document.getElementById(\`reply-box-\${index}\`);
+            const replyBox = document.getElementById('reply-box-' + index);
             if (replyBox.classList.contains('hidden')) {
                 replyBox.classList.remove('hidden');
-                document.getElementById(\`reply-text-\${index}\`).focus();
+                document.getElementById('reply-text-' + index).focus();
             } else {
                 replyBox.classList.add('hidden');
             }
         }
 
-        // Enviar la respuesta directamente desde la cajita del buzón
         function enviarReply(destUx, index) {
-            const texto = document.getElementById(\`reply-text-\${index}\`).value;
+            const texto = document.getElementById('reply-text-' + index).value;
             if (!texto) return;
             socket.emit('enviar_mensaje', { destinatarioUx: destUx, contenido: texto, tipo: 'texto' });
-            document.getElementById(\`reply-text-\${index}\`).value = '';
-            document.getElementById(\`reply-box-\${index}\`).classList.add('hidden');
+            document.getElementById('reply-text-' + index).value = '';
+            document.getElementById('reply-box-' + index).classList.add('hidden');
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
         function enviarSaldoAdmin() {
@@ -366,23 +535,23 @@ io.on('connection', (socket) => {
         if (!remitenteUx) return;
 
         db.get(`SELECT * FROM users WHERE ux = ?`, [destinatarioUx], (err, targetUser) => {
-            if (!targetUser) return socket.emit('error_chat', 'Recipient UX does not exist.');
+            if (!targetUser) return;
 
             db.run(`INSERT INTO messages (sender, recipient, content, type) VALUES (?, ?, ?, ?)`, [remitenteUx, destinatarioUx, contenido, tipo], function(err) {
                 if (err) return;
                 const msgData = { id: this.lastID, de: remitenteUx, para: destinatarioUx, contenido, tipo };
 
-                db.run(`INSERT INTO mailbox (sender, recipient, content) VALUES (?, ?, ?)`, [remitenteUx, destinatarioUx, contenido]);
-
-                for (let [sId, sUx] of activeSessions.entries()) {
-                    if (sUx === destinatarioUx) {
-                        io.to(sId).emit('recibir_mensaje', msgData);
-                        db.all(`SELECT * FROM mailbox WHERE recipient = ? ORDER BY id DESC`, [destinatarioUx], (err, mailRows) => {
-                            io.to(sId).emit('cargar_buzon', mailRows || []);
-                        });
+                db.run(`INSERT INTO mailbox (sender, recipient, content, type) VALUES (?, ?, ?, ?)`, [remitenteUx, destinatarioUx, contenido, tipo], () => {
+                    for (let [sId, sUx] of activeSessions.entries()) {
+                        if (sUx === destinatarioUx) {
+                            io.to(sId).emit('recibir_mensaje', msgData);
+                            db.all(`SELECT * FROM mailbox WHERE recipient = ? ORDER BY id DESC`, [destinatarioUx], (err, mailRows) => {
+                                io.to(sId).emit('cargar_buzon', mailRows || []);
+                            });
+                        }
                     }
-                }
-                socket.emit('mensaje_enviado', msgData);
+                    socket.emit('mensaje_enviado', msgData);
+                });
             });
         });
     });
