@@ -7,7 +7,7 @@ const path = require('path');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-    maxHttpBufferSize: 1e7 // Límite seguro de 10MB para transferencia multimedia fluida
+    maxHttpBufferSize: 1e7 // Límite seguro de 10MB para fotos fluidas
 });
 
 app.use(express.json({ limit: '10mb' }));
@@ -54,7 +54,7 @@ db.serialize(() => {
     });
 });
 
-// Interfaz ultra elegante, moderna y de alto rendimiento adaptada para móviles
+// Interfaz con fondo negro y puntos neón cayendo en movimiento fluido
 app.get('/', (req, res) => {
     res.send(`<!DOCTYPE html>
 <html lang="en">
@@ -66,28 +66,39 @@ app.get('/', (req, res) => {
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         
         body { 
-            background: #020617;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(129, 140, 248, 0.12) 0px, transparent 50%);
+            background: #000000;
             color: #f8fafc; 
             min-height: 100vh; 
             display: flex; 
             flex-direction: column; 
             justify-content: space-between; 
             padding: 12px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        #neon-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container { 
+            position: relative;
+            z-index: 1;
             max-width: 750px; 
             margin: 10px auto; 
             padding: 18px; 
-            background: rgba(15, 23, 42, 0.85); 
-            backdrop-filter: blur(24px); 
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(56, 189, 248, 0.2); 
+            background: rgba(5, 5, 10, 0.85); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(56, 189, 248, 0.25); 
             border-radius: 20px; 
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8); 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9); 
             width: 100%; 
         }
 
@@ -118,7 +129,7 @@ app.get('/', (req, res) => {
             display: flex; 
             flex-direction: column; 
             gap: 10px; 
-            background: rgba(30, 41, 59, 0.5); 
+            background: rgba(15, 23, 42, 0.6); 
             padding: 16px; 
             border-radius: 14px; 
             border: 1px solid rgba(255, 255, 255, 0.06); 
@@ -128,7 +139,7 @@ app.get('/', (req, res) => {
             padding: 12px 14px; 
             border-radius: 10px; 
             border: 1px solid rgba(51, 65, 85, 0.9); 
-            background: rgba(2, 6, 23, 0.7); 
+            background: rgba(2, 6, 23, 0.85); 
             color: #fff; 
             font-size: 14px; 
             outline: none; 
@@ -159,11 +170,10 @@ app.get('/', (req, res) => {
 
         .hidden { display: none !important; }
 
-        /* Contenedor de billetera limpio y claro para pagos */
         .wallet-section { 
             margin-top: 15px; 
             padding: 16px; 
-            background: rgba(15, 23, 42, 0.9); 
+            background: rgba(10, 15, 30, 0.9); 
             border-radius: 14px; 
             border: 1px solid rgba(56, 189, 248, 0.3); 
         }
@@ -179,10 +189,12 @@ app.get('/', (req, res) => {
         }
 
         footer { 
+            position: relative;
+            z-index: 1;
             text-align: center; 
             padding: 15px; 
             font-size: 12px; 
-            color: #64748b; 
+            color: #94a3b8; 
             line-height: 1.5; 
         }
 
@@ -190,7 +202,7 @@ app.get('/', (req, res) => {
 
         .chat-container { 
             height: 200px; 
-            background: rgba(2, 6, 23, 0.85); 
+            background: rgba(2, 6, 23, 0.9); 
             border: 1px solid rgba(51, 65, 85, 0.8); 
             border-radius: 10px; 
             overflow-y: auto; 
@@ -211,6 +223,8 @@ app.get('/', (req, res) => {
     </style>
 </head>
 <body>
+    <canvas id="neon-canvas"></canvas>
+
     <div class="container" id="app">
         <h1>Pleniux.com</h1>
 
@@ -315,6 +329,57 @@ app.get('/', (req, res) => {
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        // Animación de Puntos Neón Cayendo (Efecto Fluido en Canvas)
+        const canvas = document.getElementById('neon-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const drops = [];
+        const numDrops = 60;
+        const colors = ['#38bdf8', '#818cf8', '#4ade80', '#a855f7', '#f43f5e'];
+
+        for (let i = 0; i < numDrops; i++) {
+            drops.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 2 + 1,
+                speed: Math.random() * 2 + 1.5,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                alpha: Math.random() * 0.7 + 0.3
+            });
+        }
+
+        function animateNeon() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            drops.forEach(drop => {
+                ctx.beginPath();
+                ctx.arc(drop.x, drop.y, drop.radius, 0, Math.PI * 2);
+                ctx.fillStyle = drop.color;
+                ctx.globalAlpha = drop.alpha;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = drop.color;
+                ctx.fill();
+                ctx.closePath();
+
+                drop.y += drop.speed;
+                if (drop.y > canvas.height) {
+                    drop.y = -10;
+                    drop.x = Math.random() * canvas.width;
+                }
+            });
+
+            requestAnimationFrame(animateNeon);
+        }
+        animateNeon();
+
+        // Socket.io Client Logic
         const socket = io();
 
         function intentarRegistro() {
@@ -364,7 +429,6 @@ app.get('/', (req, res) => {
             document.getElementById('chat-texto').value = '';
         }
 
-        // Compresión optimizada para que las fotos de la galería vuelen en tiempo real sin congelar el móvil
         function enviarFoto(input) {
             const dest = document.getElementById('chat-destinatario').value;
             if (!dest || !input.files[0]) return;
